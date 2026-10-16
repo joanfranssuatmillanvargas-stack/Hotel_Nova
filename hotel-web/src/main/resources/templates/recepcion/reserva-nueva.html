@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragmentos :: cabeza('Nueva reserva')}"></head>
+<body>
+<nav th:replace="~{fragmentos :: menu}"></nav>
+<main class="container py-4">
+	<div th:replace="~{fragmentos :: alertas}"></div>
+	<h1 class="h3 titulo mb-3">Nueva reserva</h1>
+	<div class="card p-3 mb-3">
+		<h2 class="h6 titulo">1. Buscar habitaciones libres</h2>
+		<form class="row g-2 align-items-end" method="get" action="/recepcion/reservas/nueva">
+			<input type="hidden" name="documento" th:value="${b['documento']}">
+			<div class="col-6 col-md-3"><label class="form-label">Llegada</label><input class="form-control" type="date" name="llegada" th:value="${#strings.isEmpty(b['llegada'])} ? ${hoy} : ${b['llegada']}" th:min="${hoy}" required></div>
+			<div class="col-6 col-md-3"><label class="form-label">Salida</label><input class="form-control" type="date" name="salida" th:value="${#strings.isEmpty(b['salida'])} ? ${manana} : ${b['salida']}" required></div>
+			<div class="col-8 col-md-3"><label class="form-label">Tipo</label>
+				<select class="form-select" name="tipoId"><option value="">Cualquier tipo</option>
+					<option th:each="t : ${tipos}" th:value="${t['id']}" th:text="${t['nombre'] + ' (' + t['capacidad'] + ' pers.)'}" th:selected="${t['id'] == b['tipoId']}"></option>
+				</select></div>
+			<div class="col-4 col-md-3"><button class="btn btn-outline-primary w-100"><i class="bi bi-search"></i> Buscar</button></div>
+		</form>
+	</div>
+	<div class="card p-3" th:if="${libres != null}">
+		<h2 class="h6 titulo">2. Elige la habitación y el huésped</h2>
+		<p class="small text-secondary" th:if="${#lists.isEmpty(libres)}">No hay habitaciones libres para esas fechas.</p>
+		<div class="table-responsive" th:unless="${#lists.isEmpty(libres)}">
+		<table class="table table-sm mb-0">
+			<thead><tr><th>Hab.</th><th>Piso</th><th>Tipo</th><th>Capacidad</th><th>Noches</th><th class="text-end">Valor estadía</th><th>Documento del huésped</th></tr></thead>
+			<tbody>
+				<tr th:each="h : ${libres}">
+					<td class="fw-semibold" th:text="${h['numero']}">101</td><td th:text="${h['piso']}">1</td>
+					<td th:text="${h['tipoNombre']}">Doble</td><td th:text="${h['capacidad']}">2</td><td th:text="${h['noches']}">1</td>
+					<td class="text-end" th:text="'$' + ${#numbers.formatDecimal(h['valorEstadia'], 1, 'POINT', 0, 'COMMA')}">0</td>
+					<td>
+						<form class="d-flex gap-1" method="post" action="/recepcion/reservas">
+							<input type="hidden" name="habitacionId" th:value="${h['habitacionId']}">
+							<input type="hidden" name="llegada" th:value="${b['llegada']}">
+							<input type="hidden" name="salida" th:value="${b['salida']}">
+							<input class="form-control form-control-sm" name="huespedDocumento" th:value="${b['documento']}" placeholder="Documento" required>
+							<button class="btn btn-sm btn-primary text-nowrap"><i class="bi bi-check2"></i> Reservar</button>
+						</form>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		</div>
+		<p class="small text-secondary mt-2 mb-0">El huésped debe estar registrado. <a href="/recepcion/huespedes" target="_blank">Registrar huésped</a></p>
+	</div>
+</main>
+<script th:replace="~{fragmentos :: scripts}"></script>
+</body>
+</html>

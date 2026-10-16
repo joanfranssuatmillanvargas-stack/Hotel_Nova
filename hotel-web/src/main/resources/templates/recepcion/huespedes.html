@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragmentos :: cabeza('Huéspedes')}"></head>
+<body>
+<nav th:replace="~{fragmentos :: menu}"></nav>
+<main class="container py-4">
+	<div th:replace="~{fragmentos :: alertas}"></div>
+	<h1 class="h3 titulo mb-3">Huéspedes</h1>
+	<div class="row g-3">
+		<div class="col-lg-8">
+			<div class="card p-3">
+				<form class="d-flex gap-2 mb-3" method="get" action="/recepcion/huespedes">
+					<input class="form-control" name="q" th:value="${q}" placeholder="Buscar por documento o nombre (sin importar tildes)">
+					<button class="btn btn-outline-primary"><i class="bi bi-search"></i></button>
+				</form>
+				<div class="table-responsive">
+				<table class="table table-sm mb-0">
+					<thead><tr><th>Documento</th><th>Nombre</th><th>Teléfono</th><th>Correo</th><th>Estadías</th><th></th></tr></thead>
+					<tbody>
+						<tr th:each="h : ${huespedes}">
+							<td th:text="${h['documento']}">1098</td>
+							<td><span th:text="${h['nombres'] + ' ' + h['apellidos']}">Ana</span>
+								<span class="badge text-bg-warning" th:if="${h['frecuente']}"><i class="bi bi-star-fill"></i> Frecuente</span></td>
+							<td th:text="${h['telefono']}">-</td>
+							<td class="small" th:text="${h['correo']}">-</td>
+							<td th:text="${h['estadias']}">0</td>
+							<td class="text-end"><a class="btn btn-sm btn-outline-primary" th:href="@{/recepcion/huespedes/{d}(d=${h['documento']})}">Ver</a></td>
+						</tr>
+						<tr th:if="${#lists.isEmpty(huespedes)}"><td colspan="6" class="text-secondary">No se encontraron huéspedes.</td></tr>
+					</tbody>
+				</table>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-4">
+			<div class="card p-3">
+				<h2 class="h6 titulo">Registrar huésped</h2>
+				<form method="post" action="/recepcion/huespedes" class="row g-2">
+					<div class="col-12"><label class="form-label">Documento</label><input class="form-control" name="documento" required></div>
+					<div class="col-6"><label class="form-label">Nombres</label><input class="form-control" name="nombres" required></div>
+					<div class="col-6"><label class="form-label">Apellidos</label><input class="form-control" name="apellidos" required></div>
+					<div class="col-6"><label class="form-label">Teléfono</label><input class="form-control" name="telefono"></div>
+					<div class="col-6"><label class="form-label">Nacionalidad</label><input class="form-control" name="nacionalidad" value="Colombiana"></div>
+					<div class="col-12"><label class="form-label">Correo</label><input class="form-control" type="email" name="correo" required></div>
+					<div class="col-12"><button class="btn btn-primary btn-sm"><i class="bi bi-person-plus"></i> Registrar</button></div>
+				</form>
+			</div>
+		</div>
+	</div>
+</main>
+<script th:replace="~{fragmentos :: scripts}"></script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+HOTELNOVA - Sistema de gestión hotelera con microservicios
+===========================================================
+Spring Boot 4.1.1 · Java 21 · Spring Data MongoDB · REST + Swagger (springdoc) · Thymeleaf + Bootstrap · Docker · Render
+Equipo: Joan Franssuat Millán Vargas (Scrum Master) y Jaider Javier Jaimes (Product Owner)
+
+APLICACIONES (cada una es un proyecto Spring Boot independiente con su propia base de datos)
+  Aplicación                 Puerto  Base de datos   Qué hace
+  ms-habitaciones            8101    habitacionesdb  tipos, habitaciones, tarifas por temporada, estado, limpieza y daños
+  ms-reservas                8102    reservasdb      reservas, disponibilidad, fechas cruzadas, check-in, check-out
+  ms-huespedes               8103    huespedesdb     huéspedes, acompañantes, historial, huésped frecuente
+  ms-servicios-facturacion   8104    serviciosdb     catálogo, consumos, factura con IVA, pagos, reporte de ingresos
+  hotel-web                  8108    usuariosdb      páginas web con inicio de sesión por rol (consume los 4 por REST)
+
+Cada proyecto tiene solo 3 paquetes: controlador, modelo y repositorio.
+  - controlador: las API REST (*_apirest) o las páginas web (*_web)
+  - modelo: las clases que se guardan en MongoDB y las que viajan por REST
+  - repositorio: los MongoRepository, reglas_repositorio (reglas de negocio)
+                 y externos_repositorio (llamadas REST a los otros microservicios)
+
+ROLES DEL SISTEMA Y USUARIOS DE PRUEBA (se crean solos la primera vez que arranca hotel-web)
+  Administrador          admin / admin123
+  Recepcionista          recepcion / recepcion123
+  Personal de servicios  servicios / servicios123
+  Personal de limpieza   limpieza / limpieza123
+  Huésped                cada huésped crea su cuenta en "Regístrate aquí" (pantalla de login)
+
+CORRER EN STS (en tu PC)
+1. File > Import > Maven > Existing Maven Projects > carpeta HotelNova > marcar los 5 > Finish.
+2. Arrancar los 4 microservicios y de último hotel-web (Run As > Spring Boot App,
+   o desde el Boot Dashboard seleccionando los 5 y dándole Start).
+3. Abrir http://localhost:8108 e iniciar sesión con admin / admin123.
+4. En el panel del administrador: botón "Cargar datos de ejemplo" (3 tipos, 9 habitaciones,
+   temporadas y 8 servicios) para probar todo de una vez.
+5. Swagger de cada microservicio: http://localhost:8101/swagger-ui.html (8102, 8103, 8104).
+
+FLUJO PARA LA SUSTENTACIÓN
+  recepcion: registrar huésped > nueva reserva (buscar disponibilidad) > check-in
+  servicios: cargar consumos a la habitación
+  recepcion: estadía > check-out (genera la factura con IVA) > registrar pago
+  limpieza:  la habitación aparece "por limpiar" > marcarla lista (o reportar daño)
+  admin:     reportes de reservas, ingresos y limpieza; usuarios; habitaciones y tarifas
+  huésped:   registrarse > reservar en línea > ver sus consumos y su factura
+
+CONTRASEÑAS
+  La URL de MongoDB Atlas va en src/main/resources/secreto.properties de cada proyecto.
+  Ese archivo NO se sube a GitHub (.gitignore). En Render se pone como variable MONGODB_URI.
+
+DESPLIEGUE EN RENDER (Docker)
+  El archivo render.yaml (Blueprint) crea las 5 aplicaciones de una vez:
+  1. Subir esta carpeta a GitHub (sin los secreto.properties).
+  2. En render.com: New > Blueprint > elegir el repositorio.
+  3. Cuando pida MONGODB_URI, pegar la cadena de Atlas (la misma para todos).
+  4. Apply. La primera vez cada servicio tarda unos minutos en compilar.
+  5. Si Render le pone a algún servicio una URL distinta a hotelnova-xxx.onrender.com,
+     corregirla en Environment Groups > hotelnova-config y redesplegar.
+  6. Abrir https://hotelnova-web.onrender.com
+  En el plan gratis los servicios se duermen: la primera carga tarda cerca de un minuto.
+  En MongoDB Atlas > Network Access debe estar permitido 0.0.0.0/0.

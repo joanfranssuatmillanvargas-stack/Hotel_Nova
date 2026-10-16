@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragmentos :: cabeza('Mis datos')}"></head>
+<body>
+<nav th:replace="~{fragmentos :: menu}"></nav>
+<main class="container py-4" style="max-width: 720px">
+	<div th:replace="~{fragmentos :: alertas}"></div>
+	<div class="card p-4">
+		<h1 class="h4 titulo">Mis datos</h1>
+		<p class="text-secondary small">Documento <span th:text="${h['documento']}">1</span> · <span th:text="${h['estadias']}">0</span> estadía(s)
+			<span class="badge text-bg-warning" th:if="${h['frecuente']}"><i class="bi bi-star-fill"></i> Huésped frecuente</span></p>
+		<form method="post" action="/huesped/datos" class="row g-3">
+			<div class="col-md-6"><label class="form-label">Nombres</label><input class="form-control" name="nombres" th:value="${h['nombres']}" required></div>
+			<div class="col-md-6"><label class="form-label">Apellidos</label><input class="form-control" name="apellidos" th:value="${h['apellidos']}" required></div>
+			<div class="col-md-6"><label class="form-label">Correo</label><input class="form-control" type="email" name="correo" th:value="${h['correo']}" required></div>
+			<div class="col-md-3"><label class="form-label">Teléfono</label><input class="form-control" name="telefono" th:value="${h['telefono']}"></div>
+			<div class="col-md-3"><label class="form-label">Nacionalidad</label><input class="form-control" name="nacionalidad" th:value="${h['nacionalidad']}"></div>
+			<div class="col-12"><button class="btn btn-primary">Guardar</button></div>
+		</form>
+	</div>
+</main>
+<script th:replace="~{fragmentos :: scripts}"></script>
+</body>
+</html>

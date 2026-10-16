@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragmentos :: cabeza('Huésped')}"></head>
+<body>
+<nav th:replace="~{fragmentos :: menu}"></nav>
+<main class="container py-4">
+	<div th:replace="~{fragmentos :: alertas}"></div>
+	<a href="/recepcion/huespedes" class="small"><i class="bi bi-arrow-left"></i> Huéspedes</a>
+	<h1 class="h3 titulo mb-3"><span th:text="${h['nombres'] + ' ' + h['apellidos']}">Ana</span>
+		<span class="badge text-bg-warning fs-6" th:if="${h['frecuente']}"><i class="bi bi-star-fill"></i> Frecuente</span></h1>
+	<div class="row g-3">
+		<div class="col-lg-5">
+			<div class="card p-3 mb-3">
+				<h2 class="h6 titulo">Datos (documento <span th:text="${h['documento']}">1</span>)</h2>
+				<form method="post" th:action="@{/recepcion/huespedes/{d}(d=${h['documento']})}" class="row g-2">
+					<div class="col-6"><label class="form-label">Nombres</label><input class="form-control" name="nombres" th:value="${h['nombres']}" required></div>
+					<div class="col-6"><label class="form-label">Apellidos</label><input class="form-control" name="apellidos" th:value="${h['apellidos']}" required></div>
+					<div class="col-6"><label class="form-label">Teléfono</label><input class="form-control" name="telefono" th:value="${h['telefono']}"></div>
+					<div class="col-6"><label class="form-label">Nacionalidad</label><input class="form-control" name="nacionalidad" th:value="${h['nacionalidad']}"></div>
+					<div class="col-12"><label class="form-label">Correo</label><input class="form-control" type="email" name="correo" th:value="${h['correo']}" required></div>
+					<div class="col-12 d-flex gap-2"><button class="btn btn-primary btn-sm">Guardar cambios</button>
+						<a class="btn btn-sm btn-outline-primary" th:href="@{/recepcion/reservas/nueva(documento=${h['documento']})}">Nueva reserva</a></div>
+				</form>
+				<form class="mt-3" method="post" th:action="@{/recepcion/huespedes/{d}/eliminar(d=${h['documento']})}" onsubmit="return confirm('¿Eliminar este huésped?')">
+					<button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i> Eliminar huésped</button>
+					<span class="small text-secondary">Solo si nunca ha tenido reservas.</span>
+				</form>
+			</div>
+			<div class="card p-3">
+				<h2 class="h6 titulo">Acompañantes</h2>
+				<ul class="list-group list-group-flush mb-2">
+					<li class="list-group-item d-flex justify-content-between align-items-center px-0" th:each="a : ${h['acompanantes']}">
+						<span><span th:text="${a['nombre']}">Luis</span> <span class="small text-secondary" th:text="'(' + ${a['documento']} + ')'">(1)</span></span>
+						<form method="post" th:action="@{/recepcion/huespedes/{d}/acompanantes/{o}/quitar(d=${h['documento']}, o=${a['documento']})}">
+							<button class="btn btn-sm btn-outline-danger"><i class="bi bi-x"></i></button></form>
+					</li>
+					<li class="list-group-item px-0 text-secondary small" th:if="${#lists.isEmpty(h['acompanantes'])}">Sin acompañantes.</li>
+				</ul>
+				<form method="post" th:action="@{/recepcion/huespedes/{d}/acompanantes(d=${h['documento']})}" class="row g-2">
+					<div class="col-6"><input class="form-control form-control-sm" name="nombre" placeholder="Nombre" required></div>
+					<div class="col-4"><input class="form-control form-control-sm" name="documento" placeholder="Documento" required></div>
+					<div class="col-2"><button class="btn btn-sm btn-primary w-100"><i class="bi bi-plus"></i></button></div>
+				</form>
+			</div>
+		</div>
+		<div class="col-lg-7">
+			<div class="card p-3">
+				<h2 class="h6 titulo">Historial de estadías (<span th:text="${h['estadias']}">0</span> cerradas)</h2>
+				<div class="table-responsive">
+				<table class="table table-sm mb-0">
+					<thead><tr><th>Reserva</th><th>Hab.</th><th>Llegada</th><th>Salida</th><th class="text-end">Alojamiento</th><th>Estado</th><th></th></tr></thead>
+					<tbody>
+						<tr th:each="r : ${historial}">
+							<td th:text="${r['codigo']}">R</td><td th:text="${r['numeroHabitacion']}">101</td>
+							<td th:text="${r['llegada']}">-</td><td th:text="${r['salida']}">-</td>
+							<td class="text-end" th:text="'$' + ${#numbers.formatDecimal(r['valorAlojamiento'], 1, 'POINT', 0, 'COMMA')}">0</td>
+							<td><span class="estado" th:classappend="'estado-' + ${r['estado']}" th:text="${r['estado']}">E</span></td>
+							<td><a class="btn btn-sm btn-outline-secondary" th:href="@{/recepcion/estadia/{id}(id=${r['id']})}"><i class="bi bi-receipt"></i></a></td>
+						</tr>
+						<tr th:if="${#lists.isEmpty(historial)}"><td colspan="7" class="text-secondary">Sin reservas.</td></tr>
+					</tbody>
+				</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</main>
+<script th:replace="~{fragmentos :: scripts}"></script>
+</body>
+</html>

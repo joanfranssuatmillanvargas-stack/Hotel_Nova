@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragmentos :: cabeza('Usuarios')}"></head>
+<body>
+<nav th:replace="~{fragmentos :: menu}"></nav>
+<main class="container py-4">
+	<div th:replace="~{fragmentos :: alertas}"></div>
+	<h1 class="h3 titulo mb-3">Usuarios y roles</h1>
+	<div class="row g-3">
+		<div class="col-lg-8">
+			<div class="card p-3">
+				<div class="table-responsive">
+				<table class="table table-sm mb-0">
+					<thead><tr><th>Usuario</th><th>Nombre</th><th>Rol</th><th>Documento</th><th>Estado</th><th></th></tr></thead>
+					<tbody>
+						<tr th:each="u : ${usuarios}" th:classappend="${!u.activo} ? 'text-secondary'">
+							<td class="fw-semibold" th:text="${u.usuario}">admin</td>
+							<td th:text="${u.nombre}">nombre</td>
+							<td th:text="${u.rol.etiqueta}">rol</td>
+							<td th:text="${u.documento}">-</td>
+							<td><span class="badge" th:classappend="${u.activo} ? 'text-bg-success' : 'text-bg-secondary'" th:text="${u.activo} ? 'Activo' : 'Inactivo'">Activo</span></td>
+							<td class="text-end">
+								<form method="post" th:action="@{/admin/usuarios/{id}/activo(id=${u.id})}" th:if="${u.usuario != yo.usuario}">
+									<button class="btn btn-sm" th:classappend="${u.activo} ? 'btn-outline-warning' : 'btn-outline-success'"
+										th:text="${u.activo} ? 'Desactivar' : 'Activar'">Desactivar</button></form>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-4">
+			<div class="card p-3">
+				<h2 class="h6 titulo">Nuevo usuario</h2>
+				<form method="post" action="/admin/usuarios" class="row g-2">
+					<div class="col-12"><label class="form-label">Usuario</label><input class="form-control" name="usuario" required></div>
+					<div class="col-12"><label class="form-label">Nombre completo</label><input class="form-control" name="nombre" required></div>
+					<div class="col-12"><label class="form-label">Rol</label>
+						<select class="form-select" name="rol" required>
+							<option th:each="r : ${roles}" th:value="${r.name()}" th:text="${r.etiqueta}"></option>
+						</select></div>
+					<div class="col-12"><label class="form-label">Documento <span class="text-secondary small">(solo si es huésped)</span></label><input class="form-control" name="documento"></div>
+					<div class="col-12"><label class="form-label">Contraseña</label><input class="form-control" type="password" name="clave" minlength="6" required></div>
+					<div class="col-12"><button class="btn btn-primary btn-sm"><i class="bi bi-person-plus"></i> Crear usuario</button></div>
+				</form>
+				<p class="small text-secondary mt-3 mb-0">Las contraseñas se guardan cifradas (PBKDF2). Un usuario desactivado no puede iniciar sesión.</p>
+			</div>
+		</div>
+	</div>
+</main>
+<script th:replace="~{fragmentos :: scripts}"></script>
+</body>
+</html>

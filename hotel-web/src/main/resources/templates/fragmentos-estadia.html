@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<body>
+<!-- Resumen de la estadía: datos de la reserva, consumos y factura. Lo usan recepción y huésped. -->
+<div th:fragment="resumen(editable)">
+	<div class="card p-3 mb-3">
+		<div class="d-flex flex-wrap justify-content-between gap-2">
+			<div>
+				<h1 class="h4 titulo mb-1">Estadía <span th:text="${r['codigo']}">R</span>
+					<span class="estado fs-6" th:classappend="'estado-' + ${r['estado']}" th:text="${r['estado']}">E</span></h1>
+				<div class="text-secondary" th:text="${r['nombreHuesped']} + ' · habitación ' + ${r['numeroHabitacion']} + ' · ' + ${r['llegada']} + ' a ' + ${r['salida']} + ' (' + ${r['noches']} + ' noche(s))'">datos</div>
+			</div>
+			<div class="text-end">
+				<div class="small text-secondary">Alojamiento</div>
+				<div class="cifra" th:text="'$' + ${#numbers.formatDecimal(r['valorAlojamiento'], 1, 'POINT', 0, 'COMMA')}">0</div>
+			</div>
+		</div>
+	</div>
+	<div class="row g-3">
+		<div class="col-lg-6">
+			<div class="card p-3 h-100">
+				<h2 class="h6 titulo">Consumos de servicios</h2>
+				<div class="table-responsive">
+				<table class="table table-sm mb-0">
+					<thead><tr><th>Fecha</th><th>Servicio</th><th>Cant.</th><th class="text-end">Subtotal</th><th th:if="${editable}"></th></tr></thead>
+					<tbody>
+						<tr th:each="c : ${cuenta['consumos']}" th:classappend="${c['anulado']} ? 'anulado'">
+							<td class="small text-nowrap" th:text="${#strings.replace(c['fecha'], 'T', ' ')}">-</td>
+							<td><span th:text="${c['nombreServicio']}">s</span>
+								<div class="small text-danger" th:if="${c['anulado']}" th:text="'Anulado: ' + ${c['motivoAnulacion']}"></div></td>
+							<td th:text="${c['cantidad']}">1</td>
+							<td class="text-end" th:text="'$' + ${#numbers.formatDecimal(c['subtotal'], 1, 'POINT', 0, 'COMMA')}">0</td>
+							<td th:if="${editable}" class="text-end">
+								<form th:if="${!c['anulado'] and factura == null}" class="d-flex gap-1" method="post"
+									th:action="@{/recepcion/estadia/{id}/consumos/{c}/anular(id=${r['id']}, c=${c['id']})}">
+									<input class="form-control form-control-sm" name="motivo" placeholder="Motivo" required style="max-width: 110px">
+									<button class="btn btn-sm btn-outline-danger" title="Anular"><i class="bi bi-x-lg"></i></button>
+								</form>
+							</td>
+						</tr>
+						<tr th:if="${#lists.isEmpty(cuenta['consumos'])}"><td colspan="5" class="text-secondary">Sin consumos.</td></tr>
+						<tr class="fw-semibold"><td colspan="3">Total consumos</td>
+							<td class="text-end" th:text="'$' + ${#numbers.formatDecimal(cuenta['total'], 1, 'POINT', 0, 'COMMA')}">0</td><td th:if="${editable}"></td></tr>
+					</tbody>
+				</table>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-6">
+			<div class="card p-3 h-100">
+				<h2 class="h6 titulo">Factura</h2>
+				<div th:if="${factura == null}" class="text-secondary small">
+					La factura se genera automáticamente al hacer el check-out (alojamiento + consumos + IVA).
+				</div>
+				<div th:if="${factura != null}">
+					<div class="d-flex justify-content-between mb-2">
+						<span class="fw-semibold" th:text="'Factura No. ' + ${factura['numero']}">No</span>
+						<span class="estado" th:classappend="'estado-' + ${factura['estado']}" th:text="${factura['estado']}">E</span>
+					</div>
+					<table class="table table-sm">
+						<tr th:each="l : ${factura['lineas']}"><td th:text="${l['concepto']}">c</td><td th:text="${l['cantidad']}">1</td>
+							<td class="text-end" th:text="'$' + ${#numbers.formatDecimal(l['valor'], 1, 'POINT', 0, 'COMMA')}">0</td></tr>
+						<tr><td colspan="2">Subtotal</td><td class="text-end" th:text="'$' + ${#numbers.formatDecimal(factura['subtotal'], 1, 'POINT', 0, 'COMMA')}">0</td></tr>
+						<tr><td colspan="2" th:text="'IVA (' + ${#numbers.formatDecimal(factura['porcentajeIva'] * 100, 1, 0)} + ' %)'">IVA</td>
+							<td class="text-end" th:text="'$' + ${#numbers.formatDecimal(factura['iva'], 1, 'POINT', 0, 'COMMA')}">0</td></tr>
+						<tr class="fw-bold fs-5"><td colspan="2">Total</td><td class="text-end" th:text="'$' + ${#numbers.formatDecimal(factura['total'], 1, 'POINT', 0, 'COMMA')}">0</td></tr>
+					</table>
+					<div th:if="${factura['pago'] != null}" class="small text-success">
+						<i class="bi bi-check-circle"></i> Pagada con <span th:text="${factura['pago']['medio']}">medio</span>
+						el <span th:text="${#strings.replace(factura['pago']['fecha'], 'T', ' ')}">fecha</span>
+					</div>
+					<form th:if="${editable and factura['estado'] == 'PENDIENTE'}" class="d-flex gap-2" method="post" th:action="@{/recepcion/estadia/{id}/pago(id=${r['id']})}">
+						<input type="hidden" name="facturaId" th:value="${factura['id']}">
+						<select class="form-select form-select-sm" name="medio">
+							<option value="EFECTIVO">Efectivo</option><option value="TARJETA">Tarjeta</option><option value="TRANSFERENCIA">Transferencia</option>
+						</select>
+						<button class="btn btn-sm btn-success text-nowrap"><i class="bi bi-cash-coin"></i> Registrar pago</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+</body>
+</html>

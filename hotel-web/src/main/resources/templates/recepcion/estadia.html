@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragmentos :: cabeza('Estadía')}"></head>
+<body>
+<nav th:replace="~{fragmentos :: menu}"></nav>
+<main class="container py-4">
+	<div th:replace="~{fragmentos :: alertas}"></div>
+	<div class="d-flex justify-content-between align-items-center mb-2">
+		<a href="/recepcion" class="small"><i class="bi bi-arrow-left"></i> Recepción</a>
+		<form th:if="${r['estado'] == 'EN_CURSO'}" method="post" th:action="@{/recepcion/reservas/{id}/check-out(id=${r['id']})}"
+			onsubmit="return confirm('¿Hacer el check-out? Se generará la factura.')">
+			<button class="btn btn-warning"><i class="bi bi-box-arrow-right"></i> Hacer check-out y facturar</button>
+		</form>
+	</div>
+	<div th:replace="~{fragmentos-estadia :: resumen(true)}"></div>
+</main>
+<script th:replace="~{fragmentos :: scripts}"></script>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragmentos :: cabeza('Servicios')}"></head>
+<body>
+<nav th:replace="~{fragmentos :: menu}"></nav>
+<main class="container py-4">
+	<div th:replace="~{fragmentos :: alertas}"></div>
+	<h1 class="h3 titulo mb-3">Catálogo de servicios adicionales</h1>
+	<div class="row g-3">
+		<div class="col-lg-8">
+			<div class="card p-3">
+				<div class="table-responsive">
+				<table class="table table-sm mb-0">
+					<thead><tr><th>Servicio</th><th>Categoría</th><th class="text-end">Precio</th><th>Estado</th><th></th></tr></thead>
+					<tbody>
+						<tr th:each="s : ${servicios}" th:classappend="${!s['activo']} ? 'text-secondary'">
+							<td class="fw-semibold" th:text="${s['nombre']}">Desayuno</td>
+							<td th:text="${s['categoria']}">RESTAURANTE</td>
+							<td class="text-end" th:text="'$' + ${#numbers.formatDecimal(s['precio'], 1, 'POINT', 0, 'COMMA')}">0</td>
+							<td><span class="badge" th:classappend="${s['activo']} ? 'text-bg-success' : 'text-bg-secondary'" th:text="${s['activo']} ? 'Activo' : 'Inactivo'">Activo</span></td>
+							<td class="text-end text-nowrap">
+								<a class="btn btn-sm btn-outline-secondary" th:href="@{/admin/servicios(editar=${s['id']})}"><i class="bi bi-pencil"></i></a>
+								<form class="d-inline" method="post" th:action="@{/admin/servicios/{id}/activo(id=${s['id']}, valor=${!s['activo']})}">
+									<button class="btn btn-sm" th:classappend="${s['activo']} ? 'btn-outline-warning' : 'btn-outline-success'"
+										th:title="${s['activo']} ? 'Desactivar' : 'Activar'"><i class="bi" th:classappend="${s['activo']} ? 'bi-pause-circle' : 'bi-play-circle'"></i></button></form>
+								<form class="d-inline" method="post" th:action="@{/admin/servicios/{id}/eliminar(id=${s['id']})}" onsubmit="return confirm('¿Eliminar este servicio?')">
+									<button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button></form>
+							</td>
+						</tr>
+						<tr th:if="${#lists.isEmpty(servicios)}"><td colspan="5" class="text-secondary">No hay servicios registrados.</td></tr>
+					</tbody>
+				</table>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-4">
+			<div class="card p-3">
+				<h2 class="h6 titulo" th:text="${form['id'] != null} ? 'Editar servicio' : 'Nuevo servicio'">Nuevo</h2>
+				<form method="post" action="/admin/servicios" class="row g-2">
+					<input type="hidden" name="id" th:value="${form['id']}">
+					<div class="col-12"><label class="form-label">Nombre</label><input class="form-control" name="nombre" th:value="${form['nombre']}" required></div>
+					<div class="col-12"><label class="form-label">Categoría</label>
+						<select class="form-select" name="categoria" required>
+							<option th:each="c : ${ {'RESTAURANTE','LAVANDERIA','PARQUEADERO','SPA'} }" th:value="${c}" th:text="${c}" th:selected="${c == form['categoria']}"></option>
+						</select></div>
+					<div class="col-12"><label class="form-label">Precio</label><input class="form-control" type="number" min="1" name="precio" th:value="${form['precio']}" required></div>
+					<div class="col-12 d-flex gap-2"><button class="btn btn-primary btn-sm">Guardar</button>
+						<a th:if="${form['id'] != null}" class="btn btn-sm btn-outline-secondary" href="/admin/servicios">Cancelar</a></div>
+				</form>
+				<p class="small text-secondary mt-3 mb-0">Un servicio con consumos no se puede eliminar: se desactiva y deja de aparecer para cargar.</p>
+			</div>
+		</div>
+	</div>
+</main>
+<script th:replace="~{fragmentos :: scripts}"></script>
+</body>
+</html>

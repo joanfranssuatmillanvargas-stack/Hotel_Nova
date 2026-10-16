@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragmentos :: cabeza('Consumos')}"></head>
+<body>
+<nav th:replace="~{fragmentos :: menu}"></nav>
+<main class="container py-4">
+	<div th:replace="~{fragmentos :: alertas}"></div>
+	<h1 class="h3 titulo mb-3">Registrar consumos</h1>
+	<div class="row g-3">
+		<div class="col-lg-5">
+			<div class="card p-3 mb-3">
+				<h2 class="h6 titulo">Cargar consumo a una habitación</h2>
+				<form method="post" action="/servicios/consumos" class="row g-2">
+					<div class="col-12"><label class="form-label">Huésped alojado</label>
+						<select class="form-select" name="reservaId" required>
+							<option value="">Elige la habitación</option>
+							<option th:each="e : ${estadias}" th:value="${e['id']}" th:selected="${e['id'] == reservaId}"
+								th:text="'Hab. ' + ${e['numeroHabitacion']} + ' · ' + ${e['nombreHuesped']}"></option>
+						</select></div>
+					<div class="col-9"><label class="form-label">Servicio</label>
+						<select class="form-select" name="servicioId" required>
+							<option th:each="s : ${activos}" th:value="${s['id']}"
+								th:text="${s['nombre']} + ' — $' + ${#numbers.formatDecimal(s['precio'], 1, 'POINT', 0, 'COMMA')}"></option>
+						</select></div>
+					<div class="col-3"><label class="form-label">Cant.</label><input class="form-control" type="number" min="1" name="cantidad" value="1" required></div>
+					<div class="col-12"><button class="btn btn-primary w-100"><i class="bi bi-plus-circle"></i> Registrar consumo</button></div>
+				</form>
+				<p class="small text-secondary mt-2 mb-0" th:if="${#lists.isEmpty(estadias)}">No hay huéspedes con check-in: los consumos solo se cargan a estadías en curso.</p>
+			</div>
+			<div class="card p-3" th:if="${cuenta != null}">
+				<h2 class="h6 titulo">Cuenta de la habitación elegida</h2>
+				<table class="table table-sm mb-0">
+					<tr th:each="c : ${cuenta['consumos']}" th:classappend="${c['anulado']} ? 'anulado'">
+						<td th:text="${c['nombreServicio']}">s</td><td th:text="'x' + ${c['cantidad']}">x1</td>
+						<td class="text-end" th:text="'$' + ${#numbers.formatDecimal(c['subtotal'], 1, 'POINT', 0, 'COMMA')}">0</td></tr>
+					<tr class="fw-semibold"><td colspan="2">Total</td><td class="text-end" th:text="'$' + ${#numbers.formatDecimal(cuenta['total'], 1, 'POINT', 0, 'COMMA')}">0</td></tr>
+				</table>
+			</div>
+		</div>
+		<div class="col-lg-7">
+			<div class="card p-3">
+				<div class="d-flex flex-wrap justify-content-between align-items-center mb-2 gap-2">
+					<h2 class="h6 titulo mb-0">Catálogo</h2>
+					<div class="btn-group btn-group-sm">
+						<a class="btn" th:classappend="${categoria == null or categoria == ''} ? 'btn-primary' : 'btn-outline-primary'" href="/servicios">Todos</a>
+						<a th:each="c : ${ {'RESTAURANTE','LAVANDERIA','PARQUEADERO','SPA'} }" class="btn"
+							th:classappend="${c == categoria} ? 'btn-primary' : 'btn-outline-primary'" th:href="@{/servicios(categoria=${c})}" th:text="${c}">c</a>
+					</div>
+				</div>
+				<table class="table table-sm mb-0">
+					<thead><tr><th>Servicio</th><th>Categoría</th><th class="text-end">Precio</th></tr></thead>
+					<tbody>
+						<tr th:each="s : ${catalogo}"><td th:text="${s['nombre']}">s</td><td class="small" th:text="${s['categoria']}">c</td>
+							<td class="text-end" th:text="'$' + ${#numbers.formatDecimal(s['precio'], 1, 'POINT', 0, 'COMMA')}">0</td></tr>
+						<tr th:if="${#lists.isEmpty(catalogo)}"><td colspan="3" class="text-secondary">No hay servicios activos en esta categoría.</td></tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</main>
+<script th:replace="~{fragmentos :: scripts}"></script>
+</body>
+</html>

@@ -1,0 +1,66 @@
+# Blueprint de Render: despliega las 5 aplicaciones de HotelNova desde este repositorio.
+# En Render: New > Blueprint > elegir el repositorio > escribir MONGODB_URI cuando lo pida > Apply.
+envVarGroups:
+  - name: hotelnova-config
+    envVars:
+      - key: MONGODB_URI            # cadena de conexión de MongoDB Atlas (secreta: Render la pide)
+        sync: false
+      - key: HABITACIONES_URL
+        value: https://hotelnova-habitaciones.onrender.com
+      - key: RESERVAS_URL
+        value: https://hotelnova-reservas.onrender.com
+      - key: HUESPEDES_URL
+        value: https://hotelnova-huespedes.onrender.com
+      - key: SERVICIOS_URL
+        value: https://hotelnova-servicios.onrender.com
+
+services:
+  - type: web
+    name: hotelnova-habitaciones
+    runtime: docker
+    plan: free
+    dockerfilePath: ./ms-habitaciones/Dockerfile
+    dockerContext: ./ms-habitaciones
+    healthCheckPath: /api/tipos
+    envVars:
+      - fromGroup: hotelnova-config
+
+  - type: web
+    name: hotelnova-reservas
+    runtime: docker
+    plan: free
+    dockerfilePath: ./ms-reservas/Dockerfile
+    dockerContext: ./ms-reservas
+    healthCheckPath: /api/reservas/llegadas
+    envVars:
+      - fromGroup: hotelnova-config
+
+  - type: web
+    name: hotelnova-huespedes
+    runtime: docker
+    plan: free
+    dockerfilePath: ./ms-huespedes/Dockerfile
+    dockerContext: ./ms-huespedes
+    healthCheckPath: /api/huespedes
+    envVars:
+      - fromGroup: hotelnova-config
+
+  - type: web
+    name: hotelnova-servicios
+    runtime: docker
+    plan: free
+    dockerfilePath: ./ms-servicios-facturacion/Dockerfile
+    dockerContext: ./ms-servicios-facturacion
+    healthCheckPath: /api/servicios
+    envVars:
+      - fromGroup: hotelnova-config
+
+  - type: web
+    name: hotelnova-web
+    runtime: docker
+    plan: free
+    dockerfilePath: ./hotel-web/Dockerfile
+    dockerContext: ./hotel-web
+    healthCheckPath: /login
+    envVars:
+      - fromGroup: hotelnova-config

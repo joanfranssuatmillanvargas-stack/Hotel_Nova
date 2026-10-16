@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragmentos :: cabeza('Modificar reserva')}"></head>
+<body>
+<nav th:replace="~{fragmentos :: menu}"></nav>
+<main class="container py-4" style="max-width: 760px">
+	<div th:replace="~{fragmentos :: alertas}"></div>
+	<a href="/recepcion/reservas" class="small"><i class="bi bi-arrow-left"></i> Reservas</a>
+	<div class="card p-3 mt-2">
+		<h1 class="h4 titulo">Modificar reserva <span th:text="${r['codigo']}">R</span></h1>
+		<p class="text-secondary" th:text="'Huésped: ' + ${r['nombreHuesped']}">Huésped</p>
+		<form method="post" th:action="@{/recepcion/reservas/{id}/editar(id=${r['id']})}" class="row g-2">
+			<div class="col-md-4"><label class="form-label">Habitación</label>
+				<select class="form-select" name="habitacionId">
+					<option th:each="h : ${habitaciones}" th:value="${h['id']}" th:text="${h['numero'] + ' (' + h['estado'] + ')'}" th:selected="${h['id'] == r['habitacionId']}"></option>
+				</select></div>
+			<div class="col-md-4"><label class="form-label">Llegada</label><input class="form-control" type="date" name="llegada" th:value="${r['llegada']}" required></div>
+			<div class="col-md-4"><label class="form-label">Salida</label><input class="form-control" type="date" name="salida" th:value="${r['salida']}" required></div>
+			<div class="col-12"><button class="btn btn-primary">Guardar cambios</button>
+				<span class="small text-secondary ms-2">Se vuelve a validar que no se cruce con otra reserva y se recalcula el valor.</span></div>
+		</form>
+	</div>
+</main>
+<script th:replace="~{fragmentos :: scripts}"></script>
+</body>
+</html>

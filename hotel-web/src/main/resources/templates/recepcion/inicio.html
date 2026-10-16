@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragmentos :: cabeza('Recepción')}"></head>
+<body>
+<nav th:replace="~{fragmentos :: menu}"></nav>
+<main class="container py-4">
+	<div th:replace="~{fragmentos :: alertas}"></div>
+	<div class="d-flex flex-wrap justify-content-between align-items-end mb-3 gap-2">
+		<div><h1 class="h3 titulo mb-1">Recepción</h1><p class="text-secondary mb-0">Hoy: <span th:text="${hoy}">fecha</span></p></div>
+		<div class="d-flex gap-2">
+			<a class="btn btn-primary" href="/recepcion/reservas/nueva"><i class="bi bi-plus-circle"></i> Nueva reserva</a>
+			<a class="btn btn-outline-primary" href="/recepcion/huespedes"><i class="bi bi-person-plus"></i> Registrar huésped</a>
+		</div>
+	</div>
+	<div class="row g-3 mb-4">
+		<div class="col-6 col-lg-3" th:each="e : ${ocupacion['porEstado']}">
+			<div class="card p-3"><span class="estado align-self-start" th:classappend="'estado-' + ${e.key}" th:text="${e.key}">E</span>
+				<div class="cifra mt-2" th:text="${e.value}">0</div></div>
+		</div>
+	</div>
+	<div class="row g-3">
+		<div class="col-lg-6">
+			<div class="card p-3 h-100">
+				<h2 class="h5 titulo"><i class="bi bi-box-arrow-in-right"></i> Llegadas de hoy</h2>
+				<table class="table table-sm mb-0">
+					<thead><tr><th>Reserva</th><th>Huésped</th><th>Hab.</th><th>Salida</th><th></th></tr></thead>
+					<tbody>
+						<tr th:each="r : ${llegadas}">
+							<td th:text="${r['codigo']}">R-0001</td>
+							<td th:text="${r['nombreHuesped']}">Ana</td>
+							<td class="fw-semibold" th:text="${r['numeroHabitacion']}">101</td>
+							<td th:text="${r['salida']}">-</td>
+							<td class="text-end"><form method="post" th:action="@{/recepcion/reservas/{id}/check-in(id=${r['id']})}">
+								<button class="btn btn-sm btn-success"><i class="bi bi-key"></i> Check-in</button></form></td>
+						</tr>
+						<tr th:if="${#lists.isEmpty(llegadas)}"><td colspan="5" class="text-secondary">No hay llegadas pendientes para hoy.</td></tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div class="col-lg-6">
+			<div class="card p-3 h-100">
+				<h2 class="h5 titulo"><i class="bi bi-house-door"></i> Estadías en curso</h2>
+				<table class="table table-sm mb-0">
+					<thead><tr><th>Hab.</th><th>Huésped</th><th>Salida</th><th></th></tr></thead>
+					<tbody>
+						<tr th:each="r : ${enCurso}">
+							<td class="fw-semibold" th:text="${r['numeroHabitacion']}">101</td>
+							<td th:text="${r['nombreHuesped']}">Ana</td>
+							<td><span th:text="${r['salida']}">-</span>
+								<span class="badge text-bg-warning" th:if="${r['salida'] <= hoy}">Sale hoy</span></td>
+							<td class="text-end"><a class="btn btn-sm btn-outline-primary" th:href="@{/recepcion/estadia/{id}(id=${r['id']})}">Cuenta / check-out</a></td>
+						</tr>
+						<tr th:if="${#lists.isEmpty(enCurso)}"><td colspan="4" class="text-secondary">No hay huéspedes alojados.</td></tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</main>
+<script th:replace="~{fragmentos :: scripts}"></script>
+</body>
+</html>

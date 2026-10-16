@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragmentos :: cabeza('Panel')}"></head>
+<body>
+<nav th:replace="~{fragmentos :: menu}"></nav>
+<main class="container py-4">
+	<div th:replace="~{fragmentos :: alertas}"></div>
+	<div class="d-flex flex-wrap justify-content-between align-items-end mb-3 gap-2">
+		<div>
+			<h1 class="h3 titulo mb-1">Panel del administrador</h1>
+			<p class="text-secondary mb-0">Estado de los 4 microservicios y ocupación del hotel.</p>
+		</div>
+		<form th:if="${sinDatos}" method="post" action="/admin/datos-ejemplo">
+			<button class="btn btn-outline-primary"><i class="bi bi-magic"></i> Cargar datos de ejemplo</button>
+		</form>
+	</div>
+
+	<!-- Ocupación (HAB-09) -->
+	<div class="row g-3 mb-4" th:if="${ocupacion != null}">
+		<div class="col-6 col-lg-2">
+			<div class="card p-3 h-100"><div class="small text-secondary">Ocupación</div>
+				<div class="cifra"><span th:text="${ocupacion.porcentajeOcupacion}">0</span>%</div></div>
+		</div>
+		<div class="col-6 col-lg-2">
+			<div class="card p-3 h-100"><div class="small text-secondary">Habitaciones</div>
+				<div class="cifra" th:text="${ocupacion.total}">0</div></div>
+		</div>
+		<div class="col-6 col-lg-2" th:each="e : ${ocupacion.porEstado}">
+			<div class="card p-3 h-100"><div class="small"><span class="estado" th:classappend="'estado-' + ${e.key}" th:text="${e.key}">E</span></div>
+				<div class="cifra mt-2" th:text="${e.value}">0</div></div>
+		</div>
+	</div>
+
+	<h2 class="h5 titulo">Microservicios</h2>
+	<div class="row g-3">
+		<div class="col-12 col-md-6 col-xl-3" th:each="s : ${servicios}">
+			<div class="card card-servicio h-100" th:classappend="${s.activo} ? 'border-success' : 'border-danger'">
+				<div class="card-body">
+					<div class="d-flex justify-content-between align-items-start mb-2">
+						<h3 class="h6 mb-0" th:text="${s.nombre}">ms</h3>
+						<span class="badge" th:classappend="${s.activo} ? 'text-bg-success' : 'text-bg-danger'"
+							th:text="${s.activo} ? 'Activo' : 'Caído'">estado</span>
+					</div>
+					<p class="small text-secondary mb-2 text-break" th:text="${s.url + s.recurso}">url</p>
+					<p class="mb-1" th:if="${s.activo}"><span class="fs-4 fw-semibold" th:text="${s.registros}">0</span> registros</p>
+					<p class="small mb-3" th:text="${s.mensaje}">mensaje</p>
+					<a class="btn btn-sm btn-outline-primary" th:href="${s.swagger}" target="_blank"><i class="bi bi-file-earmark-code"></i> Swagger</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</main>
+<script th:replace="~{fragmentos :: scripts}"></script>
+</body>
+</html>

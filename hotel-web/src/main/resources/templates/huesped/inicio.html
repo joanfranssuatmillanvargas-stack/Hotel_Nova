@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragmentos :: cabeza('Mis reservas')}"></head>
+<body>
+<nav th:replace="~{fragmentos :: menu}"></nav>
+<main class="container py-4">
+	<div th:replace="~{fragmentos :: alertas}"></div>
+	<div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+		<h1 class="h3 titulo mb-0">Hola, <span th:text="${yo.nombre}">huésped</span></h1>
+		<a class="btn btn-primary" href="/huesped/reservar"><i class="bi bi-search"></i> Buscar y reservar</a>
+	</div>
+	<div class="row g-3">
+		<div class="col-md-6 col-lg-4" th:each="r : ${reservas}">
+			<div class="card p-3 h-100">
+				<div class="d-flex justify-content-between mb-2">
+					<span class="fw-semibold" th:text="${r['codigo']}">R</span>
+					<span class="estado" th:classappend="'estado-' + ${r['estado']}" th:text="${r['estado']}">E</span>
+				</div>
+				<div class="fs-5 titulo" th:text="'Habitación ' + ${r['numeroHabitacion']}">Hab</div>
+				<div class="text-secondary small mb-2" th:text="${r['llegada']} + ' → ' + ${r['salida']} + ' · ' + ${r['noches']} + ' noche(s)'">fechas</div>
+				<div class="mb-3" th:text="'Alojamiento: $' + ${#numbers.formatDecimal(r['valorAlojamiento'], 1, 'POINT', 0, 'COMMA')}">valor</div>
+				<div class="mt-auto d-flex gap-2">
+					<a th:if="${r['estado'] == 'EN_CURSO' or r['estado'] == 'CERRADA'}" class="btn btn-sm btn-outline-primary"
+						th:href="@{/huesped/estadia/{id}(id=${r['id']})}"><i class="bi bi-receipt"></i> Consumos y factura</a>
+					<form th:if="${r['estado'] == 'CONFIRMADA'}" method="post" th:action="@{/huesped/reservas/{id}/cancelar(id=${r['id']})}"
+						onsubmit="return confirm('¿Cancelar tu reserva?')">
+						<button class="btn btn-sm btn-outline-danger">Cancelar reserva</button></form>
+				</div>
+			</div>
+		</div>
+		<div class="col-12" th:if="${#lists.isEmpty(reservas)}">
+			<div class="card p-4 text-center text-secondary">Todavía no tienes reservas. <a href="/huesped/reservar">Reserva tu habitación</a>.</div>
+		</div>
+	</div>
+</main>
+<script th:replace="~{fragmentos :: scripts}"></script>
+</body>
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragmentos :: cabeza('Reportes')}"></head>
+<body>
+<nav th:replace="~{fragmentos :: menu}"></nav>
+<main class="container py-4">
+	<div th:replace="~{fragmentos :: alertas}"></div>
+	<div class="d-flex flex-wrap justify-content-between align-items-end mb-3 gap-2">
+		<h1 class="h3 titulo mb-0">Reportes</h1>
+		<form class="d-flex flex-wrap gap-2 align-items-end" method="get" action="/admin/reportes">
+			<div><label class="form-label small mb-0">Desde</label><input class="form-control form-control-sm" type="date" name="desde" th:value="${desde}"></div>
+			<div><label class="form-label small mb-0">Hasta</label><input class="form-control form-control-sm" type="date" name="hasta" th:value="${hasta}"></div>
+			<div><label class="form-label small mb-0">Habitación (novedades)</label>
+				<select class="form-select form-select-sm" name="habitacionId">
+					<option value="">Todas</option>
+					<option th:each="h : ${habitaciones}" th:value="${h['id']}" th:text="${h['numero']}" th:selected="${h['id'] == habitacionId}"></option>
+				</select></div>
+			<button class="btn btn-sm btn-primary">Consultar</button>
+		</form>
+	</div>
+
+	<div class="row g-3 mb-3">
+		<!-- RES-10 -->
+		<div class="col-lg-5">
+			<div class="card p-3 h-100">
+				<h2 class="h5 titulo">Reservas (por fecha de llegada)</h2>
+				<div class="d-flex gap-4 mb-2">
+					<div><div class="small text-secondary">Total</div><div class="cifra" th:text="${reservas['total']}">0</div></div>
+					<div><div class="small text-secondary">Alojamiento reservado</div>
+						<div class="cifra" th:text="'$' + ${#numbers.formatDecimal(reservas['valorAlojamiento'], 1, 'POINT', 0, 'COMMA')}">0</div></div>
+				</div>
+				<table class="table table-sm mb-0">
+					<tr th:each="e : ${reservas['porEstado']}"><td><span class="estado" th:classappend="'estado-' + ${e.key}" th:text="${e.key}">E</span></td>
+						<td class="text-end fw-semibold" th:text="${e.value}">0</td></tr>
+				</table>
+			</div>
+		</div>
+		<!-- SER-10 -->
+		<div class="col-lg-7">
+			<div class="card p-3 h-100">
+				<h2 class="h5 titulo">Ingresos facturados</h2>
+				<div class="d-flex flex-wrap gap-4 mb-2">
+					<div><div class="small text-secondary">Facturas</div><div class="cifra" th:text="${ingresos['facturas']}">0</div></div>
+					<div><div class="small text-secondary">Total (con IVA)</div><div class="cifra" th:text="'$' + ${#numbers.formatDecimal(ingresos['total'], 1, 'POINT', 0, 'COMMA')}">0</div></div>
+					<div><div class="small text-secondary">Pagado</div><div class="cifra text-success" th:text="'$' + ${#numbers.formatDecimal(ingresos['pagado'], 1, 'POINT', 0, 'COMMA')}">0</div></div>
+				</div>
+				<table class="table table-sm mb-0">
+					<tr><td>Alojamiento</td><td class="text-end" th:text="'$' + ${#numbers.formatDecimal(ingresos['alojamiento'], 1, 'POINT', 0, 'COMMA')}">0</td></tr>
+					<tr th:each="c : ${ingresos['porCategoria']}"><td th:text="${c.key}">RESTAURANTE</td>
+						<td class="text-end" th:text="'$' + ${#numbers.formatDecimal(c.value, 1, 'POINT', 0, 'COMMA')}">0</td></tr>
+					<tr class="fw-semibold"><td>IVA</td><td class="text-end" th:text="'$' + ${#numbers.formatDecimal(ingresos['iva'], 1, 'POINT', 0, 'COMMA')}">0</td></tr>
+				</table>
+			</div>
+		</div>
+	</div>
+
+	<div class="row g-3">
+		<!-- HAB-14 -->
+		<div class="col-lg-6">
+			<div class="card p-3 h-100">
+				<h2 class="h5 titulo">Historial de limpieza y daños</h2>
+				<div class="table-responsive">
+				<table class="table table-sm mb-0">
+					<thead><tr><th>Fecha</th><th>Hab.</th><th>Tipo</th><th>Detalle</th><th>Empleado</th></tr></thead>
+					<tbody>
+						<tr th:each="n : ${novedades}">
+							<td class="small text-nowrap" th:text="${#strings.replace(n['fecha'], 'T', ' ')}">fecha</td>
+							<td th:text="${n['numeroHabitacion']}">101</td>
+							<td><span class="badge" th:classappend="${n['tipo'] == 'DANO'} ? 'text-bg-danger' : 'text-bg-success'" th:text="${n['tipo'] == 'DANO'} ? 'Daño' : 'Limpieza'">L</span></td>
+							<td class="small" th:text="${n['descripcion']}">-</td>
+							<td class="small" th:text="${n['empleado']}">-</td>
+						</tr>
+						<tr th:if="${#lists.isEmpty(novedades)}"><td colspan="5" class="text-secondary">Sin registros en el periodo.</td></tr>
+					</tbody>
+				</table>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-6">
+			<div class="card p-3 h-100">
+				<h2 class="h5 titulo">Últimas facturas</h2>
+				<div class="table-responsive">
+				<table class="table table-sm mb-0">
+					<thead><tr><th>No.</th><th>Fecha</th><th>Hab.</th><th class="text-end">Total</th><th>Estado</th></tr></thead>
+					<tbody>
+						<tr th:each="f, i : ${facturas}" th:if="${i.index < 10}">
+							<td th:text="${f['numero']}">1</td>
+							<td class="small text-nowrap" th:text="${#strings.replace(f['fecha'], 'T', ' ')}">fecha</td>
+							<td th:text="${f['numeroHabitacion']}">101</td>
+							<td class="text-end" th:text="'$' + ${#numbers.formatDecimal(f['total'], 1, 'POINT', 0, 'COMMA')}">0</td>
+							<td><span class="estado" th:classappend="'estado-' + ${f['estado']}" th:text="${f['estado']}">E</span></td>
+						</tr>
+						<tr th:if="${#lists.isEmpty(facturas)}"><td colspan="5" class="text-secondary">Todavía no hay facturas.</td></tr>
+					</tbody>
+				</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</main>
+<script th:replace="~{fragmentos :: scripts}"></script>
+</body>
+</html>

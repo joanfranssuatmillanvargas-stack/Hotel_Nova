@@ -1,0 +1,20 @@
+body { background: #f4f6fa; }
+.barra { background: #1f3864; }
+.card { border: 0; box-shadow: 0 1px 3px rgba(31, 56, 100, .12); }
+.card-servicio { border-left: 4px solid; }
+.titulo { color: #1f3864; }
+.table > :not(caption) > * > * { vertical-align: middle; }
+.estado { font-size: .78rem; font-weight: 600; padding: .3em .6em; border-radius: .4rem; }
+.estado-DISPONIBLE, .estado-PAGADA { background: #d1f0dc; color: #14532d; }
+.estado-OCUPADA, .estado-EN_CURSO { background: #dbe7fb; color: #1e3a8a; }
+.estado-LIMPIEZA, .estado-CONFIRMADA, .estado-PENDIENTE { background: #fff1c7; color: #7a4d00; }
+.estado-MANTENIMIENTO, .estado-CANCELADA { background: #fbd9d9; color: #7f1d1d; }
+.estado-CERRADA { background: #e5e7eb; color: #374151; }
+.cifra { font-size: 1.9rem; font-weight: 700; color: #1f3864; line-height: 1; }
+.tarjeta-limpieza { border-left: 5px solid #f0ad4e; }
+.tarjeta-limpieza.prioridad { border-left-color: #dc3545; }
+.login-caja { max-width: 420px; }
+.form-label { font-weight: 500; font-size: .9rem; }
+.anulado { text-decoration: line-through; color: #9ca3af; }
+.navbar .nav-link, .navbar-text { white-space: nowrap; }
+.navbar-nav .nav-link { font-size: .92rem; }

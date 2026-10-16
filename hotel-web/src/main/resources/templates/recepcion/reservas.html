@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragmentos :: cabeza('Reservas')}"></head>
+<body>
+<nav th:replace="~{fragmentos :: menu}"></nav>
+<main class="container py-4">
+	<div th:replace="~{fragmentos :: alertas}"></div>
+	<div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+		<h1 class="h3 titulo mb-0">Reservas</h1>
+		<a class="btn btn-primary" href="/recepcion/reservas/nueva"><i class="bi bi-plus-circle"></i> Nueva reserva</a>
+	</div>
+	<div class="card p-3">
+		<form class="row g-2 mb-3" method="get" action="/recepcion/reservas">
+			<div class="col-6 col-md-2"><select class="form-select form-select-sm" name="estado">
+				<option value="">Todos los estados</option>
+				<option th:each="e : ${ {'CONFIRMADA','EN_CURSO','CERRADA','CANCELADA'} }" th:value="${e}" th:text="${e}" th:selected="${e == f['estado']}"></option>
+			</select></div>
+			<div class="col-6 col-md-3"><input class="form-control form-control-sm" name="documento" th:value="${f['documento']}" placeholder="Documento del huésped"></div>
+			<div class="col-6 col-md-2"><input class="form-control form-control-sm" type="date" name="desde" th:value="${f['desde']}" title="Llegada desde"></div>
+			<div class="col-6 col-md-2"><input class="form-control form-control-sm" type="date" name="hasta" th:value="${f['hasta']}" title="Llegada hasta"></div>
+			<div class="col-12 col-md-3 d-flex gap-2"><button class="btn btn-sm btn-outline-primary">Filtrar</button>
+				<a class="btn btn-sm btn-outline-secondary" href="/recepcion/reservas">Limpiar</a></div>
+		</form>
+		<div class="table-responsive">
+		<table class="table table-sm mb-0">
+			<thead><tr><th>Código</th><th>Huésped</th><th>Hab.</th><th>Llegada</th><th>Salida</th><th class="text-end">Alojamiento</th><th>Estado</th><th></th></tr></thead>
+			<tbody>
+				<tr th:each="r : ${reservas}">
+					<td class="fw-semibold" th:text="${r['codigo']}">R-0001</td>
+					<td><a th:href="@{/recepcion/huespedes/{d}(d=${r['huespedDocumento']})}" th:text="${r['nombreHuesped']}">Ana</a></td>
+					<td th:text="${r['numeroHabitacion']}">101</td>
+					<td th:text="${r['llegada']}">-</td><td th:text="${r['salida']}">-</td>
+					<td class="text-end" th:text="'$' + ${#numbers.formatDecimal(r['valorAlojamiento'], 1, 'POINT', 0, 'COMMA')}">0</td>
+					<td><span class="estado" th:classappend="'estado-' + ${r['estado']}" th:text="${r['estado']}">E</span></td>
+					<td class="text-end text-nowrap">
+						<th:block th:if="${r['estado'] == 'CONFIRMADA'}">
+							<form class="d-inline" method="post" th:action="@{/recepcion/reservas/{id}/check-in(id=${r['id']}, volver='/recepcion/reservas')}">
+								<button class="btn btn-sm btn-success" title="Check-in"><i class="bi bi-key"></i></button></form>
+							<a class="btn btn-sm btn-outline-secondary" title="Modificar" th:href="@{/recepcion/reservas/{id}/editar(id=${r['id']})}"><i class="bi bi-pencil"></i></a>
+							<form class="d-inline" method="post" th:action="@{/recepcion/reservas/{id}/cancelar(id=${r['id']})}" onsubmit="return confirm('¿Cancelar esta reserva?')">
+								<button class="btn btn-sm btn-outline-danger" title="Cancelar"><i class="bi bi-x-circle"></i></button></form>
+						</th:block>
+						<a th:if="${r['estado'] == 'EN_CURSO' or r['estado'] == 'CERRADA'}" class="btn btn-sm btn-outline-primary"
+							th:href="@{/recepcion/estadia/{id}(id=${r['id']})}"><i class="bi bi-receipt"></i> Cuenta</a>
+					</td>
+				</tr>
+				<tr th:if="${#lists.isEmpty(reservas)}"><td colspan="8" class="text-secondary">No hay reservas con ese filtro.</td></tr>
+			</tbody>
+		</table>
+		</div>
+	</div>
+</main>
+<script th:replace="~{fragmentos :: scripts}"></script>
+</body>
+</html>

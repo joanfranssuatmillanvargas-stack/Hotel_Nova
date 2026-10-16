@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragmentos :: cabeza('Estado de habitaciones')}"></head>
+<body>
+<nav th:replace="~{fragmentos :: menu}"></nav>
+<main class="container py-4">
+	<div th:replace="~{fragmentos :: alertas}"></div>
+	<div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+		<h1 class="h3 titulo mb-0">Estado de habitaciones</h1>
+		<form class="d-flex gap-2" method="get" action="/recepcion/habitaciones">
+			<select class="form-select form-select-sm" name="estado">
+				<option value="">Todos los estados</option>
+				<option th:each="e : ${ {'DISPONIBLE','OCUPADA','LIMPIEZA','MANTENIMIENTO'} }" th:value="${e}" th:text="${e}" th:selected="${e == filtroEstado}"></option>
+			</select>
+			<button class="btn btn-sm btn-outline-primary">Filtrar</button>
+		</form>
+	</div>
+	<div class="row g-3">
+		<div class="col-6 col-md-4 col-lg-3" th:each="h : ${habitaciones}">
+			<div class="card p-3 h-100">
+				<div class="d-flex justify-content-between align-items-center mb-2">
+					<span class="fs-4 fw-bold titulo" th:text="${h['numero']}">101</span>
+					<span class="estado" th:classappend="'estado-' + ${h['estado']}" th:text="${h['estado']}">E</span>
+				</div>
+				<div class="small text-secondary mb-2" th:text="'Piso ' + ${h['piso']} + (${h['actualizadoPor'] != null} ? ' · cambió: ' + ${h['actualizadoPor']} : '')">Piso 1</div>
+				<form class="d-flex gap-1" method="post" th:action="@{/recepcion/habitaciones/{id}/estado(id=${h['id']})}">
+					<select class="form-select form-select-sm" name="estado">
+						<option th:each="e : ${ {'DISPONIBLE','OCUPADA','LIMPIEZA','MANTENIMIENTO'} }" th:value="${e}" th:text="${e}" th:selected="${e == h['estado']}"></option>
+					</select>
+					<button class="btn btn-sm btn-outline-primary"><i class="bi bi-check2"></i></button>
+				</form>
+			</div>
+		</div>
+		<div class="col-12 text-secondary" th:if="${#lists.isEmpty(habitaciones)}">No hay habitaciones con ese estado.</div>
+	</div>
+</main>
+<script th:replace="~{fragmentos :: scripts}"></script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragmentos :: cabeza('Aviso')}"></head>
+<body>
+<nav th:replace="~{fragmentos :: menu}"></nav>
+<main class="container py-5" style="max-width: 720px">
+	<div class="card p-4">
+		<h1 class="h4 titulo"><i class="bi bi-exclamation-triangle text-warning"></i> No se pudo cargar la página</h1>
+		<p class="mb-3" th:text="${mensaje}">mensaje</p>
+		<p class="small text-secondary" th:if="${mensaje != null and #strings.contains(mensaje, 'no responde')}">Si un microservicio está apagado, arráncalo y vuelve a intentar.
+			En Render los servicios gratuitos se duermen y tardan cerca de un minuto en despertar.</p>
+		<a class="btn btn-primary" href="javascript:history.back()"><i class="bi bi-arrow-left"></i> Volver</a>
+		<a class="btn btn-outline-secondary" href="/">Inicio</a>
+	</div>
+</main>
+<script th:replace="~{fragmentos :: scripts}"></script>
+</body>
+</html>

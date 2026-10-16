@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragmentos :: cabeza('Habitaciones')}"></head>
+<body>
+<nav th:replace="~{fragmentos :: menu}"></nav>
+<main class="container py-4">
+	<div th:replace="~{fragmentos :: alertas}"></div>
+	<h1 class="h3 titulo mb-3">Habitaciones, tipos y tarifas</h1>
+
+	<!-- Tipos de habitación (HAB-05) -->
+	<div class="row g-3 mb-4">
+		<div class="col-lg-8">
+			<div class="card p-3 h-100">
+				<h2 class="h5 titulo">Tipos de habitación</h2>
+				<div class="table-responsive">
+				<table class="table table-sm mb-0">
+					<thead><tr><th>Nombre</th><th>Descripción</th><th>Capacidad</th><th class="text-end">Tarifa base</th><th></th></tr></thead>
+					<tbody>
+						<tr th:each="t : ${tipos}">
+							<td class="fw-semibold" th:text="${t.nombre}">Doble</td>
+							<td class="small" th:text="${t.descripcion}">desc</td>
+							<td th:text="${t.capacidad} + ' pers.'">2</td>
+							<td class="text-end" th:text="'$' + ${#numbers.formatDecimal(t.tarifaBase, 1, 'POINT', 0, 'COMMA')}">0</td>
+							<td class="text-end text-nowrap">
+								<a class="btn btn-sm btn-outline-secondary" th:href="@{/admin/habitaciones(editarTipo=${t.id})}"><i class="bi bi-pencil"></i></a>
+								<form class="d-inline" method="post" th:action="@{/admin/tipos/{id}/eliminar(id=${t.id})}" onsubmit="return confirm('¿Eliminar este tipo?')">
+									<button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button></form>
+							</td>
+						</tr>
+						<tr th:if="${#lists.isEmpty(tipos)}"><td colspan="5" class="text-secondary">No hay tipos registrados.</td></tr>
+					</tbody>
+				</table>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-4">
+			<div class="card p-3 h-100">
+				<h2 class="h6 titulo" th:text="${tipoForm['id'] != null} ? 'Editar tipo' : 'Nuevo tipo'">Nuevo tipo</h2>
+				<form method="post" action="/admin/tipos" class="row g-2">
+					<input type="hidden" name="id" th:value="${tipoForm['id']}">
+					<div class="col-12"><label class="form-label">Nombre</label><input class="form-control" name="nombre" th:value="${tipoForm['nombre']}" required></div>
+					<div class="col-12"><label class="form-label">Descripción</label><input class="form-control" name="descripcion" th:value="${tipoForm['descripcion']}"></div>
+					<div class="col-6"><label class="form-label">Capacidad</label><input class="form-control" type="number" min="1" name="capacidad" th:value="${tipoForm['capacidad']}" required></div>
+					<div class="col-6"><label class="form-label">Tarifa base</label><input class="form-control" type="number" min="1" name="tarifaBase" th:value="${tipoForm['tarifaBase']}" required></div>
+					<div class="col-12 d-flex gap-2"><button class="btn btn-primary btn-sm">Guardar</button>
+						<a th:if="${tipoForm['id'] != null}" class="btn btn-sm btn-outline-secondary" href="/admin/habitaciones">Cancelar</a></div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<!-- Habitaciones (HAB-01 a HAB-04, HAB-07) -->
+	<div class="row g-3 mb-4">
+		<div class="col-lg-8">
+			<div class="card p-3 h-100">
+				<div class="d-flex flex-wrap justify-content-between align-items-center mb-2 gap-2">
+					<h2 class="h5 titulo mb-0">Habitaciones</h2>
+					<form class="d-flex gap-2" method="get" action="/admin/habitaciones">
+						<select class="form-select form-select-sm" name="estado">
+							<option value="">Todos los estados</option>
+							<option th:each="e : ${ {'DISPONIBLE','OCUPADA','LIMPIEZA','MANTENIMIENTO'} }" th:value="${e}" th:text="${e}" th:selected="${e == filtroEstado}"></option>
+						</select>
+						<select class="form-select form-select-sm" name="tipo">
+							<option value="">Todos los tipos</option>
+							<option th:each="t : ${tipos}" th:value="${t.id}" th:text="${t.nombre}" th:selected="${t.id == filtroTipo}"></option>
+						</select>
+						<button class="btn btn-sm btn-outline-primary">Filtrar</button>
+					</form>
+				</div>
+				<div class="table-responsive">
+				<table class="table table-sm mb-0">
+					<thead><tr><th>Número</th><th>Piso</th><th>Tipo</th><th>Estado</th><th>Cambiar estado</th><th></th></tr></thead>
+					<tbody>
+						<tr th:each="h : ${habitaciones}">
+							<td class="fw-semibold" th:text="${h.numero}">101</td>
+							<td th:text="${h.piso}">1</td>
+							<td th:text="${nombresTipo[h.tipoId]}">Doble</td>
+							<td><span class="estado" th:classappend="'estado-' + ${h.estado}" th:text="${h.estado}">E</span></td>
+							<td>
+								<form class="d-flex gap-1" method="post" th:action="@{/admin/habitaciones/{id}/estado(id=${h.id})}">
+									<select class="form-select form-select-sm" name="estado">
+										<option th:each="e : ${ {'DISPONIBLE','OCUPADA','LIMPIEZA','MANTENIMIENTO'} }" th:value="${e}" th:text="${e}" th:selected="${e == h.estado}"></option>
+									</select>
+									<button class="btn btn-sm btn-outline-primary"><i class="bi bi-check2"></i></button>
+								</form>
+							</td>
+							<td class="text-end text-nowrap">
+								<a class="btn btn-sm btn-outline-secondary" th:href="@{/admin/habitaciones(editarHab=${h.id})}"><i class="bi bi-pencil"></i></a>
+								<form class="d-inline" method="post" th:action="@{/admin/habitaciones/{id}/eliminar(id=${h.id})}" onsubmit="return confirm('¿Eliminar esta habitación?')">
+									<button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button></form>
+							</td>
+						</tr>
+						<tr th:if="${#lists.isEmpty(habitaciones)}"><td colspan="6" class="text-secondary">No hay habitaciones con ese filtro.</td></tr>
+					</tbody>
+				</table>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-4">
+			<div class="card p-3 h-100">
+				<h2 class="h6 titulo" th:text="${habForm['id'] != null} ? 'Editar habitación' : 'Nueva habitación'">Nueva</h2>
+				<form method="post" action="/admin/habitaciones" class="row g-2">
+					<input type="hidden" name="id" th:value="${habForm['id']}">
+					<div class="col-6"><label class="form-label">Número</label><input class="form-control" name="numero" th:value="${habForm['numero']}" required></div>
+					<div class="col-6"><label class="form-label">Piso</label><input class="form-control" type="number" min="0" name="piso" th:value="${habForm['piso']}" required></div>
+					<div class="col-12"><label class="form-label">Tipo</label>
+						<select class="form-select" name="tipoId" required>
+							<option value="">Elige el tipo</option>
+							<option th:each="t : ${tipos}" th:value="${t.id}" th:text="${t.nombre}" th:selected="${t.id == habForm['tipoId']}"></option>
+						</select></div>
+					<div class="col-12 d-flex gap-2"><button class="btn btn-primary btn-sm">Guardar</button>
+						<a th:if="${habForm['id'] != null}" class="btn btn-sm btn-outline-secondary" href="/admin/habitaciones">Cancelar</a></div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<!-- Temporadas (HAB-06) -->
+	<div class="row g-3">
+		<div class="col-lg-8">
+			<div class="card p-3 h-100">
+				<h2 class="h5 titulo">Tarifas por temporada</h2>
+				<div class="table-responsive">
+				<table class="table table-sm mb-0">
+					<thead><tr><th>Temporada</th><th>Tipo</th><th>Desde</th><th>Hasta</th><th class="text-end">Tarifa/noche</th><th></th></tr></thead>
+					<tbody>
+						<tr th:each="t : ${temporadas}">
+							<td th:text="${t.nombre}">Alta</td>
+							<td th:text="${nombresTipo[t.tipoId]}">Doble</td>
+							<td th:text="${t.inicio}">-</td><td th:text="${t.fin}">-</td>
+							<td class="text-end" th:text="'$' + ${#numbers.formatDecimal(t.tarifa, 1, 'POINT', 0, 'COMMA')}">0</td>
+							<td class="text-end text-nowrap">
+								<a class="btn btn-sm btn-outline-secondary" th:href="@{/admin/habitaciones(editarTemp=${t.id})}"><i class="bi bi-pencil"></i></a>
+								<form class="d-inline" method="post" th:action="@{/admin/temporadas/{id}/eliminar(id=${t.id})}">
+									<button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button></form>
+							</td>
+						</tr>
+						<tr th:if="${#lists.isEmpty(temporadas)}"><td colspan="6" class="text-secondary">Sin temporadas: se cobra la tarifa base.</td></tr>
+					</tbody>
+				</table>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-4">
+			<div class="card p-3 h-100">
+				<h2 class="h6 titulo" th:text="${tempForm['id'] != null} ? 'Editar temporada' : 'Nueva temporada'">Nueva</h2>
+				<form method="post" action="/admin/temporadas" class="row g-2">
+					<input type="hidden" name="id" th:value="${tempForm['id']}">
+					<div class="col-12"><label class="form-label">Nombre</label><input class="form-control" name="nombre" th:value="${tempForm['nombre']}" required></div>
+					<div class="col-12"><label class="form-label">Tipo</label>
+						<select class="form-select" name="tipoId" required>
+							<option th:each="t : ${tipos}" th:value="${t.id}" th:text="${t.nombre}" th:selected="${t.id == tempForm['tipoId']}"></option>
+						</select></div>
+					<div class="col-6"><label class="form-label">Desde</label><input class="form-control" type="date" name="inicio" th:value="${tempForm['inicio']}" required></div>
+					<div class="col-6"><label class="form-label">Hasta</label><input class="form-control" type="date" name="fin" th:value="${tempForm['fin']}" required></div>
+					<div class="col-12"><label class="form-label">Tarifa por noche</label><input class="form-control" type="number" min="1" name="tarifa" th:value="${tempForm['tarifa']}" required></div>
+					<div class="col-12 d-flex gap-2"><button class="btn btn-primary btn-sm">Guardar</button>
+						<a th:if="${tempForm['id'] != null}" class="btn btn-sm btn-outline-secondary" href="/admin/habitaciones">Cancelar</a></div>
+				</form>
+			</div>
+		</div>
+	</div>
+</main>
+<script th:replace="~{fragmentos :: scripts}"></script>
+</body>
+</html>

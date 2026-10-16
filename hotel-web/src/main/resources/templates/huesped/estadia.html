@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragmentos :: cabeza('Mi estadía')}"></head>
+<body>
+<nav th:replace="~{fragmentos :: menu}"></nav>
+<main class="container py-4">
+	<div th:replace="~{fragmentos :: alertas}"></div>
+	<a href="/huesped" class="small"><i class="bi bi-arrow-left"></i> Mis reservas</a>
+	<div class="mt-2" th:replace="~{fragmentos-estadia :: resumen(false)}"></div>
+</main>
+<script th:replace="~{fragmentos :: scripts}"></script>
+</body>
+</html>
