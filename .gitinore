@@ -1,0 +1,6 @@
+**/target/
+**/.settings/
+**/.classpath
+**/.project
+# contraseñas de Atlas: no subir
+**/secreto.properties
