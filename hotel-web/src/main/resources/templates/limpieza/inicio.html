@@ -41,7 +41,7 @@
 		<h2 class="h6 titulo">Registros de hoy</h2>
 		<ul class="list-group list-group-flush">
 			<li class="list-group-item px-0 d-flex justify-content-between" th:each="n : ${registrosHoy}">
-				<span><span class="badge me-1" th:classappend="${n['tipo'] == 'DANO'} ? 'text-bg-danger' : 'text-bg-success'" th:text="${n['tipo'] == 'DANO'} ? 'Daño' : 'Limpia'">L</span>
+				<span><span class="badge me-1" th:classappend="${n['tipo'] == 'DANO'} ? 'text-bg-danger' : (${n['tipo'] == 'REPARACION'} ? 'text-bg-primary' : 'text-bg-success')" th:text="${n['tipo'] == 'DANO'} ? 'Daño' : (${n['tipo'] == 'REPARACION'} ? 'Reparación' : 'Limpia')">L</span>
 					Hab. <span th:text="${n['numeroHabitacion']}">101</span> · <span class="small" th:text="${n['descripcion']}">-</span></span>
 				<span class="small text-secondary" th:text="${n['empleado']} + ' ' + ${#strings.substring(n['fecha'], 11, 16)}">hora</span>
 			</li>

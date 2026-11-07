@@ -1,0 +1,270 @@
+openapi: 3.0.3
+info:
+  title: HotelNova · Endpoints nuevos del Release 2
+  version: 1.0.0
+  description: >
+    Contrato de los endpoints que agrega el Release 2 (PBI-01, tarjeta D11). Los endpoints del Release 1
+    siguen documentados en el Swagger de cada microservicio (/swagger-ui.html). Los marcados con
+    x-sprint 2 o 3 son borradores: se confirman en el Planning de su sprint.
+    Los roles los controla hotel-web (ADR-001): cada endpoint indica en x-roles qué página lo usa.
+    Errores de negocio: 400 dato inválido, 404 no existe, 409 regla de negocio (mensaje en "message").
+servers:
+  - url: https://hotelnova-habitaciones.onrender.com
+    description: ms-habitaciones
+  - url: https://hotelnova-servicios.onrender.com
+    description: ms-servicios-facturacion
+  - url: https://hotelnova-reservas.onrender.com
+    description: ms-reservas
+tags:
+  - name: Mantenimiento
+    description: Técnico de mantenimiento (HAB-16, HAB-17)
+  - name: Caja
+    description: Cajero (SER-11, SER-12)
+  - name: Asignaciones
+    description: Supervisor de limpieza (HAB-18, HAB-19)
+  - name: Temporadas
+    description: Aprobación del gerente (HAB-20)
+paths:
+  /api/habitaciones/mantenimiento:
+    get:
+      tags: [Mantenimiento]
+      summary: Habitaciones en MANTENIMIENTO con su último daño (HAB-16)
+      operationId: listarEnMantenimiento
+      x-sprint: 1
+      x-roles: [MANTENIMIENTO]
+      x-cubre: [REQ-HN-006, AC-006.1, AC-006.2, AC-006.3]
+      responses:
+        '200':
+          description: Lista ordenada por número de habitación (vacía si no hay ninguna)
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/HabitacionMantenimiento'
+  /api/habitaciones/{id}/reparacion:
+    post:
+      tags: [Mantenimiento]
+      summary: Registrar la reparación; la habitación pasa a LIMPIEZA (HAB-17)
+      operationId: registrarReparacion
+      x-sprint: 1
+      x-roles: [MANTENIMIENTO]
+      x-cubre: [REQ-HN-007, REQ-HN-008, AC-007.1, AC-007.2, AC-008.1, AC-008.2]
+      parameters:
+        - $ref: '#/components/parameters/HabitacionId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReporteReparacion'
+      responses:
+        '200':
+          description: Habitación actualizada, en estado LIMPIEZA
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Habitacion'
+        '400':
+          description: Falta el técnico o la descripción de la reparación
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: No existe la habitación
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: La habitación no está en MANTENIMIENTO
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                status: 409
+                message: 'La habitación 101 está DISPONIBLE: solo se registran reparaciones de habitaciones en MANTENIMIENTO'
+  /api/facturas/{id}/pago:
+    post:
+      tags: [Caja]
+      summary: Registrar el pago de una factura PENDIENTE (SER-11) · borrador
+      operationId: registrarPago
+      x-sprint: 2
+      x-roles: [CAJERO]
+      x-cubre: [REQ-HN-009, REQ-HN-010, REQ-HN-011]
+      parameters:
+        - $ref: '#/components/parameters/FacturaId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [medio, cajero]
+              properties:
+                medio:
+                  type: string
+                  enum: [EFECTIVO, TARJETA, TRANSFERENCIA]
+                cajero:
+                  type: string
+                  example: cajero
+      responses:
+        '200':
+          description: Factura PAGADA
+        '409':
+          description: La factura ya está PAGADA
+  /api/facturas/cierre:
+    get:
+      tags: [Caja]
+      summary: Cierre de caja de un día (SER-12) · borrador
+      operationId: cierreDeCaja
+      x-sprint: 2
+      x-roles: [CAJERO]
+      x-cubre: [REQ-HN-012]
+      parameters:
+        - name: fecha
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+            example: '2026-11-12'
+      responses:
+        '200':
+          description: Totales por medio de pago, número de facturas y cajeros
+  /api/habitaciones/{id}/asignacion:
+    post:
+      tags: [Asignaciones]
+      summary: Asignar o reasignar una habitación en LIMPIEZA a una camarera (HAB-18) · borrador
+      operationId: asignarCamarera
+      x-sprint: 2
+      x-roles: [SUPERVISOR_LIMPIEZA]
+      x-cubre: [REQ-HN-015, REQ-HN-016]
+      parameters:
+        - $ref: '#/components/parameters/HabitacionId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [camarera]
+              properties:
+                camarera:
+                  type: string
+                  example: ana
+      responses:
+        '200':
+          description: Habitación con la camarera asignada
+        '409':
+          description: La habitación no está en LIMPIEZA
+  /api/temporadas/{id}/aprobacion:
+    post:
+      tags: [Temporadas]
+      summary: Aprobar o rechazar una temporada PENDIENTE (HAB-20) · borrador
+      operationId: decidirTemporada
+      x-sprint: 3
+      x-roles: [GERENTE]
+      x-cubre: [REQ-HN-020, REQ-HN-021]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [decision, gerente]
+              properties:
+                decision:
+                  type: string
+                  enum: [APROBADA, RECHAZADA]
+                gerente:
+                  type: string
+                  example: gerente
+      responses:
+        '200':
+          description: Temporada con su nuevo estado
+        '409':
+          description: La temporada ya no está PENDIENTE
+components:
+  parameters:
+    HabitacionId:
+      name: id
+      in: path
+      required: true
+      description: Id de la habitación en MongoDB
+      schema:
+        type: string
+    FacturaId:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+  schemas:
+    HabitacionMantenimiento:
+      type: object
+      properties:
+        habitacionId:
+          type: string
+        numero:
+          type: string
+          example: '204'
+        piso:
+          type: integer
+          example: 2
+        dano:
+          type: string
+          description: Descripción del último daño reportado
+          example: Grifo del baño goteando
+        reportadoPor:
+          type: string
+          example: limpieza
+        fechaReporte:
+          type: string
+          format: date-time
+          example: '2026-11-05T08:30:00'
+    ReporteReparacion:
+      type: object
+      required: [tecnico, descripcion]
+      properties:
+        tecnico:
+          type: string
+          example: mantenimiento
+        descripcion:
+          type: string
+          example: Se cambió el empaque del grifo
+    Habitacion:
+      type: object
+      properties:
+        id:
+          type: string
+        numero:
+          type: string
+        piso:
+          type: integer
+        tipoId:
+          type: string
+        estado:
+          type: string
+          enum: [DISPONIBLE, OCUPADA, MANTENIMIENTO, LIMPIEZA]
+        actualizadoPor:
+          type: string
+        actualizadoEn:
+          type: string
+          format: date-time
+    Error:
+      type: object
+      properties:
+        status:
+          type: integer
+          example: 409
+        message:
+          type: string

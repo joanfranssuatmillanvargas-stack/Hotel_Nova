@@ -21,9 +21,11 @@ import com.hotelnova.habitaciones.modelo.CambioEstado;
 import com.hotelnova.habitaciones.modelo.EstadoHabitacion;
 import com.hotelnova.habitaciones.modelo.FichaHabitacion;
 import com.hotelnova.habitaciones.modelo.Habitacion;
+import com.hotelnova.habitaciones.modelo.HabitacionMantenimiento;
 import com.hotelnova.habitaciones.modelo.Ocupacion;
 import com.hotelnova.habitaciones.modelo.PendienteLimpieza;
 import com.hotelnova.habitaciones.modelo.ReporteLimpieza;
+import com.hotelnova.habitaciones.modelo.ReporteReparacion;
 import com.hotelnova.habitaciones.modelo.ValorEstadia;
 import com.hotelnova.habitaciones.repositorio.reglas_repositorio;
 
@@ -116,6 +118,18 @@ public class habitacion_apirest {
 	@PostMapping("/{id}/danos")
 	public Habitacion reportarDano(@PathVariable("id") String id, @RequestBody ReporteLimpieza datos) {
 		return reglas.reportarDano(id, datos.getEmpleado(), datos.getDescripcion());
+	}
+
+	@Operation(summary = "Habitaciones en MANTENIMIENTO con su último daño (HAB-16, técnico de mantenimiento)")
+	@GetMapping("/mantenimiento")
+	public List<HabitacionMantenimiento> enMantenimiento() {
+		return reglas.enMantenimiento();
+	}
+
+	@Operation(summary = "Registrar la reparación (HAB-17): pasa a LIMPIEZA; 409 si no está en MANTENIMIENTO")
+	@PostMapping("/{id}/reparacion")
+	public Habitacion registrarReparacion(@PathVariable("id") String id, @RequestBody ReporteReparacion datos) {
+		return reglas.registrarReparacion(id, datos.getTecnico(), datos.getDescripcion());
 	}
 
 	@Operation(summary = "Eliminar habitación (HAB-04): 409 si tiene reservas activas")

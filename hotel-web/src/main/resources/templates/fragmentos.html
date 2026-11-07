@@ -52,6 +52,22 @@
 				<th:block th:if="${rol == 'LIMPIEZA'}">
 					<li class="nav-item"><a class="nav-link" href="/limpieza"><i class="bi bi-stars"></i> Limpieza</a></li>
 				</th:block>
+				<!-- Release 2: un bloque por cada rol nuevo (PLA-08) -->
+				<th:block th:if="${rol == 'GERENTE'}">
+					<li class="nav-item"><a class="nav-link" href="/gerencia"><i class="bi bi-graph-up"></i> Gerencia</a></li>
+				</th:block>
+				<th:block th:if="${rol == 'CAJERO'}">
+					<li class="nav-item"><a class="nav-link" href="/caja"><i class="bi bi-cash-coin"></i> Caja</a></li>
+				</th:block>
+				<th:block th:if="${rol == 'MANTENIMIENTO'}">
+					<li class="nav-item"><a class="nav-link" href="/mantenimiento"><i class="bi bi-tools"></i> Mantenimiento</a></li>
+				</th:block>
+				<th:block th:if="${rol == 'SUPERVISOR_LIMPIEZA'}">
+					<li class="nav-item"><a class="nav-link" href="/supervision"><i class="bi bi-clipboard-check"></i> Supervisión</a></li>
+				</th:block>
+				<th:block th:if="${rol == 'AGENTE_RESERVAS'}">
+					<li class="nav-item"><a class="nav-link" href="/agente"><i class="bi bi-headset"></i> Reservas</a></li>
+				</th:block>
 			</ul>
 			<span class="navbar-text small me-3" th:title="${yo.rol.etiqueta}">
 				<i class="bi bi-person-circle"></i> <span th:text="${yo.usuario}">usuario</span>

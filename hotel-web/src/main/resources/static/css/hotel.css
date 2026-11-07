@@ -13,6 +13,7 @@ body { background: #f4f6fa; }
 .cifra { font-size: 1.9rem; font-weight: 700; color: #1f3864; line-height: 1; }
 .tarjeta-limpieza { border-left: 5px solid #f0ad4e; }
 .tarjeta-limpieza.prioridad { border-left-color: #dc3545; }
+.tarjeta-mantenimiento { border-left: 5px solid #dc3545; }
 .login-caja { max-width: 420px; }
 .form-label { font-weight: 500; font-size: .9rem; }
 .anulado { text-decoration: line-through; color: #9ca3af; }

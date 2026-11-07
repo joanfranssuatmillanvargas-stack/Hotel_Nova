@@ -66,7 +66,7 @@
 						<tr th:each="n : ${novedades}">
 							<td class="small text-nowrap" th:text="${#strings.replace(n['fecha'], 'T', ' ')}">fecha</td>
 							<td th:text="${n['numeroHabitacion']}">101</td>
-							<td><span class="badge" th:classappend="${n['tipo'] == 'DANO'} ? 'text-bg-danger' : 'text-bg-success'" th:text="${n['tipo'] == 'DANO'} ? 'Daño' : 'Limpieza'">L</span></td>
+							<td><span class="badge" th:classappend="${n['tipo'] == 'DANO'} ? 'text-bg-danger' : (${n['tipo'] == 'REPARACION'} ? 'text-bg-primary' : 'text-bg-success')" th:text="${n['tipo'] == 'DANO'} ? 'Daño' : (${n['tipo'] == 'REPARACION'} ? 'Reparación' : 'Limpieza')">L</span></td>
 							<td class="small" th:text="${n['descripcion']}">-</td>
 							<td class="small" th:text="${n['empleado']}">-</td>
 						</tr>
