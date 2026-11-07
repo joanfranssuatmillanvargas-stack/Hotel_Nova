@@ -34,15 +34,29 @@ public class cuentas_repositorio {
 		this.usuarios = usuarios;
 	}
 
-	/** La primera vez que arranca, crea un usuario por cada rol del personal. */
+	/** Usuarios de prueba del personal: usuario, nombre, rol y contraseña (roles-del-sistema.md, sección 4). */
+	private static final List<String[]> USUARIOS_DE_PRUEBA = List.of(
+			new String[] { "admin", "Administrador del hotel", "ADMINISTRADOR", "admin123" },
+			new String[] { "recepcion", "Recepcionista", "RECEPCIONISTA", "recepcion123" },
+			new String[] { "servicios", "Personal de servicios", "SERVICIOS", "servicios123" },
+			new String[] { "limpieza", "Personal de limpieza", "LIMPIEZA", "limpieza123" },
+			new String[] { "gerente", "Gerente del hotel", "GERENTE", "gerente123" },
+			new String[] { "cajero", "Cajero", "CAJERO", "cajero123" },
+			new String[] { "mantenimiento", "Técnico de mantenimiento", "MANTENIMIENTO", "mantenimiento123" },
+			new String[] { "supervisor", "Supervisor de limpieza", "SUPERVISOR_LIMPIEZA", "supervisor123" },
+			new String[] { "agente", "Agente de reservas", "AGENTE_RESERVAS", "agente123" });
+
+	/**
+	 * REQ-HN-003 (ADR-002): al arrancar crea el usuario de prueba de cada rol del personal que todavía no exista.
+	 * Nunca modifica un usuario existente (ni su contraseña ni si está activo).
+	 */
 	@EventListener(ApplicationReadyEvent.class)
 	public void crearUsuariosIniciales() {
 		try {
-			if (usuarios.count() == 0) {
-				crear("admin", "Administrador del hotel", Rol.ADMINISTRADOR, null, "admin123");
-				crear("recepcion", "Recepcionista", Rol.RECEPCIONISTA, null, "recepcion123");
-				crear("servicios", "Personal de servicios", Rol.SERVICIOS, null, "servicios123");
-				crear("limpieza", "Personal de limpieza", Rol.LIMPIEZA, null, "limpieza123");
+			for (String[] u : USUARIOS_DE_PRUEBA) {
+				if (!usuarios.existsByUsuario(u[0])) {
+					crear(u[0], u[1], Rol.valueOf(u[2]), null, u[3]);
+				}
 			}
 		} catch (RuntimeException ex) {
 			// si la base de datos no responde al arrancar, se intentará de nuevo en el próximo arranque

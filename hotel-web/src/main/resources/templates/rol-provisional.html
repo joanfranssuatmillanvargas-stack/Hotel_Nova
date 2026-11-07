@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragmentos :: cabeza(${titulo})}"></head>
+<body>
+<nav th:replace="~{fragmentos :: menu}"></nav>
+<main class="container py-4" style="max-width: 760px">
+	<div th:replace="~{fragmentos :: alertas}"></div>
+	<h1 class="h3 titulo mb-1"><i class="bi" th:classappend="${icono}"></i> <span th:text="${titulo}">Rol</span></h1>
+	<p class="text-secondary">Hola, <span th:text="${yo.nombre}">usuario</span>. Entraste como
+		<strong th:text="${yo.rol.etiqueta}">rol</strong>.</p>
+	<div class="card p-3">
+		<h2 class="h6 titulo">Lo que vas a poder hacer aquí</h2>
+		<ul class="mb-2">
+			<li th:each="f : ${funciones}" th:text="${f}">función</li>
+		</ul>
+		<p class="small text-secondary mb-0"><i class="bi bi-calendar-event"></i> Llega en el
+			<span th:text="${sprint}">sprint</span>.</p>
+	</div>
+</main>
+<script th:replace="~{fragmentos :: scripts}"></script>
+</body>
+</html>

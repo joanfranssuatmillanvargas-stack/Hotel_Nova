@@ -14,18 +14,25 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 /**
- * PLA-02: exige iniciar sesión y deja entrar a cada sección solo a los roles que corresponden.
- * El administrador puede entrar a todas las secciones del personal, pero no a la del huésped.
+ * PLA-02 y PLA-09: exige iniciar sesión y deja entrar a cada sección solo a los roles que corresponden
+ * (REQ-HN-004, 005; ADR-001). El administrador conserva el acceso del Release 1 a recepción, servicios y
+ * limpieza; las secciones de los 5 roles nuevos son exclusivas de cada uno (matriz de permisos).
  */
 @Component
 public class FiltroSesion implements HandlerInterceptor {
 
-	private static final Map<String, Set<Rol>> PERMISOS = Map.of(
-			"/admin", Set.of(Rol.ADMINISTRADOR),
-			"/recepcion", Set.of(Rol.RECEPCIONISTA, Rol.ADMINISTRADOR),
-			"/huesped", Set.of(Rol.HUESPED),
-			"/servicios", Set.of(Rol.SERVICIOS, Rol.ADMINISTRADOR),
-			"/limpieza", Set.of(Rol.LIMPIEZA, Rol.ADMINISTRADOR));
+	private static final Map<String, Set<Rol>> PERMISOS = Map.ofEntries(
+			Map.entry("/admin", Set.of(Rol.ADMINISTRADOR)),
+			Map.entry("/recepcion", Set.of(Rol.RECEPCIONISTA, Rol.ADMINISTRADOR)),
+			Map.entry("/huesped", Set.of(Rol.HUESPED)),
+			Map.entry("/servicios", Set.of(Rol.SERVICIOS, Rol.ADMINISTRADOR)),
+			Map.entry("/limpieza", Set.of(Rol.LIMPIEZA, Rol.ADMINISTRADOR)),
+			// Release 2
+			Map.entry("/gerencia", Set.of(Rol.GERENTE)),
+			Map.entry("/caja", Set.of(Rol.CAJERO)),
+			Map.entry("/mantenimiento", Set.of(Rol.MANTENIMIENTO)),
+			Map.entry("/supervision", Set.of(Rol.SUPERVISOR_LIMPIEZA)),
+			Map.entry("/agente", Set.of(Rol.AGENTE_RESERVAS)));
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {

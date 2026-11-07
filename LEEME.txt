@@ -23,6 +23,13 @@ ROLES DEL SISTEMA Y USUARIOS DE PRUEBA (se crean solos la primera vez que arranc
   Personal de servicios  servicios / servicios123
   Personal de limpieza   limpieza / limpieza123
   Huésped                cada huésped crea su cuenta en "Regístrate aquí" (pantalla de login)
+  -- Release 2 (tercer corte): se crean solos al arrancar si no existen, sin tocar los que ya están --
+  Gerente                    gerente / gerente123              (sus funciones llegan en el R2-Sprint 3)
+  Cajero                     cajero / cajero123                (sus funciones llegan en el R2-Sprint 2)
+  Técnico de mantenimiento   mantenimiento / mantenimiento123  (repara habitaciones: R2-Sprint 1)
+  Supervisor de limpieza     supervisor / supervisor123        (sus funciones llegan en el R2-Sprint 2)
+  Agente de reservas         agente / agente123                (sus funciones llegan en el R2-Sprint 2)
+  Antes de usar el sistema con datos reales, cambiar las contraseñas de prueba.
 
 CORRER EN STS (en tu PC)
 1. File > Import > Maven > Existing Maven Projects > carpeta HotelNova > marcar los 5 > Finish.
@@ -40,6 +47,18 @@ FLUJO PARA LA SUSTENTACIÓN
   limpieza:  la habitación aparece "por limpiar" > marcarla lista (o reportar daño)
   admin:     reportes de reservas, ingresos y limpieza; usuarios; habitaciones y tarifas
   huésped:   registrarse > reservar en línea > ver sus consumos y su factura
+  Release 2 (R2-Sprint 1):
+  limpieza:  reportar un daño en una habitación libre > pasa a mantenimiento
+  mantenimiento: la ve en su lista con el daño > "Registrar reparación" > pasa a limpieza
+  limpieza:  la habitación aparece "por limpiar" > marcarla lista > disponible
+  cualquier rol: abrir una página de otro rol (ej. cajero en /recepcion) > vuelve a su inicio
+
+ESPECIFICACIÓN (SDD, tercer corte)
+  constitution.md y AGENTS.md            reglas del proyecto y de la IA (Puerta 0)
+  specs/001-hotelnova/spec.md            qué hace el sistema con 10 roles (Puerta 1)
+  specs/001-hotelnova/plan.md            cómo se construye + docs/adr/ + api/openapi.yaml (Puerta 2)
+  specs/001-hotelnova/tasks.md           tareas T001 a T028 (Puerta 3)
+  Pruebas unitarias: en cada proyecto, "mvn test" (o Run As > JUnit Test en STS)
 
 CONTRASEÑAS
   La URL de MongoDB Atlas va en src/main/resources/secreto.properties de cada proyecto.

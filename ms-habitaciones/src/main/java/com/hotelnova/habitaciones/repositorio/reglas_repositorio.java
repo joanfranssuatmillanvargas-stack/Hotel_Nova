@@ -20,6 +20,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.hotelnova.habitaciones.modelo.EstadoHabitacion;
 import com.hotelnova.habitaciones.modelo.FichaHabitacion;
 import com.hotelnova.habitaciones.modelo.Habitacion;
+import com.hotelnova.habitaciones.modelo.HabitacionMantenimiento;
 import com.hotelnova.habitaciones.modelo.Novedad;
 import com.hotelnova.habitaciones.modelo.Ocupacion;
 import com.hotelnova.habitaciones.modelo.PendienteLimpieza;
@@ -318,6 +319,46 @@ public class reglas_repositorio {
 			return h; // queda pendiente: pasa a mantenimiento cuando se limpie después de la salida
 		}
 		return cambiarEstado(id, EstadoHabitacion.MANTENIMIENTO, empleado);
+	}
+
+	// ======================= Mantenimiento (HAB-16, HAB-17 · Release 2) =======================
+
+	/** HAB-16 (REQ-HN-006): habitaciones en MANTENIMIENTO, cada una con su daño más reciente. */
+	public List<HabitacionMantenimiento> enMantenimiento() {
+		List<HabitacionMantenimiento> lista = new ArrayList<>();
+		for (Habitacion h : habitaciones.findByEstadoOrderByNumeroAsc(EstadoHabitacion.MANTENIMIENTO)) {
+			HabitacionMantenimiento m = new HabitacionMantenimiento();
+			m.setHabitacionId(h.getId());
+			m.setNumero(h.getNumero());
+			m.setPiso(h.getPiso());
+			// las novedades llegan de la más reciente a la más antigua: el primer daño es el último reportado
+			novedades.findByHabitacionIdOrderByFechaDesc(h.getId()).stream()
+					.filter(n -> n.getTipo() == TipoNovedad.DANO)
+					.findFirst()
+					.ifPresent(d -> {
+						m.setDano(d.getDescripcion());
+						m.setReportadoPor(d.getEmpleado());
+						m.setFechaReporte(d.getFecha());
+					});
+			lista.add(m);
+		}
+		return lista;
+	}
+
+	/**
+	 * HAB-17 (REQ-HN-007, 008): registra la reparación y la habitación pasa a LIMPIEZA (RN-04).
+	 * Solo desde MANTENIMIENTO; en otro estado responde 409.
+	 */
+	public Habitacion registrarReparacion(String id, String tecnico, String descripcion) {
+		obligatorio(tecnico, "el nombre del técnico");
+		obligatorio(descripcion, "la descripción de la reparación");
+		Habitacion h = habitacion(id);
+		if (h.getEstado() != EstadoHabitacion.MANTENIMIENTO) {
+			throw conflicto("La habitación " + h.getNumero() + " está " + h.getEstado()
+					+ ": solo se registran reparaciones de habitaciones en MANTENIMIENTO");
+		}
+		registrar(h, TipoNovedad.REPARACION, descripcion.trim(), tecnico, false);
+		return cambiarEstado(id, EstadoHabitacion.LIMPIEZA, tecnico.trim());
 	}
 
 	/** HAB-14: historial filtrable por habitación y fechas. */
