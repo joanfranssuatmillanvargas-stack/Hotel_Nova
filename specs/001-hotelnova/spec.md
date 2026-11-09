@@ -222,13 +222,13 @@ Las tres versiones se hicieron el sábado 07/11 y no del miércoles 4 al viernes
 
 | Revisión | Cumple |
 |----------|:------:|
-| Todo requisito tiene ID y al menos un criterio Given/When/Then | ☐ |
-| Los bordes están cubiertos (AC-003.2, 004.3, 006.2, 008.2, 012.2, 015.2) | ☐ |
-| No quedan marcadores [NECESITA ACLARACIÓN] | ☐ |
-| Los requisitos no funcionales son medibles | ☐ |
-| No aparece tecnología en la spec | ☐ |
-| Cada regla de negocio indica su origen | ☐ |
-| Las decisiones de la clarificación están escritas donde aparece cada concepto | ☐ |
+| Todo requisito tiene ID y al menos un criterio Given/When/Then | ☑ |
+| Los bordes están cubiertos (AC-003.2, 004.3, 006.2, 008.2, 012.2, 015.2) | ☑ |
+| No quedan marcadores [NECESITA ACLARACIÓN] | ☑ |
+| Los requisitos no funcionales son medibles | ☑ |
+| No aparece tecnología en la spec | ☑ |
+| Cada regla de negocio indica su origen | ☑ |
+| Las decisiones de la clarificación están escritas donde aparece cada concepto | ☑ |
 
-**Resultado:** ☐ Aprobada ☐ Aprobada con observaciones ☐ Rechazada
-**Aprueba (PO):** Jaider Javier Jaimes · **Fecha:** ____/11/2026
+**Resultado:** ☑ Aprobada ☐ Aprobada con observaciones ☐ Rechazada
+**Aprueba (PO):** Jaider Javier Jaimes · **Fecha:** 07/11/2026

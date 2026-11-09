@@ -11,23 +11,25 @@ Las tarjetas se crean *just-in-time*: T001 a T011 al aprobar esta Puerta 3 (R2-S
 Planning del R2-Sprint 2; T022 a T028 en el del R2-Sprint 3.
 
 ## Fase 0 · Preparación (R2-Sprint 1)
-- [ ] T001 Agregar `spring-boot-starter-test` a hotel-web y ms-habitaciones (plan §7)
+- [x] T001 Agregar `spring-boot-starter-test` a hotel-web y ms-habitaciones (plan §7)
 
 ## Fase 1 · PBI-02 Base de seguridad para 10 roles (R2-Sprint 1)
-- [ ] T002 [P] [PLA-08] Pruebas de los roles y de los usuarios de prueba (AC-001.1, AC-003.1 a 003.3) (después de T001)
-- [ ] T003 [PLA-08] Roles nuevos en `Rol` y `crearUsuariosIniciales` que crea solo los que faltan (REQ-HN-001, 003 · ADR-001, 002) (después de T002)
-- [ ] T004 [P] [PLA-09] Pruebas de `FiltroSesion` para los 10 roles (AC-004.1 a 004.4, AC-005.1) (después de T001)
-- [ ] T005 [PLA-09] Tabla de permisos con las 10 rutas en `FiltroSesion` (REQ-HN-004, 005 · ADR-001) (después de T003 y T004)
-- [ ] T006 [PLA-08] Menú de cada rol nuevo e inicio provisional de gerente, cajero, supervisor y agente (REQ-HN-002, AC-002.1, 002.2 · ADR-004) (después de T005)
+- [x] T002 [P] [PLA-08] Pruebas de los roles y de los usuarios de prueba (AC-001.1, AC-003.1 a 003.3) (después de T001)
+- [x] T003 [PLA-08] Roles nuevos en `Rol` y `crearUsuariosIniciales` que crea solo los que faltan (REQ-HN-001, 003 · ADR-001, 002) (después de T002)
+- [x] T004 [P] [PLA-09] Pruebas de `FiltroSesion` para los 10 roles (AC-004.1 a 004.4, AC-005.1) (después de T001)
+- [x] T005 [PLA-09] Tabla de permisos con las 10 rutas en `FiltroSesion` (REQ-HN-004, 005 · ADR-001) (después de T003 y T004)
+- [x] T006 [PLA-08] Menú de cada rol nuevo e inicio provisional de gerente, cajero, supervisor y agente (REQ-HN-002, AC-002.1, 002.2 · ADR-004) (después de T005)
 
 ## Fase 2 · PBI-03 Técnico de mantenimiento (R2-Sprint 1)
-- [ ] T007 [P] [HAB-16] Pruebas de la lista de mantenimiento (AC-006.1 a 006.3) (después de T001)
-- [ ] T008 [P] [HAB-17] Pruebas del registro de la reparación (AC-007.1, 007.2, 008.1, 008.2) (después de T001)
-- [ ] T009 [HAB-16] [HAB-17] `REPARACION`, `HabitacionMantenimiento`, `ReporteReparacion`, reglas y los 2 endpoints en ms-habitaciones (REQ-HN-006 a 008 · ADR-003) (después de T007 y T008)
-- [ ] T010 [HAB-16] [HAB-17] Pantalla del técnico en hotel-web y novedad "Reparación" en limpieza y reportes (REQ-HN-006 a 008, NFR-HN-003) (después de T006 y T009)
+- [x] T007 [P] [HAB-16] Pruebas de la lista de mantenimiento (AC-006.1 a 006.3) (después de T001)
+- [x] T008 [P] [HAB-17] Pruebas del registro de la reparación (AC-007.1, 007.2, 008.1, 008.2) (después de T001)
+- [x] T009 [HAB-16] [HAB-17] `REPARACION`, `HabitacionMantenimiento`, `ReporteReparacion`, reglas y los 2 endpoints en ms-habitaciones (REQ-HN-006 a 008 · ADR-003) (después de T007 y T008)
+- [x] T010 [HAB-16] [HAB-17] Pantalla del técnico en hotel-web y novedad "Reparación" en limpieza y reportes (REQ-HN-006 a 008, NFR-HN-003) (después de T006 y T009)
 
 ## Fase 3 · Cierre del R2-Sprint 1
-- [ ] T011 Ejecutar P021 a P024 del plan de pruebas y actualizar LEEME.txt con los 10 usuarios (NFR-HN-002) (después de T010)
+- [x] T011 Ejecutar P021 a P024 del plan de pruebas y actualizar LEEME.txt con los 10 usuarios (NFR-HN-002) (después de T010)
+
+**Estado al 09/11/2026:** T001 a T011 terminadas. Las pruebas unitarias pasan (32 de 32) y P021 a P024 se aprobaron en Render el lunes 09/11.
 
 Punto de control del R2-Sprint 1: los 10 usuarios de prueba inician sesión cada uno en su inicio, y una habitación
 dañada pasa de MANTENIMIENTO a LIMPIEZA con la reparación registrada.
@@ -83,10 +85,10 @@ dañada pasa de MANTENIMIENTO a LIMPIEZA con la reparación registrada.
 
 | Revisión | Cumple |
 |----------|:------:|
-| Cada tarea cabe en un pull request | ☐ |
-| Todo requisito aparece en alguna tarea | ☐ |
-| Las pruebas preceden al código y las dependencias están declaradas | ☐ |
-| En ninguna tarjeta T el revisor es el responsable | ☐ |
+| Cada tarea cabe en un pull request | ☑ |
+| Todo requisito aparece en alguna tarea | ☑ |
+| Las pruebas preceden al código y las dependencias están declaradas | ☑ |
+| En ninguna tarjeta T el revisor es el responsable | ☑ |
 
-**Resultado:** ☐ Aprobada ☐ Aprobada con observaciones ☐ Rechazada
-**Revisa:** Joan Franssuat Millán Vargas · **Fecha:** ____/11/2026
+**Resultado:** ☑ Aprobada ☐ Aprobada con observaciones ☐ Rechazada
+**Revisa:** Joan Franssuat Millán Vargas · **Fecha:** 07/11/2026

@@ -126,9 +126,9 @@ Las pruebas se escriben antes que el código (constitución, principio 3) y qued
 
 | Revisión | Cumple |
 |----------|:------:|
-| Ningún requisito queda sin componente y ningún componente sin requisito | ☐ |
-| Cada ADR tiene alternativa descartada y consecuencias | ☐ |
-| El OpenAPI lista rutas, roles y códigos de error | ☐ |
+| Ningún requisito queda sin componente y ningún componente sin requisito | ☑ |
+| Cada ADR tiene alternativa descartada y consecuencias | ☑ |
+| El OpenAPI lista rutas, roles y códigos de error | ☑ |
 
-**Resultado:** ☐ Aprobada ☐ Aprobada con observaciones ☐ Rechazada
-**Revisa:** Jaider Javier Jaimes · **Fecha:** ____/11/2026
+**Resultado:** ☑ Aprobada ☐ Aprobada con observaciones ☐ Rechazada
+**Revisa:** Jaider Javier Jaimes · **Fecha:** 07/11/2026
