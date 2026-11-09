@@ -9,8 +9,8 @@
 | Dato | Valor |
 |------|-------|
 | Puntos comprometidos | 13 |
-| Puntos terminados | [__] (10 al 07/11: PBI-01 y PBI-02; PBI-03 depende de T011) |
-| Tarjetas planeadas / terminadas | 18 / [__] (16 al 07/11: D07 a D12 y T001 a T010; faltan T011 y D13) |
+| Puntos terminados | 13 de 13 (PBI-01 y PBI-02 el sábado 07/11; PBI-03 el lunes 09/11) |
+| Tarjetas planeadas / terminadas | 18 / 18 al cerrar D13 (17 al 09/11: D07 a D12 y T001 a T011) |
 | Impedimentos | IMP-02 (la especificación empezó tres días tarde), cerrado el 07/11 |
 
 ## 2. Qué funcionó

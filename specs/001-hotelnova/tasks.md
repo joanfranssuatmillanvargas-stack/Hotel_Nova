@@ -27,9 +27,9 @@ Planning del R2-Sprint 2; T022 a T028 en el del R2-Sprint 3.
 - [x] T010 [HAB-16] [HAB-17] Pantalla del técnico en hotel-web y novedad "Reparación" en limpieza y reportes (REQ-HN-006 a 008, NFR-HN-003) (después de T006 y T009)
 
 ## Fase 3 · Cierre del R2-Sprint 1
-- [ ] T011 Ejecutar P021 a P024 del plan de pruebas y actualizar LEEME.txt con los 10 usuarios (NFR-HN-002) (después de T010)
+- [x] T011 Ejecutar P021 a P024 del plan de pruebas y actualizar LEEME.txt con los 10 usuarios (NFR-HN-002) (después de T010)
 
-**Estado al 07/11/2026:** T001 a T010 terminadas (las pruebas unitarias pasan: 32 de 32). T011 en pruebas: faltan P023 y P024 en Render.
+**Estado al 09/11/2026:** T001 a T011 terminadas. Las pruebas unitarias pasan (32 de 32) y P021 a P024 se aprobaron en Render el lunes 09/11.
 
 Punto de control del R2-Sprint 1: los 10 usuarios de prueba inician sesión cada uno en su inicio, y una habitación
 dañada pasa de MANTENIMIENTO a LIMPIEZA con la reparación registrada.

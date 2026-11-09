@@ -4,7 +4,7 @@
 **Duración:** 45 minutos · **Sprint Goal:** al terminar el sprint, la spec v1.0 está aprobada con su plan y tareas,
 los 10 roles inician sesión cada uno en su inicio, y un técnico puede reparar una habitación dañada y devolverla al servicio.
 
-> Borrador preparado el 07/11, con el estado del tablero de ese día. Lo que está entre corchetes se llena en la Review.
+> Preparado con el estado del tablero al lunes 09/11. Lo que está entre corchetes se llena en la Review.
 
 ## 1. Guion de la demo (15 minutos)
 
@@ -29,8 +29,8 @@ Antes de empezar: los 5 proyectos corriendo (o la URL de Render despierta) y "Ca
 |-----|:------:|:-----------:|------------|
 | PBI-01 Spec v1.0, plan y tareas | 5 | Sí | Puertas 1, 2 y 3 aprobadas el 07/11/2026 (D10 a D12) |
 | PBI-02 Base de seguridad para 10 roles | 5 | Sí | PLA-08 y PLA-09: T001 a T006 terminadas el 07/11 |
-| PBI-03 Técnico de mantenimiento | 3 | [Sí / No] | Al 07/11: T007 a T010 terminadas; T011 en pruebas (faltan P023 y P024 en Render) |
-| **Total** | **13** | **[__] de 13** (10 al 07/11) | |
+| PBI-03 Técnico de mantenimiento | 3 | Sí | HAB-16 y HAB-17: T007 a T011 terminadas; P021 a P024 aprobadas en Render el 09/11 |
+| **Total** | **13** | **13 de 13** | |
 
 ## 3. Decisiones que se confirman con el docente
 
