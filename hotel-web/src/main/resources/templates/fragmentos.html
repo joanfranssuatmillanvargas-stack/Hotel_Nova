@@ -57,7 +57,8 @@
 					<li class="nav-item"><a class="nav-link" href="/gerencia"><i class="bi bi-graph-up"></i> Gerencia</a></li>
 				</th:block>
 				<th:block th:if="${rol == 'CAJERO'}">
-					<li class="nav-item"><a class="nav-link" href="/caja"><i class="bi bi-cash-coin"></i> Caja</a></li>
+					<li class="nav-item"><a class="nav-link" href="/caja"><i class="bi bi-cash-coin"></i> Por cobrar</a></li>
+					<li class="nav-item"><a class="nav-link" href="/caja/cierre"><i class="bi bi-calculator"></i> Cierre de caja</a></li>
 				</th:block>
 				<th:block th:if="${rol == 'MANTENIMIENTO'}">
 					<li class="nav-item"><a class="nav-link" href="/mantenimiento"><i class="bi bi-tools"></i> Mantenimiento</a></li>
@@ -67,6 +68,7 @@
 				</th:block>
 				<th:block th:if="${rol == 'AGENTE_RESERVAS'}">
 					<li class="nav-item"><a class="nav-link" href="/agente"><i class="bi bi-headset"></i> Reservas</a></li>
+					<li class="nav-item"><a class="nav-link" href="/agente/reservas/nueva"><i class="bi bi-plus-circle"></i> Nueva reserva</a></li>
 				</th:block>
 			</ul>
 			<span class="navbar-text small me-3" th:title="${yo.rol.etiqueta}">

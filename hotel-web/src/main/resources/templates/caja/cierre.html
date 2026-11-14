@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragmentos :: cabeza('Cierre de caja')}"></head>
+<body>
+<nav th:replace="~{fragmentos :: menu}"></nav>
+<main class="container py-4" style="max-width: 860px">
+	<div th:replace="~{fragmentos :: alertas}"></div>
+	<a href="/caja" class="small"><i class="bi bi-arrow-left"></i> Facturas por cobrar</a>
+	<div class="d-flex flex-wrap justify-content-between align-items-end gap-2 mt-2 mb-3">
+		<h1 class="h3 titulo mb-0"><i class="bi bi-calculator"></i> Cierre de caja</h1>
+		<form class="d-flex gap-2" method="get" action="/caja/cierre">
+			<input class="form-control" type="date" name="fecha" th:value="${fecha}" th:max="${hoy}" required>
+			<button class="btn btn-outline-primary text-nowrap">Generar</button>
+		</form>
+	</div>
+	<div th:if="${cierre != null}">
+		<p class="text-secondary">Día <strong th:text="${cierre['fecha']}">2026-11-12</strong> · cajero
+			<strong th:text="${cierre['cajero']}">cajero</strong> ·
+			<strong th:text="${cierre['facturas']}">0</strong> factura(s) pagada(s)</p>
+		<div class="row g-3 mb-3">
+			<div class="col-6 col-md-3"><div class="card p-3 h-100"><div class="small text-secondary">Efectivo</div>
+				<div class="cifra" th:text="'$' + ${#numbers.formatDecimal(cierre['efectivo'], 1, 'POINT', 0, 'COMMA')}">$0</div></div></div>
+			<div class="col-6 col-md-3"><div class="card p-3 h-100"><div class="small text-secondary">Tarjeta</div>
+				<div class="cifra" th:text="'$' + ${#numbers.formatDecimal(cierre['tarjeta'], 1, 'POINT', 0, 'COMMA')}">$0</div></div></div>
+			<div class="col-6 col-md-3"><div class="card p-3 h-100"><div class="small text-secondary">Transferencia</div>
+				<div class="cifra" th:text="'$' + ${#numbers.formatDecimal(cierre['transferencia'], 1, 'POINT', 0, 'COMMA')}">$0</div></div></div>
+			<div class="col-6 col-md-3"><div class="card p-3 h-100 border-success"><div class="small text-secondary">Total del día</div>
+				<div class="cifra text-success" th:text="'$' + ${#numbers.formatDecimal(cierre['total'], 1, 'POINT', 0, 'COMMA')}">$0</div></div></div>
+		</div>
+		<div class="card p-3">
+			<h2 class="h6 titulo">Pagos del día</h2>
+			<div class="table-responsive">
+			<table class="table table-sm mb-0">
+				<thead><tr><th>Hora</th><th>Factura</th><th>Hab.</th><th>Medio</th><th class="text-end">Valor</th></tr></thead>
+				<tbody>
+					<tr th:each="f : ${cierre['detalle']}">
+						<td th:text="${#strings.substring(f['pago']['fecha'], 11, 16)}">09:00</td>
+						<td th:text="'No. ' + ${f['numero']}">No. 20</td>
+						<td th:text="${f['numeroHabitacion']}">101</td>
+						<td th:text="${f['pago']['medio']}">EFECTIVO</td>
+						<td class="text-end" th:text="'$' + ${#numbers.formatDecimal(f['pago']['valor'], 1, 'POINT', 0, 'COMMA')}">0</td>
+					</tr>
+					<tr th:if="${#lists.isEmpty(cierre['detalle'])}"><td colspan="5" class="text-secondary">Ese día no registraste pagos: todos los totales quedan en $0.</td></tr>
+				</tbody>
+			</table>
+			</div>
+		</div>
+	</div>
+</main>
+<script th:replace="~{fragmentos :: scripts}"></script>
+</body>
+</html>

@@ -113,6 +113,29 @@ public class cuentas_repositorio {
 		return usuarios.findAllByOrderByRolAscUsuarioAsc();
 	}
 
+	/** HAB-18 (RN-09): camareras activas entre las que el supervisor reparte las habitaciones. */
+	public List<Usuario> camareras() {
+		return usuarios.findByRolOrderByUsuarioAsc(Rol.LIMPIEZA).stream().filter(Usuario::isActivo).toList();
+	}
+
+	/**
+	 * HAB-18 (REQ-HN-016 · ADR-005): la persona elegida debe ser un usuario activo con rol de limpieza.
+	 * ms-habitaciones no conoce los usuarios, por eso se valida aquí antes de asignar.
+	 */
+	public Usuario camarera(String usuario) {
+		String login = usuario == null ? "" : usuario.trim().toLowerCase();
+		Usuario u = usuarios.findByUsuario(login)
+				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No existe el usuario " + login));
+		if (u.getRol() != Rol.LIMPIEZA) {
+			throw new ResponseStatusException(HttpStatus.CONFLICT,
+					"El usuario " + login + " no tiene rol de limpieza: solo se asignan habitaciones a camareras");
+		}
+		if (!u.isActivo()) {
+			throw new ResponseStatusException(HttpStatus.CONFLICT, "El usuario " + login + " está desactivado: elige otra camarera");
+		}
+		return u;
+	}
+
 	public void cambiarActivo(String id, String quien) {
 		Usuario u = usuarios.findById(id)
 				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No existe el usuario"));

@@ -61,14 +61,15 @@ public class reserva_apirest {
 		return reglas.disponibilidad(llegada, salida, tipoId);
 	}
 
-	@Operation(summary = "Crear reserva (RES-01, RES-05, RES-09): valida huésped, habitación, cruces y calcula el valor")
+	@Operation(summary = "Crear reserva (RES-01, RES-05, RES-09, RES-11): valida huésped, habitación, cruces y calcula el valor. "
+			+ "Exige el canal (TELEFONO, CORREO, WHATSAPP, WEB o MOSTRADOR) y quién la tomó (tomadaPor): 400 si falta alguno")
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public Reserva crear(@RequestBody Reserva datos) {
 		return reglas.crear(datos);
 	}
 
-	@Operation(summary = "Modificar fechas o habitación (RES-03); vuelve a validar cruces")
+	@Operation(summary = "Modificar fechas o habitación (RES-03, RES-12); vuelve a validar cruces y conserva el canal y quién la tomó")
 	@PutMapping("/{id}")
 	public Reserva modificar(@PathVariable("id") String id, @RequestBody Reserva datos) {
 		return reglas.modificar(id, datos);

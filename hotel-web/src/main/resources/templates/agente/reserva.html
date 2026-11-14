@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragmentos :: cabeza('Reserva')}"></head>
+<body>
+<nav th:replace="~{fragmentos :: menu}"></nav>
+<main class="container py-4" style="max-width: 760px">
+	<div th:replace="~{fragmentos :: alertas}"></div>
+	<a href="/agente" class="small"><i class="bi bi-arrow-left"></i> Reservas</a>
+	<div class="card p-3 mt-2">
+		<div class="d-flex justify-content-between align-items-start gap-2">
+			<h1 class="h4 titulo">Reserva <span th:text="${r['codigo']}">R-0001</span></h1>
+			<span class="estado" th:classappend="'estado-' + ${r['estado']}" th:text="${r['estado']}">CONFIRMADA</span>
+		</div>
+		<dl class="row small mb-0">
+			<dt class="col-4">Huésped</dt><dd class="col-8" th:text="${r['nombreHuesped']} + ' · ' + ${r['huespedDocumento']}">Laura</dd>
+			<dt class="col-4">Habitación</dt><dd class="col-8" th:text="${r['numeroHabitacion']}">101</dd>
+			<dt class="col-4">Fechas</dt><dd class="col-8" th:text="${r['llegada']} + ' a ' + ${r['salida']} + ' (' + ${r['noches']} + ' noches)'">-</dd>
+			<dt class="col-4">Valor alojamiento</dt><dd class="col-8" th:text="'$' + ${#numbers.formatDecimal(r['valorAlojamiento'], 1, 'POINT', 0, 'COMMA')}">0</dd>
+			<dt class="col-4">Canal</dt><dd class="col-8" th:text="${r['canal'] != null} ? ${r['canal']} : 'Sin registrar (Release 1)'">TELEFONO</dd>
+			<dt class="col-4">Tomada por</dt><dd class="col-8" th:text="${r['tomadaPor'] != null} ? ${r['tomadaPor']} : '—'">agente</dd>
+		</dl>
+	</div>
+
+	<div class="card p-3 mt-3" th:if="${r['estado'] == 'CONFIRMADA'}">
+		<h2 class="h6 titulo">Modificar</h2>
+		<form method="post" th:action="@{/agente/reservas/{id}/editar(id=${r['id']})}" class="row g-2">
+			<div class="col-md-4"><label class="form-label">Habitación</label>
+				<select class="form-select" name="habitacionId">
+					<option th:each="h : ${habitaciones}" th:value="${h['id']}" th:text="${h['numero'] + ' (' + h['estado'] + ')'}" th:selected="${h['id'] == r['habitacionId']}"></option>
+				</select></div>
+			<div class="col-md-4"><label class="form-label">Llegada</label><input class="form-control" type="date" name="llegada" th:value="${r['llegada']}" required></div>
+			<div class="col-md-4"><label class="form-label">Salida</label><input class="form-control" type="date" name="salida" th:value="${r['salida']}" required></div>
+			<div class="col-12 d-flex flex-wrap gap-2 align-items-center"><button class="btn btn-primary">Guardar cambios</button>
+				<span class="small text-secondary">Se vuelve a validar que no se cruce con otra reserva y se recalcula el valor.</span></div>
+		</form>
+		<hr>
+		<form method="post" th:action="@{/agente/reservas/{id}/cancelar(id=${r['id']})}" onsubmit="return confirm('¿Cancelar esta reserva?')">
+			<button class="btn btn-outline-danger"><i class="bi bi-x-circle"></i> Cancelar reserva</button>
+		</form>
+	</div>
+	<p class="small text-secondary mt-3"><i class="bi bi-info-circle"></i> El check-in, el check-out y los pagos los hacen recepción y caja.</p>
+</main>
+<script th:replace="~{fragmentos :: scripts}"></script>
+</body>
+</html>
