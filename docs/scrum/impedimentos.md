@@ -32,3 +32,18 @@ Lo lleva el Scrum Master (Joan Franssuat Millán Vargas). La misma información 
 | Fecha límite | 09/11/2026 (Puerta 3) |
 | Estado | **Cerrado** (07/11/2026) |
 | Cierre | Las tres puertas quedaron aprobadas el 07/11/2026. En la Retro del 10/11 se revisa la causa y se acuerda cómo evitar que se repita. |
+
+## IMP-03 · El R2-Sprint 2 también empezó después del día 3
+
+| Campo | Valor |
+|-------|-------|
+| Fecha | 14/11/2026 (R2-Sprint 2, sábado después del día 3) |
+| Registra | Joan Franssuat Millán Vargas (SM) |
+| Qué pasó | Del miércoles 11 al viernes 13/11 ninguna tarjeta del R2-Sprint 2 se movió: el Planning (D14) y las tarjetas T012 a T021 se hicieron el sábado 14/11. Es la misma situación de IMP-02. Causa: ____________________ (la escribe el equipo en la Retro). |
+| Impacto | D14 y T012 a T021 (13 puntos). Riesgo para el Sprint Goal: **medio**, porque el lunes 16/11 es festivo y la Review es el martes 17/11. |
+| Dueño | Joan Franssuat Millán Vargas |
+| Escalado a | Equipo (se decide sin escalar al docente) |
+| Alternativa | El sábado 14/11 se hicieron el Planning, la revisión del plan (ADR-005 a 007, OpenAPI v1.1), el código y las pruebas (71 de 71 en verde). Quedan para antes de la Review las pruebas P025 a P031 en Render. |
+| Fecha límite | 17/11/2026 (Review del R2-Sprint 2) |
+| Estado | **Abierto** |
+| Cierre | Se cierra cuando P025 a P031 pasen en Render y la Retro acuerde una acción para que el R2-Sprint 3 arranque el miércoles 18/11. Que se repita después de IMP-02 es tema obligatorio de la Retro. |

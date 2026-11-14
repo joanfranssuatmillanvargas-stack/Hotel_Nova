@@ -1,7 +1,7 @@
-# Plan técnico: HotelNova con 10 roles · Versión 1.0 (para la Puerta 2)
+# Plan técnico: HotelNova con 10 roles · Versión 1.1 (Planning del R2-Sprint 2)
 
-**PBI:** PBI-01 · **Tarjeta:** D11 · **Redacta:** Joan Franssuat Millán Vargas · **Revisa:** Jaider Javier Jaimes
-**Entra:** `spec.md` v1.0 · **Sale:** este plan, `docs/adr/ADR-001` a `ADR-004` y `api/openapi.yaml`
+**PBI:** PBI-01 · **Tarjetas:** D11 (v1.0) y D14 (v1.1) · **Redacta:** Joan Franssuat Millán Vargas · **Revisa:** Jaider Javier Jaimes
+**Entra:** `spec.md` v1.0 · **Sale:** este plan, `docs/adr/ADR-001` a `ADR-007` y `api/openapi.yaml` (v1.1)
 
 ## 1. Lo que no cambia
 
@@ -26,9 +26,12 @@ El Release 2 se construye sobre la arquitectura del Release 1, sin cambiarla:
 | [ADR-002](../../docs/adr/ADR-002-usuarios-de-prueba-idempotentes.md) | Los usuarios de prueba se crean al arrancar, uno por uno, solo si su usuario no existe | Crearlos a mano en Atlas |
 | [ADR-003](../../docs/adr/ADR-003-reparacion-como-novedad.md) | La reparación es un tipo nuevo de novedad (`REPARACION`) en la colección `novedades` de `ms-habitaciones` | Una colección `reparaciones` aparte |
 | [ADR-004](../../docs/adr/ADR-004-inicio-provisional-de-roles.md) | Los roles del Sprint 2 y 3 tienen desde el Sprint 1 un inicio provisional que muestra qué llega y cuándo | No crear sus rutas hasta su sprint |
+| [ADR-005](../../docs/adr/ADR-005-asignacion-en-la-habitacion.md) | La asignación de limpieza es un campo de `Habitacion` (`asignadaA`) que se borra al salir de LIMPIEZA; el rol de la camarera lo valida `hotel-web` | Colección `asignaciones` aparte |
+| [ADR-006](../../docs/adr/ADR-006-pago-del-cajero-y-cierre-calculado.md) | El pago guarda el cajero y el cierre de caja se calcula al consultarlo, por día y cajero; recepción deja de cobrar | Guardar cada cierre en una colección |
+| [ADR-007](../../docs/adr/ADR-007-canal-y-quien-toma-la-reserva.md) | Toda reserva exige canal y `tomadaPor`; `hotel-web` los llena según quién reserva | Canal opcional con MOSTRADOR por defecto |
 
-Las decisiones del Sprint 2 y 3 (asignaciones, cierre de caja, temporadas pendientes) se registran como ADR-005 en
-adelante en el Planning de cada sprint, cuando se crean sus tarjetas.
+Las decisiones del Sprint 3 (tablero gerencial, temporadas pendientes) se registran como ADR-008 en adelante en su
+Planning, cuando se crean sus tarjetas.
 
 ## 3. Páginas web y quién entra (hotel-web)
 
@@ -40,10 +43,12 @@ adelante en el Planning de cada sprint, cuando se crean sus tarjetas.
 | `/servicios/**` | SERVICIOS, ADMINISTRADOR | Release 1 |
 | `/limpieza/**` | LIMPIEZA, ADMINISTRADOR | Release 1 |
 | `/gerencia/**` | GERENTE | REQ-HN-002 (S1, provisional); REQ-HN-018 a 021 (S3) |
-| `/caja/**` | CAJERO | REQ-HN-002 (S1, provisional); REQ-HN-009 a 012 (S2) |
+| `/caja/**` | CAJERO | REQ-HN-002 (S1, provisional); REQ-HN-009 a 012 (S2, `caja_web`) |
 | `/mantenimiento/**` | MANTENIMIENTO | REQ-HN-006 a 008 (S1) |
-| `/supervision/**` | SUPERVISOR_LIMPIEZA | REQ-HN-002 (S1, provisional); REQ-HN-015 a 017 (S2) |
-| `/agente/**` | AGENTE_RESERVAS | REQ-HN-002 (S1, provisional); REQ-HN-013 y 014 (S2) |
+| `/supervision/**` | SUPERVISOR_LIMPIEZA | REQ-HN-002 (S1, provisional); REQ-HN-015 a 017 (S2, `supervision_web`) |
+| `/agente/**` | AGENTE_RESERVAS | REQ-HN-002 (S1, provisional); REQ-HN-013 y 014 (S2, `agente_web`) |
+
+La tabla no cambió en el Sprint 2: las rutas nuevas quedaron dentro de los prefijos que ya tenía cada rol.
 
 Toda ruta que no sea `/login`, `/registro`, `/salir` o un archivo estático exige sesión (REQ-HN-005).
 
@@ -79,17 +84,55 @@ Errores de la reparación: 400 si falta el técnico o la descripción; 404 si la
 MANTENIMIENTO (REQ-HN-008), con el mensaje "La habitación 101 está DISPONIBLE: solo se registran reparaciones de
 habitaciones en MANTENIMIENTO".
 
-## 5. Componentes planeados para el R2-Sprint 2 y 3
+## 5. Componentes del R2-Sprint 2 (Planning, D14)
 
-Se detallan en el Planning de cada sprint; aquí queda el componente responsable de cada requisito.
+### ms-servicios-facturacion · PBI-04 Cajero
+
+| Componente | Cambio | Cubre |
+|------------|--------|-------|
+| `modelo/Pago` | Campo nuevo `cajero` | REQ-HN-009 |
+| `modelo/CierreCaja` | Clase nueva: fecha, cajero, totales por medio, total, número de facturas y detalle | REQ-HN-012 |
+| `repositorio/factura_repositorio` | `findByEstadoOrderByNumeroAsc` | REQ-HN-009, 012 |
+| `repositorio/reglas_repositorio` | `pendientes()`, `pagar(id, medio, cajero)` y `cierre(fecha, cajero)` · ADR-006 | REQ-HN-009, 010, 012 |
+| `controlador/factura_apirest` | `GET /api/facturas?estado=PENDIENTE`, `POST /api/facturas/{id}/pago?medio=&cajero=` y `GET /api/facturas/cierre?fecha=&cajero=` | REQ-HN-009, 010, 012 |
+
+### ms-reservas · PBI-05 Agente de reservas
+
+| Componente | Cambio | Cubre |
+|------------|--------|-------|
+| `modelo/Canal` | Enum nuevo: TELEFONO, CORREO, WHATSAPP, WEB, MOSTRADOR | REQ-HN-013 |
+| `modelo/Reserva` | Campos nuevos `canal` y `tomadaPor` | REQ-HN-013 |
+| `repositorio/reglas_repositorio` | `crear` exige canal y `tomadaPor` (400) y aplica las reglas de siempre · ADR-007 | REQ-HN-013, RN-07, RN-08 |
+
+### ms-habitaciones · PBI-06 Supervisor de limpieza
+
+| Componente | Cambio | Cubre |
+|------------|--------|-------|
+| `modelo/Habitacion` | Campos nuevos `asignadaA`, `asignadaPor`, `asignadaEn` | REQ-HN-015 |
+| `modelo/Asignacion` y `modelo/PendienteLimpieza` | Clase nueva con `camarera` y `supervisor`; campo `asignadaA` en la lista de limpieza | REQ-HN-015, 017 |
+| `repositorio/reglas_repositorio` | `asignar(id, camarera, supervisor)` (409 si no está en LIMPIEZA), `pendientesLimpieza(camarera)` y `cambiarEstado` borra la asignación al salir de LIMPIEZA · ADR-005 | REQ-HN-015, 016, 017 |
+| `controlador/habitacion_apirest` | `POST /api/habitaciones/{id}/asignacion` y `GET /api/habitaciones/limpieza?camarera=` | REQ-HN-015 a 017 |
+
+### hotel-web
+
+| Componente | Cambio | Cubre |
+|------------|--------|-------|
+| `controlador/caja_web` | Bandeja de pendientes, registrar pago y cierre de caja (reemplaza el inicio provisional) | REQ-HN-009 a 012 |
+| `controlador/agente_web` | Reservas del agente, nueva reserva con canal, huésped rápido, detalle, modificar y cancelar | REQ-HN-013, 014 |
+| `controlador/supervision_web` | Reparto de habitaciones por limpiar entre las camareras | REQ-HN-015, 016 |
+| `repositorio/cuentas_repositorio` | `camareras()` y `camarera(usuario)`: usuario activo con rol LIMPIEZA o 409 · ADR-005 | REQ-HN-016 |
+| `controlador/limpieza_web` | La camarera ve solo sus habitaciones; el administrador las ve todas | REQ-HN-017 |
+| `controlador/recepcion_web` y `fragmentos-estadia.html` | Sin pago (ruta y formulario quitados); la reserva se crea con canal MOSTRADOR | REQ-HN-011, 013 |
+| `controlador/huesped_web` | La reserva en línea se crea con canal WEB | REQ-HN-013 |
+| `controlador/roles_nuevos_web` | Solo queda el inicio provisional de la gerencia | ADR-004 |
+| Plantillas `caja/*`, `agente/*`, `supervision/inicio`, `fragmentos.html` (menús), `limpieza/inicio`, `recepcion/reservas` (columna Canal) | Pantallas del sprint | REQ-HN-009 a 017 |
+
+## 5b. Componentes planeados para el R2-Sprint 3
+
+Se detallan en su Planning; aquí queda el componente responsable de cada requisito.
 
 | Requisito | Componente previsto |
 |-----------|---------------------|
-| REQ-HN-009 a 011 Pago por el cajero | `ms-servicios-facturacion`: `POST /api/facturas/{id}/pago` guarda `cajero`; `hotel-web`: `caja_web`; se quita el pago de `recepcion_web` |
-| REQ-HN-012 Cierre de caja | `ms-servicios-facturacion`: `GET /api/facturas/cierre?fecha=` |
-| REQ-HN-013 Canal y agente | `ms-reservas`: campos `canal` y `tomadaPor` en `Reserva`; `hotel-web`: `agente_web` |
-| REQ-HN-014 Agente sin check-in | `hotel-web`: `agente_web` sin esas acciones; `FiltroSesion` no le da `/recepcion` |
-| REQ-HN-015 a 017 Asignaciones | `ms-habitaciones`: campo `asignadaA` en `Habitacion`, `POST /api/habitaciones/{id}/asignacion`, `GET /api/habitaciones/limpieza?camarera=` |
 | REQ-HN-018 y 019 Tablero gerencial | `hotel-web`: `gerencia_web` que consulta los reportes que ya existen en los 4 microservicios |
 | REQ-HN-020 y 021 Temporadas | `ms-habitaciones`: campo `estado` en `Temporada` (PENDIENTE, APROBADA, RECHAZADA) y `POST /api/temporadas/{id}/aprobacion`; la tarifa solo usa las APROBADAS |
 | REQ-HN-022 y 023 Correo | `ms-reservas`: envío con reintento registrado; si falla, se guarda el error (objetivo extendido) |
@@ -104,7 +147,10 @@ Se detallan en el Planning de cada sprint; aquí queda el componente responsable
 | REQ-HN-004, 005 | `FiltroSesion` · ADR-001 | 1 |
 | REQ-HN-006 | `reglas_repositorio.enMantenimiento`, `GET /api/habitaciones/mantenimiento`, `mantenimiento_web` | 1 |
 | REQ-HN-007, 008 | `reglas_repositorio.registrarReparacion`, `POST /api/habitaciones/{id}/reparacion`, `mantenimiento_web` · ADR-003 | 1 |
-| REQ-HN-009 a 023 | Sección 5 | 2 y 3 |
+| REQ-HN-009 a 012 | `ms-servicios-facturacion` (`pagar`, `cierre`), `caja_web` · ADR-006 | 2 |
+| REQ-HN-013, 014 | `ms-reservas` (`Canal`, `tomadaPor`), `agente_web` · ADR-007 | 2 |
+| REQ-HN-015 a 017 | `ms-habitaciones` (`asignar`, `pendientesLimpieza`), `supervision_web`, `limpieza_web`, `cuentas_repositorio.camarera` · ADR-005 | 2 |
+| REQ-HN-018 a 023 | Sección 5b | 3 |
 | NFR-HN-001 | `cuentas_repositorio` (PBKDF2, sin cambios) | 1 |
 | NFR-HN-002 | `FiltroSesion` + matriz de permisos | 1 |
 | NFR-HN-003 | `mantenimiento/inicio.html` con Bootstrap | 1 |
@@ -118,7 +164,8 @@ Ningún requisito queda sin componente y ningún componente nuevo queda sin requ
 |-------|-----|-------------|
 | Unitarias | Reglas de la reparación y de la lista de mantenimiento (`reglas_repositorio`) con los repositorios simulados | JUnit 5 + Mockito (`spring-boot-starter-test`) |
 | Unitarias | Permisos por ruta para los 10 roles (`FiltroSesion`) y usuarios de prueba (`cuentas_repositorio`) | JUnit 5 + Mockito |
-| Plan de pruebas | P021 a P024 del Excel, a mano sobre la aplicación | Hoja *8. Plan Pruebas* |
+| Unitarias (S2) | Pago, bandeja y cierre (`CajaTest`), canal y quién toma la reserva (`AgenteReservasTest`), asignación (`AsignacionTest`), camareras (`CamarerasTest`) y rutas nuevas (`PermisosSprint2Test`) | JUnit 5 + Mockito; se agregó `spring-boot-starter-test` a ms-reservas y ms-servicios-facturacion |
+| Plan de pruebas | P021 a P024 (S1) y P025 a P031 (S2) del Excel, a mano sobre la aplicación | Hoja *8. Plan Pruebas* |
 
 Las pruebas se escriben antes que el código (constitución, principio 3) y quedan en `src/test/java` de cada proyecto.
 
@@ -132,3 +179,15 @@ Las pruebas se escriben antes que el código (constitución, principio 3) y qued
 
 **Resultado:** ☑ Aprobada ☐ Aprobada con observaciones ☐ Rechazada
 **Revisa:** Jaider Javier Jaimes · **Fecha:** 07/11/2026
+
+## Revisión del plan en el Planning del R2-Sprint 2 (v1.1)
+
+| Revisión | Cumple |
+|----------|:------:|
+| Cada requisito del Sprint 2 (REQ-HN-009 a 017) tiene componente en la sección 5 y en la matriz | ☑ |
+| Cada decisión nueva tiene su ADR (ADR-005 a ADR-007) con alternativa descartada y consecuencias | ☑ |
+| El OpenAPI v1.1 describe los endpoints del Sprint 2 como quedaron (rutas, parámetros y errores) | ☑ |
+| No se agregó ninguna dependencia nueva fuera de `spring-boot-starter-test` (solo para pruebas) | ☑ |
+
+**Resultado:** ☑ Aprobada ☐ Aprobada con observaciones ☐ Rechazada
+**Revisa:** Jaider Javier Jaimes · **Fecha:** 14/11/2026
