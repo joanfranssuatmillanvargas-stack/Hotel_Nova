@@ -23,7 +23,7 @@
 		</form>
 		<div class="table-responsive">
 		<table class="table table-sm mb-0">
-			<thead><tr><th>Código</th><th>Huésped</th><th>Hab.</th><th>Llegada</th><th>Salida</th><th class="text-end">Alojamiento</th><th>Estado</th><th></th></tr></thead>
+			<thead><tr><th>Código</th><th>Huésped</th><th>Hab.</th><th>Llegada</th><th>Salida</th><th class="text-end">Alojamiento</th><th>Canal</th><th>Estado</th><th></th></tr></thead>
 			<tbody>
 				<tr th:each="r : ${reservas}">
 					<td class="fw-semibold" th:text="${r['codigo']}">R-0001</td>
@@ -31,6 +31,7 @@
 					<td th:text="${r['numeroHabitacion']}">101</td>
 					<td th:text="${r['llegada']}">-</td><td th:text="${r['salida']}">-</td>
 					<td class="text-end" th:text="'$' + ${#numbers.formatDecimal(r['valorAlojamiento'], 1, 'POINT', 0, 'COMMA')}">0</td>
+					<td class="small" th:text="${r['canal'] != null} ? ${r['canal']} : '—'" th:title="${r['tomadaPor']}">MOSTRADOR</td>
 					<td><span class="estado" th:classappend="'estado-' + ${r['estado']}" th:text="${r['estado']}">E</span></td>
 					<td class="text-end text-nowrap">
 						<th:block th:if="${r['estado'] == 'CONFIRMADA'}">
@@ -44,7 +45,7 @@
 							th:href="@{/recepcion/estadia/{id}(id=${r['id']})}"><i class="bi bi-receipt"></i> Cuenta</a>
 					</td>
 				</tr>
-				<tr th:if="${#lists.isEmpty(reservas)}"><td colspan="8" class="text-secondary">No hay reservas con ese filtro.</td></tr>
+				<tr th:if="${#lists.isEmpty(reservas)}"><td colspan="9" class="text-secondary">No hay reservas con ese filtro.</td></tr>
 			</tbody>
 		</table>
 		</div>

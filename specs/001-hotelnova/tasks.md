@@ -35,20 +35,27 @@ Punto de control del R2-Sprint 1: los 10 usuarios de prueba inician sesión cada
 dañada pasa de MANTENIMIENTO a LIMPIEZA con la reparación registrada.
 
 ## Fase 4 · PBI-04 Cajero (R2-Sprint 2)
-- [ ] T012 [P] [SER-11] [SER-12] Pruebas del pago por el cajero y del cierre de caja (AC-009.1, 010.1, 012.1, 012.2)
-- [ ] T013 [SER-11] Pago con medio y cajero en ms-servicios-facturacion; quitar el pago de recepción (REQ-HN-009 a 011) (después de T012)
-- [ ] T014 [SER-12] Cierre de caja por día (REQ-HN-012) (después de T013)
-- [ ] T015 [SER-11] [SER-12] Pantalla del cajero (AC-011.1) (después de T014)
+- [x] T012 [P] [SER-11] [SER-12] Pruebas del pago por el cajero y del cierre de caja (AC-009.1, 010.1, 011.1, 012.1, 012.2); agrega `spring-boot-starter-test` a ms-servicios-facturacion
+- [x] T013 [SER-11] Pago con medio y cajero en ms-servicios-facturacion; quitar el pago de recepción (REQ-HN-009 a 011) (después de T012)
+- [x] T014 [SER-12] Cierre de caja por día (REQ-HN-012) (después de T013)
+- [x] T015 [SER-11] [SER-12] Pantalla del cajero (AC-011.1) (después de T014)
 
 ## Fase 5 · PBI-05 Agente de reservas (R2-Sprint 2)
-- [ ] T016 [P] [RES-11] [RES-12] Pruebas del canal y de los permisos del agente (AC-013.1, 013.2, 014.1)
-- [ ] T017 [RES-11] Canal y `tomadaPor` en las reservas de ms-reservas (REQ-HN-013) (después de T016)
-- [ ] T018 [RES-12] Pantalla del agente: huésped rápido, reservar, modificar y cancelar (REQ-HN-014) (después de T017)
+- [x] T016 [P] [RES-11] [RES-12] Pruebas del canal y de los permisos del agente (AC-013.1, 013.2, 014.1); agrega `spring-boot-starter-test` a ms-reservas
+- [x] T017 [RES-11] Canal y `tomadaPor` en las reservas de ms-reservas (REQ-HN-013) (después de T016)
+- [x] T018 [RES-12] Pantalla del agente: huésped rápido, reservar, modificar y cancelar (REQ-HN-014) (después de T017)
 
 ## Fase 6 · PBI-06 Supervisor de limpieza (R2-Sprint 2)
-- [ ] T019 [P] [HAB-18] [HAB-19] Pruebas de la asignación (AC-015.1, 015.2, 016.1, 017.1)
-- [ ] T020 [HAB-18] Asignación y reasignación en ms-habitaciones (REQ-HN-015, 016) (después de T019)
-- [ ] T021 [HAB-18] [HAB-19] Pantalla del supervisor y lista "mis habitaciones" de la camarera (REQ-HN-017) (después de T020)
+- [x] T019 [P] [HAB-18] [HAB-19] Pruebas de la asignación (AC-015.1, 015.2, 016.1, 017.1)
+- [x] T020 [HAB-18] Asignación y reasignación en ms-habitaciones (REQ-HN-015, 016) (después de T019)
+- [x] T021 [HAB-18] [HAB-19] Pantalla del supervisor y lista "mis habitaciones" de la camarera (REQ-HN-017) (después de T020)
+
+**Estado al 14/11/2026:** T012 a T021 terminadas; las tarjetas se crearon en el Planning del R2-Sprint 2 (D14).
+Pruebas nuevas: `CajaTest` (7), `AgenteReservasTest` (5), `AsignacionTest` (6), `CamarerasTest` (4) y
+`PermisosSprint2Test` (17); con las del Sprint 1 pasan 71 de 71. Falta ejecutar P025 a P031 en Render (Review del Sprint 2).
+
+Punto de control del R2-Sprint 2: el agente toma una reserva por teléfono con su canal, el cajero cobra una factura y
+genera el cierre del día, y el supervisor asigna una habitación a una camarera que solo ve las suyas.
 
 ## Fase 7 · PBI-07 Gerente (R2-Sprint 3)
 - [ ] T022 [P] [HAB-20] Pruebas de las temporadas pendientes (AC-020.1, 021.1, 021.2)

@@ -67,15 +67,13 @@
 					</table>
 					<div th:if="${factura['pago'] != null}" class="small text-success">
 						<i class="bi bi-check-circle"></i> Pagada con <span th:text="${factura['pago']['medio']}">medio</span>
-						el <span th:text="${#strings.replace(factura['pago']['fecha'], 'T', ' ')}">fecha</span>
+						el <span th:text="${#strings.replace(factura['pago']['fecha'], 'T', ' ')}">fecha</span><th:block th:if="${factura['pago']['cajero'] != null}">
+						· cobró <span th:text="${factura['pago']['cajero']}">cajero</span></th:block>
 					</div>
-					<form th:if="${editable and factura['estado'] == 'PENDIENTE'}" class="d-flex gap-2" method="post" th:action="@{/recepcion/estadia/{id}/pago(id=${r['id']})}">
-						<input type="hidden" name="facturaId" th:value="${factura['id']}">
-						<select class="form-select form-select-sm" name="medio">
-							<option value="EFECTIVO">Efectivo</option><option value="TARJETA">Tarjeta</option><option value="TRANSFERENCIA">Transferencia</option>
-						</select>
-						<button class="btn btn-sm btn-success text-nowrap"><i class="bi bi-cash-coin"></i> Registrar pago</button>
-					</form>
+					<div th:if="${editable and factura['estado'] == 'PENDIENTE'}" class="small text-secondary">
+						<i class="bi bi-info-circle"></i> El pago lo registra el cajero: indícale al huésped que pase por caja con la factura
+						No. <span th:text="${factura['numero']}">12</span>.
+					</div>
 				</div>
 			</div>
 		</div>

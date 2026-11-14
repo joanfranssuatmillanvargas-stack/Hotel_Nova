@@ -125,6 +125,9 @@ public class reglas_repositorio {
 			datos.setEstado(actual.getEstado());
 			datos.setActualizadoPor(actual.getActualizadoPor());
 			datos.setActualizadoEn(actual.getActualizadoEn());
+			datos.setAsignadaA(actual.getAsignadaA());
+			datos.setAsignadaPor(actual.getAsignadaPor());
+			datos.setAsignadaEn(actual.getAsignadaEn());
 		}
 		datos.setId(id);
 		datos.setNumero(numero);
@@ -142,13 +145,18 @@ public class reglas_repositorio {
 		habitaciones.delete(habitacion);
 	}
 
-	/** HAB-07: cambia el estado y guarda quién lo hizo. */
+	/** HAB-07: cambia el estado y guarda quién lo hizo. Si sale de LIMPIEZA, deja de estar asignada (ADR-005). */
 	public Habitacion cambiarEstado(String id, EstadoHabitacion estado, String usuario) {
 		if (estado == null) {
 			throw invalido("Falta el nuevo estado");
 		}
 		Habitacion habitacion = habitacion(id);
 		habitacion.setEstado(estado);
+		if (estado != EstadoHabitacion.LIMPIEZA) {
+			habitacion.setAsignadaA(null);
+			habitacion.setAsignadaPor(null);
+			habitacion.setAsignadaEn(null);
+		}
 		habitacion.setActualizadoPor(usuario == null || usuario.isBlank() ? "sistema" : usuario);
 		habitacion.setActualizadoEn(ahora());
 		return habitaciones.save(habitacion);
@@ -263,8 +271,12 @@ public class reglas_repositorio {
 
 	// ======================= Limpieza (HAB-11 a HAB-14) =======================
 
-	/** HAB-11: pendientes de limpieza; primero las que tienen una llegada hoy. */
-	public List<PendienteLimpieza> pendientesLimpieza() {
+	/**
+	 * HAB-11: pendientes de limpieza; primero las que tienen una llegada hoy.
+	 * HAB-19 (REQ-HN-017): con camarera, solo las habitaciones asignadas a ella;
+	 * sin camarera, todas (las ve el supervisor, con la camarera de cada una).
+	 */
+	public List<PendienteLimpieza> pendientesLimpieza(String camarera) {
 		Set<String> conLlegada = new HashSet<>();
 		try {
 			for (Map<String, Object> r : externos.llegadas(hoy())) {
@@ -275,7 +287,11 @@ public class reglas_repositorio {
 		}
 		List<PendienteLimpieza> lista = new ArrayList<>();
 		for (Habitacion h : habitaciones.findByEstadoOrderByNumeroAsc(EstadoHabitacion.LIMPIEZA)) {
+			if (camarera != null && !camarera.isBlank() && !camarera.trim().equals(h.getAsignadaA())) {
+				continue;
+			}
 			PendienteLimpieza p = new PendienteLimpieza();
+			p.setAsignadaA(h.getAsignadaA());
 			p.setHabitacionId(h.getId());
 			p.setNumero(h.getNumero());
 			p.setPiso(h.getPiso());
@@ -285,6 +301,23 @@ public class reglas_repositorio {
 		lista.sort(Comparator.comparing(PendienteLimpieza::isLlegadaHoy).reversed()
 				.thenComparing(PendienteLimpieza::getNumero));
 		return lista;
+	}
+
+	/**
+	 * HAB-18 (REQ-HN-015, 016 · ADR-005): asigna o reasigna una habitación en LIMPIEZA a una camarera.
+	 * Al reasignar se reemplaza la camarera anterior, así que sale de su lista. En otro estado responde 409.
+	 */
+	public Habitacion asignar(String id, String camarera, String supervisor) {
+		obligatorio(camarera, "la camarera a la que se asigna la habitación");
+		Habitacion h = habitacion(id);
+		if (h.getEstado() != EstadoHabitacion.LIMPIEZA) {
+			throw conflicto("La habitación " + h.getNumero() + " está " + h.getEstado()
+					+ ": solo se asignan habitaciones en LIMPIEZA");
+		}
+		h.setAsignadaA(camarera.trim());
+		h.setAsignadaPor(supervisor == null || supervisor.isBlank() ? "sistema" : supervisor.trim());
+		h.setAsignadaEn(ahora());
+		return habitaciones.save(h);
 	}
 
 	/** HAB-12: solo desde LIMPIEZA; queda DISPONIBLE y se registra quién la limpió. */

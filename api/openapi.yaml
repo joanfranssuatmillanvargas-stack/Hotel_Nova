@@ -1,13 +1,15 @@
 openapi: 3.0.3
 info:
   title: HotelNova · Endpoints nuevos del Release 2
-  version: 1.0.0
+  version: 1.1.0
   description: >
     Contrato de los endpoints que agrega el Release 2 (PBI-01, tarjeta D11). Los endpoints del Release 1
     siguen documentados en el Swagger de cada microservicio (/swagger-ui.html). Los marcados con
     x-sprint 2 o 3 son borradores: se confirman en el Planning de su sprint.
     Los roles los controla hotel-web (ADR-001): cada endpoint indica en x-roles qué página lo usa.
     Errores de negocio: 400 dato inválido, 404 no existe, 409 regla de negocio (mensaje en "message").
+    Versión 1.1 (Planning del R2-Sprint 2, D14): los endpoints del Sprint 2 dejan de ser borradores y quedan como se
+    construyeron (ADR-005 a ADR-007).
 servers:
   - url: https://hotelnova-habitaciones.onrender.com
     description: ms-habitaciones
@@ -20,6 +22,8 @@ tags:
     description: Técnico de mantenimiento (HAB-16, HAB-17)
   - name: Caja
     description: Cajero (SER-11, SER-12)
+  - name: Reservas
+    description: Agente de reservas (RES-11, RES-12)
   - name: Asignaciones
     description: Supervisor de limpieza (HAB-18, HAB-19)
   - name: Temporadas
@@ -86,43 +90,88 @@ paths:
               example:
                 status: 409
                 message: 'La habitación 101 está DISPONIBLE: solo se registran reparaciones de habitaciones en MANTENIMIENTO'
+  /api/facturas:
+    get:
+      tags: [Caja]
+      summary: Bandeja del cajero con las facturas PENDIENTES (SER-11)
+      operationId: listarFacturas
+      x-sprint: 2
+      x-roles: [CAJERO]
+      x-cubre: [REQ-HN-009]
+      parameters:
+        - name: estado
+          in: query
+          required: false
+          description: PENDIENTE (bandeja del cajero, de la más antigua a la más nueva) o PAGADA
+          schema:
+            type: string
+            enum: [PENDIENTE, PAGADA]
+        - name: reservaId
+          in: query
+          required: false
+          description: Factura de una estadía (Release 1)
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Lista de facturas
   /api/facturas/{id}/pago:
     post:
       tags: [Caja]
-      summary: Registrar el pago de una factura PENDIENTE (SER-11) · borrador
+      summary: Registrar el pago de una factura PENDIENTE con su medio y el cajero que lo recibe (SER-11)
+      description: >
+        Se mantienen los parámetros en la URL, como en el Release 1 (SER-08), y se agrega el cajero (ADR-006).
+        Solo la página del cajero llama este endpoint (REQ-HN-011); recepción ya no lo usa.
       operationId: registrarPago
       x-sprint: 2
       x-roles: [CAJERO]
-      x-cubre: [REQ-HN-009, REQ-HN-010, REQ-HN-011]
+      x-cubre: [REQ-HN-009, REQ-HN-010, REQ-HN-011, AC-009.1, AC-010.1]
       parameters:
         - $ref: '#/components/parameters/FacturaId'
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required: [medio, cajero]
-              properties:
-                medio:
-                  type: string
-                  enum: [EFECTIVO, TARJETA, TRANSFERENCIA]
-                cajero:
-                  type: string
-                  example: cajero
+        - name: medio
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [EFECTIVO, TARJETA, TRANSFERENCIA]
+        - name: cajero
+          in: query
+          required: true
+          schema:
+            type: string
+            example: cajero
       responses:
         '200':
-          description: Factura PAGADA
+          description: Factura PAGADA, con pago.medio, pago.valor, pago.fecha y pago.cajero
+        '400':
+          description: Falta el medio o el cajero
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                status: 400
+                message: Falta el cajero que recibe el pago
+        '404':
+          description: No existe la factura
         '409':
           description: La factura ya está PAGADA
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                status: 409
+                message: La factura No. 12 ya está pagada
   /api/facturas/cierre:
     get:
       tags: [Caja]
-      summary: Cierre de caja de un día (SER-12) · borrador
+      summary: Cierre de caja de un día y un cajero (SER-12)
+      description: Se calcula con los pagos de ese día; no se guarda (ADR-006). Un día sin pagos devuelve todo en 0.
       operationId: cierreDeCaja
       x-sprint: 2
       x-roles: [CAJERO]
-      x-cubre: [REQ-HN-012]
+      x-cubre: [REQ-HN-012, AC-012.1, AC-012.2]
       parameters:
         - name: fecha
           in: query
@@ -131,17 +180,95 @@ paths:
             type: string
             format: date
             example: '2026-11-12'
+        - name: cajero
+          in: query
+          required: true
+          schema:
+            type: string
+            example: cajero
       responses:
         '200':
-          description: Totales por medio de pago, número de facturas y cajeros
+          description: Totales por medio de pago, número de facturas pagadas y detalle
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CierreCaja'
+        '400':
+          description: Falta la fecha o el cajero
+  /api/reservas:
+    post:
+      tags: [Reservas]
+      summary: Crear una reserva con su canal y quién la tomó (RES-01, RES-11)
+      description: >
+        Mismas reglas del Release 1 (fechas cruzadas 409, habitación en mantenimiento 409) para todos los canales (RN-08).
+        hotel-web envía MOSTRADOR desde recepción, WEB desde el huésped y TELEFONO, CORREO o WHATSAPP desde el agente (ADR-007).
+      operationId: crearReserva
+      x-sprint: 2
+      x-roles: [AGENTE_RESERVAS, RECEPCIONISTA, HUESPED]
+      x-cubre: [REQ-HN-013, AC-013.1, AC-013.2]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NuevaReserva'
+      responses:
+        '201':
+          description: Reserva CONFIRMADA con canal y tomadaPor
+        '400':
+          description: Falta un dato (huésped, habitación, fechas, canal o quién la tomó)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                status: 400
+                message: 'Falta el canal de la reserva: TELEFONO, CORREO, WHATSAPP, WEB o MOSTRADOR'
+        '409':
+          description: Fechas cruzadas con otra reserva o habitación en mantenimiento
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                status: 409
+                message: La habitación 101 ya está reservada del 2026-11-20 al 2026-11-22 (reserva R-0001). Elige otras fechas u otra habitación.
+  /api/habitaciones/limpieza:
+    get:
+      tags: [Asignaciones]
+      summary: Habitaciones por limpiar; con camarera, solo las asignadas a ella (HAB-11, HAB-19)
+      operationId: pendientesLimpieza
+      x-sprint: 2
+      x-roles: [LIMPIEZA, SUPERVISOR_LIMPIEZA]
+      x-cubre: [REQ-HN-017, AC-015.2, AC-017.1]
+      parameters:
+        - name: camarera
+          in: query
+          required: false
+          description: Usuario de la camarera. Sin este parámetro devuelve todas (vista del supervisor)
+          schema:
+            type: string
+            example: ana
+      responses:
+        '200':
+          description: Lista con las de llegada hoy primero
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PendienteLimpieza'
   /api/habitaciones/{id}/asignacion:
     post:
       tags: [Asignaciones]
-      summary: Asignar o reasignar una habitación en LIMPIEZA a una camarera (HAB-18) · borrador
+      summary: Asignar o reasignar una habitación en LIMPIEZA a una camarera (HAB-18)
+      description: >
+        Que la camarera sea un usuario activo con rol LIMPIEZA lo valida hotel-web antes de llamar (ADR-005).
+        Al reasignar se reemplaza la camarera anterior. La asignación se borra cuando la habitación sale de LIMPIEZA.
       operationId: asignarCamarera
       x-sprint: 2
       x-roles: [SUPERVISOR_LIMPIEZA]
-      x-cubre: [REQ-HN-015, REQ-HN-016]
+      x-cubre: [REQ-HN-015, REQ-HN-016, AC-015.1, AC-015.2, AC-016.1]
       parameters:
         - $ref: '#/components/parameters/HabitacionId'
       requestBody:
@@ -155,11 +282,29 @@ paths:
                 camarera:
                   type: string
                   example: ana
+                supervisor:
+                  type: string
+                  example: supervisor
       responses:
         '200':
-          description: Habitación con la camarera asignada
+          description: Habitación con asignadaA, asignadaPor y asignadaEn
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Habitacion'
+        '400':
+          description: Falta la camarera
+        '404':
+          description: No existe la habitación
         '409':
           description: La habitación no está en LIMPIEZA
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                status: 409
+                message: 'La habitación 101 está OCUPADA: solo se asignan habitaciones en LIMPIEZA'
   /api/temporadas/{id}/aprobacion:
     post:
       tags: [Temporadas]
@@ -260,6 +405,85 @@ components:
         actualizadoEn:
           type: string
           format: date-time
+        asignadaA:
+          type: string
+          description: Camarera asignada (HAB-18); null si no está asignada o no está en LIMPIEZA
+          example: ana
+        asignadaPor:
+          type: string
+          example: supervisor
+        asignadaEn:
+          type: string
+          format: date-time
+    PendienteLimpieza:
+      type: object
+      properties:
+        habitacionId:
+          type: string
+        numero:
+          type: string
+          example: '203'
+        piso:
+          type: integer
+          example: 2
+        llegadaHoy:
+          type: boolean
+        asignadaA:
+          type: string
+          example: ana
+    CierreCaja:
+      type: object
+      properties:
+        fecha:
+          type: string
+          format: date
+          example: '2026-11-12'
+        cajero:
+          type: string
+          example: cajero
+        efectivo:
+          type: number
+          example: 150000
+        tarjeta:
+          type: number
+          example: 200000
+        transferencia:
+          type: number
+          example: 0
+        total:
+          type: number
+          example: 350000
+        facturas:
+          type: integer
+          example: 3
+        detalle:
+          type: array
+          description: Facturas pagadas ese día por ese cajero
+          items:
+            type: object
+    NuevaReserva:
+      type: object
+      required: [huespedDocumento, habitacionId, llegada, salida, canal, tomadaPor]
+      properties:
+        huespedDocumento:
+          type: string
+          example: '1098765432'
+        habitacionId:
+          type: string
+        llegada:
+          type: string
+          format: date
+          example: '2026-11-20'
+        salida:
+          type: string
+          format: date
+          example: '2026-11-22'
+        canal:
+          type: string
+          enum: [TELEFONO, CORREO, WHATSAPP, WEB, MOSTRADOR]
+        tomadaPor:
+          type: string
+          example: agente
     Error:
       type: object
       properties:

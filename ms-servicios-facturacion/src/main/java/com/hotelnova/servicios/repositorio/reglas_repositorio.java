@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.hotelnova.servicios.modelo.Categoria;
+import com.hotelnova.servicios.modelo.CierreCaja;
 import com.hotelnova.servicios.modelo.Consumo;
 import com.hotelnova.servicios.modelo.CuentaEstadia;
 import com.hotelnova.servicios.modelo.EstadoFactura;
@@ -199,9 +200,23 @@ public class reglas_repositorio {
 		return facturas.save(f);
 	}
 
-	public Factura pagar(String id, MedioPago medio) {
+	// ======================= Caja (SER-11, SER-12 · Release 2) =======================
+
+	/** SER-11: bandeja del cajero con las facturas PENDIENTES, de la más antigua a la más nueva. */
+	public List<Factura> pendientes() {
+		return facturas.findByEstadoOrderByNumeroAsc(EstadoFactura.PENDIENTE);
+	}
+
+	/**
+	 * SER-11 (REQ-HN-009, 010): registra el pago con su medio y el cajero que lo recibe.
+	 * Una factura PAGADA no se cobra dos veces (409). Solo el cajero llega aquí desde hotel-web (REQ-HN-011, ADR-006).
+	 */
+	public Factura pagar(String id, MedioPago medio, String cajero) {
 		if (medio == null) {
 			throw invalido("El medio de pago debe ser EFECTIVO, TARJETA o TRANSFERENCIA");
+		}
+		if (cajero == null || cajero.isBlank()) {
+			throw invalido("Falta el cajero que recibe el pago");
 		}
 		Factura f = factura(id);
 		if (f.getEstado() == EstadoFactura.PAGADA) {
@@ -211,9 +226,42 @@ public class reglas_repositorio {
 		p.setMedio(medio);
 		p.setFecha(ahora());
 		p.setValor(f.getTotal());
+		p.setCajero(cajero.trim());
 		f.setPago(p);
 		f.setEstado(EstadoFactura.PAGADA);
 		return facturas.save(f);
+	}
+
+	/**
+	 * SER-12 (REQ-HN-012): cierre de caja de un día y un cajero, calculado con los pagos de ese día (ADR-006).
+	 * Un día sin pagos devuelve todo en 0.
+	 */
+	public CierreCaja cierre(LocalDate fecha, String cajero) {
+		if (fecha == null) {
+			throw invalido("Indica la fecha del cierre de caja");
+		}
+		if (cajero == null || cajero.isBlank()) {
+			throw invalido("Falta el cajero del cierre de caja");
+		}
+		List<Factura> delDia = facturas.findByEstadoOrderByNumeroAsc(EstadoFactura.PAGADA).stream()
+				.filter(f -> f.getPago() != null && f.getPago().getFecha() != null)
+				.filter(f -> f.getPago().getFecha().toLocalDate().equals(fecha))
+				.filter(f -> cajero.trim().equals(f.getPago().getCajero()))
+				.toList();
+		CierreCaja c = new CierreCaja();
+		c.setFecha(fecha);
+		c.setCajero(cajero.trim());
+		c.setEfectivo(totalCon(delDia, MedioPago.EFECTIVO));
+		c.setTarjeta(totalCon(delDia, MedioPago.TARJETA));
+		c.setTransferencia(totalCon(delDia, MedioPago.TRANSFERENCIA));
+		c.setTotal(redondear(c.getEfectivo() + c.getTarjeta() + c.getTransferencia()));
+		c.setFacturas(delDia.size());
+		c.setDetalle(delDia);
+		return c;
+	}
+
+	private static double totalCon(List<Factura> lista, MedioPago medio) {
+		return redondear(lista.stream().filter(f -> f.getPago().getMedio() == medio).mapToDouble(f -> f.getPago().getValor()).sum());
 	}
 
 	// ======================= Reporte (SER-10) =======================
