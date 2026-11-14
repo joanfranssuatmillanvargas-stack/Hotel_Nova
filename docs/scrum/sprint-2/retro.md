@@ -19,7 +19,7 @@
 
 ## 3. Qué no funcionó
 
-- Por segundo sprint seguido, del día 1 al 3 no se movió ninguna tarjeta (IMP-02 e IMP-03). Causa: [__]
+- Por segundo sprint seguido, del día 1 al 3 no se movió ninguna tarjeta (IMP-02 e IMP-03). Causa: disponibilidad de tiempo del equipo: entre semana casi no queda tiempo libre y el trabajo arranca casi siempre el sábado, que es el día con más tiempo.
 - [__]
 
 ## 4. Acciones para el R2-Sprint 3 (máximo 3, con dueño y fecha)

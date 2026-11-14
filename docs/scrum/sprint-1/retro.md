@@ -19,7 +19,7 @@
 
 ## 3. Qué no funcionó
 
-- Del miércoles 04 al viernes 06/11 no se movió ninguna tarjeta (IMP-02). Causa: [__]
+- Del miércoles 04 al viernes 06/11 no se movió ninguna tarjeta (IMP-02). Causa: disponibilidad de tiempo del equipo: entre semana casi no queda tiempo libre y el trabajo arranca casi siempre el sábado, que es el día con más tiempo.
 - [__]
 
 ## 4. Acciones para el R2-Sprint 2 (máximo 3, con dueño y fecha)
