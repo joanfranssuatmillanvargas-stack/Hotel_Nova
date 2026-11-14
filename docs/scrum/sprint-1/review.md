@@ -4,7 +4,7 @@
 **Duración:** 45 minutos · **Sprint Goal:** al terminar el sprint, la spec v1.0 está aprobada con su plan y tareas,
 los 10 roles inician sesión cada uno en su inicio, y un técnico puede reparar una habitación dañada y devolverla al servicio.
 
-> Preparado con el estado del tablero al lunes 09/11. Lo que está entre corchetes se llena en la Review.
+> Se hizo el martes 10/11. Registro escrito el 14/11 con lo que contó el equipo.
 
 ## 1. Guion de la demo (15 minutos)
 
@@ -30,21 +30,22 @@ Antes de empezar: los 5 proyectos corriendo (o la URL de Render despierta) y "Ca
 | PBI-01 Spec v1.0, plan y tareas | 5 | Sí | Puertas 1, 2 y 3 aprobadas el 07/11/2026 (D10 a D12) |
 | PBI-02 Base de seguridad para 10 roles | 5 | Sí | PLA-08 y PLA-09: T001 a T006 terminadas el 07/11 |
 | PBI-03 Técnico de mantenimiento | 3 | Sí | HAB-16 y HAB-17: T007 a T011 terminadas; P021 a P024 aprobadas en Render el 09/11 |
-| **Total** | **13** | **13 de 13** | |
+| **Total** | **13** | **13 de 13** | El docente vio la demo y todo funcionó |
 
 ## 3. Decisiones que se confirman con el docente
 
 | # | Pregunta (spec.md, sección 10) | Decisión del PO | Respuesta del docente |
 |---|--------------------------------|-----------------|-----------------------|
-| 1 | Al reparar, ¿la habitación va a LIMPIEZA o queda DISPONIBLE? | A LIMPIEZA | [__] |
-| 5 | ¿La recepcionista sigue cobrando hasta que exista el cajero? | Sí, hasta el R2-Sprint 2 | [__] |
+| 1 | Al reparar, ¿la habitación va a LIMPIEZA o queda DISPONIBLE? | A LIMPIEZA | Confirmada: aprobó el funcionamiento como está |
+| 5 | ¿La recepcionista sigue cobrando hasta que exista el cajero? | Sí, hasta el R2-Sprint 2 | Confirmada: aprobó el funcionamiento como está |
 
 ## 4. Comentarios del stakeholder
 
-- [__]
+- El docente revisó el incremento, vio que todo funcionaba y dijo que el funcionamiento estaba bien así.
+- No pidió cambios: no entra ninguna solicitud de cambio (CR) al backlog.
 
 Si aparece una solicitud de cambio, entra al backlog como **PBI-10 (CR-001)** y la decide el PO (no se construye en este sprint).
 
 ## 5. Impedimentos
 
-- IMP-02: la especificación empezó tres días tarde. Estado: Cerrado el 07/11/2026 (las tres puertas aprobadas). La causa se revisa en la Retro.
+- IMP-02: la especificación empezó tres días tarde. Estado: Cerrado el 07/11/2026 (las tres puertas aprobadas). Causa: disponibilidad de tiempo; el trabajo arranca casi siempre el sábado.
