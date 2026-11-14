@@ -34,4 +34,4 @@
 
 | Acción del R2-Sprint 1 | ¿Se cumplió? |
 |------------------------|--------------|
-| [copiar de docs/scrum/sprint-1/retro.md] | [Sí / No] |
+| Revisar y actualizar el tablero de Trello entre semana, no solo el sábado (Joan, desde el 18/11) | [Se revisa en la Retro del R2-Sprint 3] |
