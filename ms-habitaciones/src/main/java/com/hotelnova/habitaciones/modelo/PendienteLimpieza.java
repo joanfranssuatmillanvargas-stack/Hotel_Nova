@@ -9,6 +9,7 @@ public class PendienteLimpieza {
 	private String numero;
 	private int piso;
 	private boolean llegadaHoy; // tiene una llegada hoy: se limpia primero
+	private String asignadaA; // HAB-18: camarera asignada (null si nadie la tiene)
 
 	public String getHabitacionId() {
 		return habitacionId;
@@ -37,5 +38,13 @@ public class PendienteLimpieza {
 
 	public void setLlegadaHoy(boolean llegadaHoy) {
 		this.llegadaHoy = llegadaHoy;
+	}
+
+	public String getAsignadaA() {
+		return asignadaA;
+	}
+
+	public void setAsignadaA(String asignadaA) {
+		this.asignadaA = asignadaA;
 	}
 }

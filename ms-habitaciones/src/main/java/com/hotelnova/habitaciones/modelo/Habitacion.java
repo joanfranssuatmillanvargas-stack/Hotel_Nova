@@ -18,6 +18,10 @@ public class Habitacion {
 	private EstadoHabitacion estado;
 	private String actualizadoPor; // último usuario que cambió el estado
 	private LocalDateTime actualizadoEn;
+	// HAB-18 (REQ-HN-015 · ADR-005): camarera que debe limpiarla; se borra cuando sale de LIMPIEZA
+	private String asignadaA;
+	private String asignadaPor;
+	private LocalDateTime asignadaEn;
 
 	public String getId() {
 		return id;
@@ -67,5 +71,29 @@ public class Habitacion {
 
 	public void setActualizadoEn(LocalDateTime actualizadoEn) {
 		this.actualizadoEn = actualizadoEn;
+	}
+
+	public String getAsignadaA() {
+		return asignadaA;
+	}
+
+	public void setAsignadaA(String asignadaA) {
+		this.asignadaA = asignadaA;
+	}
+
+	public String getAsignadaPor() {
+		return asignadaPor;
+	}
+
+	public void setAsignadaPor(String asignadaPor) {
+		this.asignadaPor = asignadaPor;
+	}
+
+	public LocalDateTime getAsignadaEn() {
+		return asignadaEn;
+	}
+
+	public void setAsignadaEn(LocalDateTime asignadaEn) {
+		this.asignadaEn = asignadaEn;
 	}
 }

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragmentos :: cabeza('Reservas')}"></head>
+<body>
+<nav th:replace="~{fragmentos :: menu}"></nav>
+<main class="container py-4">
+	<div th:replace="~{fragmentos :: alertas}"></div>
+	<div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+		<div>
+			<h1 class="h3 titulo mb-0"><i class="bi bi-headset"></i> Reservas por teléfono, correo y WhatsApp</h1>
+			<p class="small text-secondary mb-0">Busca al huésped por su documento para modificar o cancelar su reserva.</p>
+		</div>
+		<a class="btn btn-primary" href="/agente/reservas/nueva"><i class="bi bi-plus-circle"></i> Nueva reserva</a>
+	</div>
+	<div class="card p-3">
+		<form class="row g-2 mb-3" method="get" action="/agente">
+			<div class="col-6 col-md-3"><select class="form-select form-select-sm" name="estado">
+				<option th:each="e : ${ {'CONFIRMADA','CANCELADA'} }" th:value="${e}" th:text="${e}" th:selected="${e == f['estado']}"></option>
+			</select></div>
+			<div class="col-6 col-md-4"><input class="form-control form-control-sm" name="documento" th:value="${f['documento']}" placeholder="Documento del huésped"></div>
+			<div class="col-12 col-md-5 d-flex gap-2"><button class="btn btn-sm btn-outline-primary">Buscar</button>
+				<a class="btn btn-sm btn-outline-secondary" href="/agente">Limpiar</a></div>
+		</form>
+		<div class="table-responsive">
+		<table class="table table-sm align-middle mb-0">
+			<thead><tr><th>Código</th><th>Huésped</th><th>Hab.</th><th>Llegada</th><th>Salida</th><th>Canal</th><th>Tomada por</th><th>Estado</th><th></th></tr></thead>
+			<tbody>
+				<tr th:each="r : ${reservas}">
+					<td class="fw-semibold" th:text="${r['codigo']}">R-0001</td>
+					<td th:text="${r['nombreHuesped']}">Laura</td>
+					<td th:text="${r['numeroHabitacion']}">101</td>
+					<td th:text="${r['llegada']}">-</td><td th:text="${r['salida']}">-</td>
+					<td th:text="${r['canal'] != null} ? ${r['canal']} : '—'">TELEFONO</td>
+					<td th:text="${r['tomadaPor'] != null} ? ${r['tomadaPor']} : '—'">agente</td>
+					<td><span class="estado" th:classappend="'estado-' + ${r['estado']}" th:text="${r['estado']}">E</span></td>
+					<td class="text-end text-nowrap">
+						<a class="btn btn-sm btn-outline-secondary" th:href="@{/agente/reservas/{id}(id=${r['id']})}"><i class="bi bi-eye"></i> Ver</a>
+					</td>
+				</tr>
+				<tr th:if="${#lists.isEmpty(reservas)}"><td colspan="9" class="text-secondary">No hay reservas con ese filtro.</td></tr>
+			</tbody>
+		</table>
+		</div>
+	</div>
+</main>
+<script th:replace="~{fragmentos :: scripts}"></script>
+</body>
+</html>

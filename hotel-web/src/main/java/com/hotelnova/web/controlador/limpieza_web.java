@@ -15,12 +15,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.hotelnova.web.modelo.Rol;
 import com.hotelnova.web.modelo.UsuarioSesion;
 import com.hotelnova.web.repositorio.microservicios_repositorio;
 
 import jakarta.servlet.http.HttpSession;
 
-/** Pantalla del personal de limpieza (HAB-11, HAB-12, HAB-13, HAB-15): pensada para el celular. */
+/**
+ * Pantalla del personal de limpieza (HAB-11, HAB-12, HAB-13, HAB-15): pensada para el celular.
+ * Desde el R2-Sprint 2 cada camarera ve solo las habitaciones que le asignó el supervisor (HAB-19, REQ-HN-017);
+ * el administrador sigue viéndolas todas.
+ */
 @Controller
 @RequestMapping("/limpieza")
 public class limpieza_web {
@@ -33,7 +38,11 @@ public class limpieza_web {
 
 	@GetMapping
 	public String inicio(HttpSession sesion, Model model) {
-		model.addAttribute("pendientes", ms.lista(HABITACIONES, "/api/habitaciones/limpieza"));
+		UsuarioSesion yo = (UsuarioSesion) sesion.getAttribute("yo");
+		boolean camarera = yo != null && yo.getRol() == Rol.LIMPIEZA;
+		model.addAttribute("camarera", camarera);
+		model.addAttribute("pendientes", ms.lista(HABITACIONES,
+				"/api/habitaciones/limpieza" + (camarera ? consulta("camarera", yo.getUsuario()) : "")));
 		model.addAttribute("habitaciones", ms.lista(HABITACIONES, "/api/habitaciones"));
 		String hoy = String.valueOf(model.getAttribute("hoy"));
 		List<Map<String, Object>> hoyRegistros = ms.lista(HABITACIONES, "/api/novedades" + consulta("desde", hoy, "hasta", hoy));

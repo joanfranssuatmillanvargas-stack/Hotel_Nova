@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 
+import com.hotelnova.web.modelo.Rol;
 import com.hotelnova.web.modelo.Usuario;
 
 public interface usuario_repositorio extends MongoRepository<Usuario, String> {
@@ -14,4 +15,6 @@ public interface usuario_repositorio extends MongoRepository<Usuario, String> {
 	boolean existsByUsuario(String usuario);
 
 	List<Usuario> findAllByOrderByRolAscUsuarioAsc();
+
+	List<Usuario> findByRolOrderByUsuarioAsc(Rol rol);
 }

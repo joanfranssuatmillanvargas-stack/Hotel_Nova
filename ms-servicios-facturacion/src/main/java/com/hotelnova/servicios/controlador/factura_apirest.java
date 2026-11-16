@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.hotelnova.servicios.modelo.CierreCaja;
+import com.hotelnova.servicios.modelo.EstadoFactura;
 import com.hotelnova.servicios.modelo.Factura;
 import com.hotelnova.servicios.modelo.MedioPago;
 import com.hotelnova.servicios.modelo.ReporteIngresos;
@@ -22,7 +24,7 @@ import com.hotelnova.servicios.repositorio.reglas_repositorio;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
-@Tag(name = "Facturas", description = "Factura de cada estadía (alojamiento + consumos + IVA), pagos y reporte de ingresos")
+@Tag(name = "Facturas", description = "Factura de cada estadía (alojamiento + consumos + IVA), pagos del cajero, cierre de caja y reporte de ingresos")
 @RestController
 @RequestMapping("/api/facturas")
 public class factura_apirest {
@@ -35,11 +37,18 @@ public class factura_apirest {
 		this.reglas = reglas;
 	}
 
-	@Operation(summary = "Listar facturas (opcional: la de una reserva)")
+	@Operation(summary = "Listar facturas (opcional: la de una reserva, o solo las PENDIENTES para la bandeja del cajero, SER-11)")
 	@GetMapping
-	public List<Factura> listar(@RequestParam(name = "reservaId", required = false) String reservaId) {
+	public List<Factura> listar(@RequestParam(name = "reservaId", required = false) String reservaId,
+			@RequestParam(name = "estado", required = false) EstadoFactura estado) {
 		if (reservaId != null && !reservaId.isBlank()) {
 			return facturas.findByReservaId(reservaId).map(List::of).orElse(List.of());
+		}
+		if (estado == EstadoFactura.PENDIENTE) {
+			return reglas.pendientes();
+		}
+		if (estado != null) {
+			return facturas.findByEstadoOrderByNumeroAsc(estado);
 		}
 		return facturas.findAllByOrderByNumeroDesc();
 	}
@@ -56,10 +65,20 @@ public class factura_apirest {
 		return reglas.generar(solicitud);
 	}
 
-	@Operation(summary = "Registrar pago: EFECTIVO, TARJETA o TRANSFERENCIA (SER-08)")
+	@Operation(summary = "Registrar pago (SER-08, SER-11 · REQ-HN-009, 010): medio EFECTIVO, TARJETA o TRANSFERENCIA y el cajero que lo recibe. "
+			+ "400 si falta el medio o el cajero, 404 si no existe la factura, 409 si ya está pagada")
 	@PostMapping("/{id}/pago")
-	public Factura pagar(@PathVariable("id") String id, @RequestParam("medio") MedioPago medio) {
-		return reglas.pagar(id, medio);
+	public Factura pagar(@PathVariable("id") String id, @RequestParam("medio") MedioPago medio,
+			@RequestParam(name = "cajero", required = false) String cajero) {
+		return reglas.pagar(id, medio, cajero);
+	}
+
+	@Operation(summary = "Cierre de caja de un día y un cajero (SER-12 · REQ-HN-012): total por medio de pago y número de facturas pagadas. "
+			+ "Un día sin pagos devuelve todo en 0")
+	@GetMapping("/cierre")
+	public CierreCaja cierre(@RequestParam("fecha") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fecha,
+			@RequestParam("cajero") String cajero) {
+		return reglas.cierre(fecha, cajero);
 	}
 
 	@Operation(summary = "Reporte de ingresos por alojamiento y por categoría de servicio (SER-10)")

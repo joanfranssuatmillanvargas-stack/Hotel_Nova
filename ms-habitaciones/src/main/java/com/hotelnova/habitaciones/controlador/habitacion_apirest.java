@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.hotelnova.habitaciones.modelo.Asignacion;
 import com.hotelnova.habitaciones.modelo.CambioEstado;
 import com.hotelnova.habitaciones.modelo.EstadoHabitacion;
 import com.hotelnova.habitaciones.modelo.FichaHabitacion;
@@ -83,10 +84,11 @@ public class habitacion_apirest {
 		return reglas.ocupacion();
 	}
 
-	@Operation(summary = "Pendientes de limpieza, primero las que tienen llegada hoy (HAB-11)")
+	@Operation(summary = "Pendientes de limpieza, primero las que tienen llegada hoy (HAB-11). "
+			+ "Con camarera, solo las asignadas a ella (HAB-19 · REQ-HN-017); sin camarera, todas con su asignación (supervisor)")
 	@GetMapping("/limpieza")
-	public List<PendienteLimpieza> pendientesLimpieza() {
-		return reglas.pendientesLimpieza();
+	public List<PendienteLimpieza> pendientesLimpieza(@RequestParam(name = "camarera", required = false) String camarera) {
+		return reglas.pendientesLimpieza(camarera);
 	}
 
 	@Operation(summary = "Registrar habitación (HAB-01): número único, queda DISPONIBLE")
@@ -130,6 +132,13 @@ public class habitacion_apirest {
 	@PostMapping("/{id}/reparacion")
 	public Habitacion registrarReparacion(@PathVariable("id") String id, @RequestBody ReporteReparacion datos) {
 		return reglas.registrarReparacion(id, datos.getTecnico(), datos.getDescripcion());
+	}
+
+	@Operation(summary = "Asignar o reasignar una habitación en LIMPIEZA a una camarera (HAB-18 · REQ-HN-015, 016): "
+			+ "400 si falta la camarera, 404 si no existe la habitación, 409 si no está en LIMPIEZA")
+	@PostMapping("/{id}/asignacion")
+	public Habitacion asignar(@PathVariable("id") String id, @RequestBody Asignacion datos) {
+		return reglas.asignar(id, datos.getCamarera(), datos.getSupervisor());
 	}
 
 	@Operation(summary = "Eliminar habitación (HAB-04): 409 si tiene reservas activas")

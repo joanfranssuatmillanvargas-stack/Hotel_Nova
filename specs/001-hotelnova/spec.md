@@ -194,8 +194,8 @@ Fechas de ejemplo en noviembre de 2026. Usuarios de prueba de `roles-del-sistema
 
 ## 10. Decisiones de clarificación (acta, D09)
 
-Las preguntas salen de la spec v0.1. Las decisiones las toma el PO; las marcadas con (*) se confirman con el
-docente, como gerencia del hotel, en la Review del R2-Sprint 1 (martes 10/11).
+Las preguntas salen de la spec v0.1. Las decisiones las toma el PO; las marcadas con (*) se confirmaron con el
+docente, como gerencia del hotel, en la Review del R2-Sprint 1 (martes 10/11): vio el funcionamiento y lo aprobó como está.
 
 | # | Pregunta | Decisión | Quién decidió | Dónde queda |
 |---|----------|----------|---------------|-------------|

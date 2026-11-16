@@ -71,6 +71,8 @@ public class huesped_web {
 		try {
 			Map<String, Object> datos = Acciones.cuerpo(form, "habitacionId", "llegada", "salida");
 			datos.put("huespedDocumento", yo.getDocumento());
+			datos.put("canal", "WEB"); // RES-11 (RN-07): la reserva en línea llega por la web y la toma el propio huésped
+			datos.put("tomadaPor", yo.getUsuario());
 			Map<String, Object> r = ms.post(RESERVAS, "/api/reservas", datos);
 			flash.addFlashAttribute("ok", "¡Listo! Tu reserva " + r.get("codigo") + " en la habitación " + r.get("numeroHabitacion")
 					+ " quedó confirmada");

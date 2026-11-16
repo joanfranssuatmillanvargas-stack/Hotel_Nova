@@ -64,9 +64,17 @@ public class reglas_repositorio {
 
 	// ======================= Crear y modificar (RES-01, RES-03, RES-05, RES-09) =======================
 
+	/**
+	 * RES-01 y RES-11 (REQ-HN-013, RN-07): toda reserva guarda el canal y quién la tomó (ADR-007),
+	 * con las mismas reglas de fechas cruzadas y mantenimiento venga de quien venga (RN-08).
+	 */
 	public Reserva crear(Reserva datos) {
 		obligatorio(datos.getHuespedDocumento(), "el documento del huésped");
 		obligatorio(datos.getHabitacionId(), "la habitación");
+		if (datos.getCanal() == null) {
+			throw invalido("Falta el canal de la reserva: TELEFONO, CORREO, WHATSAPP, WEB o MOSTRADOR");
+		}
+		obligatorio(datos.getTomadaPor(), "quién tomó la reserva");
 		validarFechas(datos.getLlegada(), datos.getSalida());
 		if (datos.getLlegada().isBefore(hoy())) {
 			throw invalido("La fecha de llegada no puede ser anterior a hoy");
@@ -77,6 +85,8 @@ public class reglas_repositorio {
 		r.setNombreHuesped(huesped.get("nombres") + " " + huesped.get("apellidos"));
 		r.setEstado(EstadoReserva.CONFIRMADA);
 		r.setCreadaEn(ahora());
+		r.setCanal(datos.getCanal());
+		r.setTomadaPor(datos.getTomadaPor().trim());
 		asignarHabitacionYFechas(r, datos.getHabitacionId(), datos.getLlegada(), datos.getSalida());
 		r.setCodigo(String.format("R-%04d", contadores.siguiente("reservas"))); // solo si pasó todas las validaciones
 		return reservas.save(r);

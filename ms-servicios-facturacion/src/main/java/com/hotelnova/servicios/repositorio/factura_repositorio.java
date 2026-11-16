@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 
+import com.hotelnova.servicios.modelo.EstadoFactura;
 import com.hotelnova.servicios.modelo.Factura;
 
 public interface factura_repositorio extends MongoRepository<Factura, String> {
@@ -14,4 +15,6 @@ public interface factura_repositorio extends MongoRepository<Factura, String> {
 	boolean existsByReservaId(String reservaId);
 
 	List<Factura> findAllByOrderByNumeroDesc();
+
+	List<Factura> findByEstadoOrderByNumeroAsc(EstadoFactura estado);
 }

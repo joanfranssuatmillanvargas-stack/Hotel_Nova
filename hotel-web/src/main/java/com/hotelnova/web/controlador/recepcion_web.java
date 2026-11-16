@@ -145,11 +145,15 @@ public class recepcion_web {
 		return "recepcion/reserva-nueva";
 	}
 
+	/** RES-01 y RES-11 (RN-07): la reserva de recepción llega por el MOSTRADOR y la toma el usuario de la sesión. */
 	@PostMapping("/reservas")
-	public String crearReserva(@RequestParam Map<String, String> form, RedirectAttributes flash) {
+	public String crearReserva(@RequestParam Map<String, String> form, HttpSession sesion, RedirectAttributes flash) {
+		UsuarioSesion yo = (UsuarioSesion) sesion.getAttribute("yo");
 		try {
-			Map<String, Object> r = ms.post(RESERVAS, "/api/reservas",
-					Acciones.cuerpo(form, "huespedDocumento", "habitacionId", "llegada", "salida"));
+			Map<String, Object> datos = Acciones.cuerpo(form, "huespedDocumento", "habitacionId", "llegada", "salida");
+			datos.put("canal", "MOSTRADOR");
+			datos.put("tomadaPor", yo.getUsuario());
+			Map<String, Object> r = ms.post(RESERVAS, "/api/reservas", datos);
 			flash.addFlashAttribute("ok", "Reserva " + r.get("codigo") + " creada para " + r.get("nombreHuesped")
 					+ " en la habitación " + r.get("numeroHabitacion"));
 			return "redirect:/recepcion/reservas";
@@ -204,7 +208,8 @@ public class recepcion_web {
 		});
 	}
 
-	// ======================= Estadía: cuenta, factura y pago (SER-05 a SER-09) =======================
+	// ======================= Estadía: cuenta y factura (SER-05 a SER-07, SER-09) =======================
+	// Desde el R2-Sprint 2 el pago lo registra solo el cajero (SER-11, REQ-HN-011, RN-05): ver caja_web.
 
 	@GetMapping("/estadia/{id}")
 	public String estadia(@PathVariable("id") String id, Model model) {
@@ -221,15 +226,6 @@ public class recepcion_web {
 		return Acciones.hacer(flash, "/recepcion/estadia/" + id, () -> {
 			ms.post(SERVICIOS, "/api/consumos/" + consumoId + "/anular", Map.of("motivo", motivo));
 			return "Consumo anulado";
-		});
-	}
-
-	@PostMapping("/estadia/{id}/pago")
-	public String pagar(@PathVariable("id") String id, @RequestParam("facturaId") String facturaId,
-			@RequestParam("medio") String medio, RedirectAttributes flash) {
-		return Acciones.hacer(flash, "/recepcion/estadia/" + id, () -> {
-			Map<String, Object> f = ms.post(SERVICIOS, "/api/facturas/" + facturaId + "/pago" + consulta("medio", medio), null);
-			return "Pago registrado: factura No. " + f.get("numero") + " PAGADA";
 		});
 	}
 

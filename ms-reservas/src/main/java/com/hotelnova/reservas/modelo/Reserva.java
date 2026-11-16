@@ -28,6 +28,8 @@ public class Reserva {
 	private LocalDateTime checkIn;
 	private LocalDateTime checkOut;
 	private String facturaId; // factura generada en el check-out
+	private Canal canal; // RES-11 (RN-07): por dónde llegó; null en las reservas del Release 1
+	private String tomadaPor; // RES-11 (RN-07): usuario que la tomó (agente, recepción o el huésped en la web)
 
 	public String getId() {
 		return id;
@@ -140,5 +142,21 @@ public class Reserva {
 
 	public void setFacturaId(String facturaId) {
 		this.facturaId = facturaId;
+	}
+
+	public Canal getCanal() {
+		return canal;
+	}
+
+	public void setCanal(Canal canal) {
+		this.canal = canal;
+	}
+
+	public String getTomadaPor() {
+		return tomadaPor;
+	}
+
+	public void setTomadaPor(String tomadaPor) {
+		this.tomadaPor = tomadaPor;
 	}
 }

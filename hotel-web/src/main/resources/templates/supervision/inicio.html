@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragmentos :: cabeza('Supervisión de limpieza')}"></head>
+<body>
+<nav th:replace="~{fragmentos :: menu}"></nav>
+<main class="container py-3" style="max-width: 860px">
+	<div th:replace="~{fragmentos :: alertas}"></div>
+	<h1 class="h4 titulo mb-1"><i class="bi bi-clipboard-check"></i> Reparto de habitaciones por limpiar</h1>
+	<p class="small text-secondary">Cada camarera ve solo las habitaciones que le asignas. Para reasignar, elige otra camarera y guarda:
+		la habitación sale de la lista de la anterior.</p>
+
+	<div class="alert alert-warning small" th:if="${#lists.isEmpty(camareras)}">
+		No hay camareras activas. El administrador las crea en Usuarios con el rol "Personal de limpieza".
+	</div>
+
+	<div class="card tarjeta-limpieza p-3 mb-2" th:each="p : ${pendientes}" th:classappend="${p['llegadaHoy']} ? 'prioridad'">
+		<div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+			<div>
+				<div class="fs-3 fw-bold titulo lh-1" th:text="${p['numero']}">203</div>
+				<div class="small text-secondary" th:text="'Piso ' + ${p['piso']}">Piso</div>
+				<span class="badge text-bg-danger mt-1" th:if="${p['llegadaHoy']}"><i class="bi bi-alarm"></i> Llegada hoy</span>
+				<div class="small mt-1">
+					<span th:if="${p['asignadaA'] != null}" class="badge text-bg-primary"><i class="bi bi-person-check"></i>
+						<span th:text="${p['asignadaA']}">ana</span></span>
+					<span th:if="${p['asignadaA'] == null}" class="badge text-bg-secondary">Sin asignar</span>
+				</div>
+			</div>
+			<form method="post" th:action="@{/supervision/{id}/asignacion(id=${p['habitacionId']})}" class="d-flex gap-2">
+				<select class="form-select" name="camarera" required>
+					<option value="">Camarera…</option>
+					<option th:each="c : ${camareras}" th:value="${c.usuario}" th:text="${c.nombre} + ' (' + ${c.usuario} + ')'"
+						th:selected="${c.usuario == p['asignadaA']}"></option>
+				</select>
+				<button class="btn btn-primary text-nowrap" th:text="${p['asignadaA'] == null} ? 'Asignar' : 'Reasignar'">Asignar</button>
+			</form>
+		</div>
+	</div>
+	<div class="card p-4 text-center text-secondary" th:if="${#lists.isEmpty(pendientes)}">
+		<i class="bi bi-emoji-smile fs-2"></i><div>No hay habitaciones pendientes de limpieza.</div>
+	</div>
+</main>
+<script th:replace="~{fragmentos :: scripts}"></script>
+</body>
+</html>
