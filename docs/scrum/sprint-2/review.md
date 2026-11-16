@@ -4,7 +4,7 @@
 **Duración:** 45 minutos · **Sprint Goal:** al terminar el sprint, un agente puede tomar reservas por teléfono, el cajero
 cobra y cierra la caja del día, y el supervisor reparte las habitaciones entre las camareras.
 
-> Preparado el 14/11 con el estado del tablero de ese día. Lo que está entre corchetes se llena en la Review.
+> Preparado con el estado del tablero al lunes 16/11 (P025 a P031 aprobadas en Render). Lo que está entre corchetes se llena en la Review.
 
 ## 1. Guion de la demo (15 minutos)
 
@@ -32,10 +32,10 @@ Antes de empezar: la URL de Render despierta (los 5 servicios) y una segunda cam
 
 | PBI | Puntos | ¿Terminado? | Comentario |
 |-----|:------:|:-----------:|------------|
-| PBI-04 Cajero (SER-11, SER-12) | 5 | [Sí / No] | Al 14/11: T012 a T015 terminadas; faltan P025 a P027 en Render |
-| PBI-05 Agente de reservas (RES-11, RES-12) | 5 | [Sí / No] | Al 14/11: T016 a T018 terminadas; faltan P028 y P029 en Render |
-| PBI-06 Supervisor de limpieza (HAB-18, HAB-19) | 3 | [Sí / No] | Al 14/11: T019 a T021 terminadas; faltan P030 y P031 en Render |
-| **Total** | **13** | **[__] de 13** | |
+| PBI-04 Cajero (SER-11, SER-12) | 5 | Sí | T012 a T015; P025 a P027 aprobadas el 16/11 (cobro de las facturas No. 2 y No. 3) |
+| PBI-05 Agente de reservas (RES-11, RES-12) | 5 | Sí | T016 a T018; P028 y P029 aprobadas el 16/11 (reserva R-0004 por teléfono) |
+| PBI-06 Supervisor de limpieza (HAB-18, HAB-19) | 3 | Sí | T019 a T021; P030 y P031 aprobadas el 16/11 (101 y 102 reasignadas a ana) |
+| **Total** | **13** | **13 de 13** | |
 
 ## 3. Decisiones que se muestran al docente
 
@@ -53,4 +53,4 @@ Si aparece una solicitud de cambio, entra al backlog como **PBI-10 (CR-001)** y 
 
 ## 5. Impedimentos
 
-- IMP-03: el sprint empezó después del día 3 (igual que IMP-02). Estado: [Abierto / Cerrado].
+- IMP-03: el sprint empezó después del día 3 (igual que IMP-02). Estado: Cerrado el 16/11/2026. Causa: disponibilidad de tiempo; el trabajo arranca casi siempre el sábado.

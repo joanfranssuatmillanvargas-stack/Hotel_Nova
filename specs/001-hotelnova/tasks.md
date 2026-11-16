@@ -50,9 +50,9 @@ dañada pasa de MANTENIMIENTO a LIMPIEZA con la reparación registrada.
 - [x] T020 [HAB-18] Asignación y reasignación en ms-habitaciones (REQ-HN-015, 016) (después de T019)
 - [x] T021 [HAB-18] [HAB-19] Pantalla del supervisor y lista "mis habitaciones" de la camarera (REQ-HN-017) (después de T020)
 
-**Estado al 14/11/2026:** T012 a T021 terminadas; las tarjetas se crearon en el Planning del R2-Sprint 2 (D14).
+**Estado al 16/11/2026:** T012 a T021 terminadas; las tarjetas se crearon en el Planning del R2-Sprint 2 (D14).
 Pruebas nuevas: `CajaTest` (7), `AgenteReservasTest` (5), `AsignacionTest` (6), `CamarerasTest` (4) y
-`PermisosSprint2Test` (17); con las del Sprint 1 pasan 71 de 71. Falta ejecutar P025 a P031 en Render (Review del Sprint 2).
+`PermisosSprint2Test` (17); con las del Sprint 1 pasan 71 de 71. P025 a P031 se aprobaron en Render el lunes 16/11.
 
 Punto de control del R2-Sprint 2: el agente toma una reserva por teléfono con su canal, el cajero cobra una factura y
 genera el cierre del día, y el supervisor asigna una habitación a una camarera que solo ve las suyas.

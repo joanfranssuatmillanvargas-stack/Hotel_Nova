@@ -9,8 +9,8 @@
 | Dato | Valor |
 |------|-------|
 | Puntos comprometidos | 13 (PBI-04, PBI-05, PBI-06) |
-| Puntos terminados | [__] |
-| Tarjetas planeadas / terminadas | 13 / [__] (D14 a D16 y T012 a T021) |
+| Puntos terminados | 13 de 13 (código el 14/11; pruebas en Render el 16/11) |
+| Tarjetas planeadas / terminadas | 13 / 13 al cerrar D15 y D16 (11 al 16/11: D14 y T012 a T021) |
 | Impedimentos | IMP-03 (el sprint empezó después del día 3, como IMP-02) |
 
 ## 2. Qué funcionó
