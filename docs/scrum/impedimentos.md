@@ -45,5 +45,5 @@ Lo lleva el Scrum Master (Joan Franssuat Millán Vargas). La misma información 
 | Escalado a | Equipo (se decide sin escalar al docente) |
 | Alternativa | El sábado 14/11 se hicieron el Planning, la revisión del plan (ADR-005 a 007, OpenAPI v1.1), el código y las pruebas (71 de 71 en verde). Quedan para antes de la Review las pruebas P025 a P031 en Render. |
 | Fecha límite | 17/11/2026 (Review del R2-Sprint 2) |
-| Estado | **Abierto** |
-| Cierre | Se cierra cuando P025 a P031 pasen en Render y la Retro acuerde una acción para que el R2-Sprint 3 arranque el miércoles 18/11. Que se repita después de IMP-02 es tema obligatorio de la Retro. |
+| Estado | **Cerrado** (16/11/2026) |
+| Cierre | P025 a P031 se aprobaron en Render el lunes 16/11. La Retro del Sprint 1 acordó revisar y actualizar Trello entre semana desde el 18/11 (Joan); en la Retro del Sprint 2 se revisa si se cumplió. |
