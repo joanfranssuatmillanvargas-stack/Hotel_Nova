@@ -122,20 +122,22 @@
 				<h2 class="h5 titulo">Tarifas por temporada</h2>
 				<div class="table-responsive">
 				<table class="table table-sm mb-0">
-					<thead><tr><th>Temporada</th><th>Tipo</th><th>Desde</th><th>Hasta</th><th class="text-end">Tarifa/noche</th><th></th></tr></thead>
+					<thead><tr><th>Temporada</th><th>Tipo</th><th>Desde</th><th>Hasta</th><th class="text-end">Tarifa/noche</th><th>Estado</th><th></th></tr></thead>
 					<tbody>
 						<tr th:each="t : ${temporadas}">
 							<td th:text="${t.nombre}">Alta</td>
 							<td th:text="${nombresTipo[t.tipoId]}">Doble</td>
 							<td th:text="${t.inicio}">-</td><td th:text="${t.fin}">-</td>
 							<td class="text-end" th:text="'$' + ${#numbers.formatDecimal(t.tarifa, 1, 'POINT', 0, 'COMMA')}">0</td>
+							<!-- HAB-20: el administrador ve si el gerente ya la aprobó; al editarla vuelve a PENDIENTE -->
+							<td><span class="estado" th:classappend="'estado-' + ${t.estado ?: 'APROBADA'}" th:text="${t.estado ?: 'APROBADA'}">PENDIENTE</span></td>
 							<td class="text-end text-nowrap">
 								<a class="btn btn-sm btn-outline-secondary" th:href="@{/admin/habitaciones(editarTemp=${t.id})}"><i class="bi bi-pencil"></i></a>
 								<form class="d-inline" method="post" th:action="@{/admin/temporadas/{id}/eliminar(id=${t.id})}">
 									<button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button></form>
 							</td>
 						</tr>
-						<tr th:if="${#lists.isEmpty(temporadas)}"><td colspan="6" class="text-secondary">Sin temporadas: se cobra la tarifa base.</td></tr>
+						<tr th:if="${#lists.isEmpty(temporadas)}"><td colspan="7" class="text-secondary">Sin temporadas: se cobra la tarifa base.</td></tr>
 					</tbody>
 				</table>
 				</div>
@@ -154,6 +156,7 @@
 					<div class="col-6"><label class="form-label">Desde</label><input class="form-control" type="date" name="inicio" th:value="${tempForm['inicio']}" required></div>
 					<div class="col-6"><label class="form-label">Hasta</label><input class="form-control" type="date" name="fin" th:value="${tempForm['fin']}" required></div>
 					<div class="col-12"><label class="form-label">Tarifa por noche</label><input class="form-control" type="number" min="1" name="tarifa" th:value="${tempForm['tarifa']}" required></div>
+					<div class="col-12 small text-secondary"><i class="bi bi-info-circle"></i> Al guardar, la temporada queda PENDIENTE y la tarifa no cambia hasta que el gerente la apruebe.</div>
 					<div class="col-12 d-flex gap-2"><button class="btn btn-primary btn-sm">Guardar</button>
 						<a th:if="${tempForm['id'] != null}" class="btn btn-sm btn-outline-secondary" href="/admin/habitaciones">Cancelar</a></div>
 				</form>

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragmentos :: cabeza('Gerencia')}"></head>
+<body>
+<nav th:replace="~{fragmentos :: menu}"></nav>
+<!-- PLA-10 (REQ-HN-018, 019): solo consulta; no hay botones para crear, editar ni cobrar -->
+<main class="container py-4">
+	<div th:replace="~{fragmentos :: alertas}"></div>
+	<div class="d-flex flex-wrap justify-content-between align-items-end mb-3 gap-2">
+		<div>
+			<h1 class="h3 titulo mb-0"><i class="bi bi-graph-up"></i> Tablero gerencial</h1>
+			<p class="small text-secondary mb-0">Datos de los 4 microservicios. La ocupación es la de hoy; tarifa e ingresos, los del periodo.</p>
+		</div>
+		<form class="d-flex flex-wrap gap-2 align-items-end" method="get" action="/gerencia">
+			<div><label class="form-label small mb-0">Desde</label><input class="form-control form-control-sm" type="date" name="desde" th:value="${t['desde']}"></div>
+			<div><label class="form-label small mb-0">Hasta</label><input class="form-control form-control-sm" type="date" name="hasta" th:value="${t['hasta']}"></div>
+			<button class="btn btn-sm btn-primary"><i class="bi bi-search"></i> Consultar</button>
+		</form>
+	</div>
+
+	<div class="alert alert-warning d-flex justify-content-between align-items-center" th:if="${t['temporadasPendientes'] > 0}">
+		<span><i class="bi bi-hourglass-split"></i> Hay <b th:text="${t['temporadasPendientes']}">1</b> temporada(s) esperando tu aprobación.</span>
+		<a class="btn btn-sm btn-warning" href="/gerencia/temporadas">Revisar temporadas</a>
+	</div>
+
+	<div class="row g-3 mb-3">
+		<div class="col-sm-6 col-lg-3">
+			<div class="card p-3 h-100">
+				<div class="small text-secondary">Ocupación de hoy</div>
+				<div class="cifra" th:text="${#numbers.formatDecimal(t['ocupacion'], 1, 'POINT', 1, 'COMMA')} + ' %'">60 %</div>
+				<div class="small text-secondary" th:text="${t['ocupadas']} + ' de ' + ${t['habitaciones']} + ' habitaciones ocupadas'">6 de 10</div>
+				<div class="progress mt-2" style="height: 6px"><div class="progress-bar" th:style="'width:' + ${t['ocupacion']} + '%'"></div></div>
+			</div>
+		</div>
+		<div class="col-sm-6 col-lg-3">
+			<div class="card p-3 h-100">
+				<div class="small text-secondary">Tarifa promedio por noche</div>
+				<div class="cifra" th:text="'$' + ${#numbers.formatDecimal(t['tarifaPromedio'], 1, 'POINT', 0, 'COMMA')}">$0</div>
+				<div class="small text-secondary" th:text="${t['noches']} + ' noches vendidas en ' + ${t['reservas']} + ' reservas'">5 noches</div>
+			</div>
+		</div>
+		<div class="col-sm-6 col-lg-3">
+			<div class="card p-3 h-100">
+				<div class="small text-secondary">Ingresos del periodo (con IVA)</div>
+				<div class="cifra" th:text="'$' + ${#numbers.formatDecimal(t['ingresosTotal'], 1, 'POINT', 0, 'COMMA')}">$0</div>
+				<div class="small text-secondary" th:text="${t['facturas']} + ' facturas · pagado $' + ${#numbers.formatDecimal(t['pagado'], 1, 'POINT', 0, 'COMMA')}">2 facturas</div>
+			</div>
+		</div>
+		<div class="col-sm-6 col-lg-3">
+			<div class="card p-3 h-100">
+				<div class="small text-secondary">Huéspedes registrados</div>
+				<div class="cifra" th:text="${t['huespedes']}">0</div>
+				<div class="small text-secondary">en ms-huespedes</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="row g-3">
+		<div class="col-lg-7">
+			<div class="card p-3 h-100">
+				<h2 class="h5 titulo">Ingresos por categoría</h2>
+				<table class="table table-sm mb-0">
+					<thead><tr><th>Categoría</th><th class="text-end">Valor (sin IVA)</th><th style="width: 40%"></th></tr></thead>
+					<tbody>
+						<tr th:each="c : ${t['ingresosPorCategoria']}">
+							<td th:text="${c.key}">Alojamiento</td>
+							<td class="text-end" th:text="'$' + ${#numbers.formatDecimal(c.value, 1, 'POINT', 0, 'COMMA')}">0</td>
+							<td><div class="progress" style="height: 8px"><div class="progress-bar bg-success"
+								th:style="'width:' + (${t['ingresosTotal'] > 0} ? ${c.value * 100 / t['ingresosTotal']} : 0) + '%'"></div></div></td>
+						</tr>
+						<tr><td>IVA</td><td class="text-end" th:text="'$' + ${#numbers.formatDecimal(t['iva'], 1, 'POINT', 0, 'COMMA')}">0</td><td></td></tr>
+						<tr class="fw-semibold"><td>Total</td><td class="text-end" th:text="'$' + ${#numbers.formatDecimal(t['ingresosTotal'], 1, 'POINT', 0, 'COMMA')}">0</td><td></td></tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div class="col-lg-5">
+			<div class="card p-3 h-100">
+				<h2 class="h5 titulo">Habitaciones por estado (hoy)</h2>
+				<table class="table table-sm mb-0">
+					<tr th:each="e : ${t['porEstado']}"><td><span class="estado" th:classappend="'estado-' + ${e.key}" th:text="${e.key}">E</span></td>
+						<td class="text-end fw-semibold" th:text="${e.value}">0</td></tr>
+				</table>
+			</div>
+		</div>
+	</div>
+</main>
+<script th:replace="~{fragmentos :: scripts}"></script>
+</body>
+</html>

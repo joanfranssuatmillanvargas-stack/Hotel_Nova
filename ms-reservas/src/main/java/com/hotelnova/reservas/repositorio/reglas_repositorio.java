@@ -260,8 +260,11 @@ public class reglas_repositorio {
 		rep.setHasta(hasta);
 		rep.setTotal(lista.size());
 		rep.setPorEstado(porEstado);
-		rep.setValorAlojamiento(lista.stream().filter(r -> r.getEstado() != EstadoReserva.CANCELADA)
-				.mapToDouble(Reserva::getValorAlojamiento).sum());
+		List<Reserva> vendidas = lista.stream().filter(r -> r.getEstado() != EstadoReserva.CANCELADA).toList();
+		rep.setValorAlojamiento(vendidas.stream().mapToDouble(Reserva::getValorAlojamiento).sum());
+		// PLA-10 (REQ-HN-018, ADR-009): tarifa promedio por noche vendida
+		rep.setNoches(vendidas.stream().mapToLong(Reserva::getNoches).sum());
+		rep.setTarifaPromedio(rep.getNoches() == 0 ? 0 : Math.round(rep.getValorAlojamiento() / rep.getNoches()));
 		return rep;
 	}
 

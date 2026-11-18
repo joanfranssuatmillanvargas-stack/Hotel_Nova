@@ -58,15 +58,19 @@ Punto de control del R2-Sprint 2: el agente toma una reserva por teléfono con s
 genera el cierre del día, y el supervisor asigna una habitación a una camarera que solo ve las suyas.
 
 ## Fase 7 · PBI-07 Gerente (R2-Sprint 3)
-- [ ] T022 [P] [HAB-20] Pruebas de las temporadas pendientes (AC-020.1, 021.1, 021.2)
-- [ ] T023 [HAB-20] Estado de la temporada y aprobación del gerente (REQ-HN-020, 021) (después de T022)
-- [ ] T024 [PLA-10] Tablero gerencial de solo consulta (REQ-HN-018, 019, AC-018.1, 019.1)
+- [x] T022 [P] [HAB-20] Pruebas de las temporadas pendientes (AC-020.1, 021.1, 021.2)
+- [x] T023 [HAB-20] Estado de la temporada y aprobación del gerente (REQ-HN-020, 021) (después de T022)
+- [x] T024 [PLA-10] Tablero gerencial de solo consulta (REQ-HN-018, 019, AC-018.1, 019.1)
+
+Estado al 18/11 (día 1 del R2-Sprint 3): T022 a T024 terminadas en la rama `r2-sprint3`, con las pruebas escritas antes
+del código: `TemporadasTest` (8), `TarifaPromedioTest` (2), `TableroGerenciaTest` (3) y `PermisosSprint3Test` (12);
+con las de los Sprints 1 y 2 pasan 96 de 96. Falta desplegar en Render y aprobar P032 y P033.
 
 ## Fase 8 · PBI-08 Calidad y despliegue (R2-Sprint 3)
-- [ ] T025 [PLA-11] Matriz de trazabilidad completa: requisito → criterio → prueba (NFR-HN-005)
+- [x] T025 [PLA-11] Matriz de trazabilidad completa: requisito → criterio → prueba (NFR-HN-005) → `trazabilidad.md`
 - [ ] T026 [PLA-11] Despliegue en Render y prueba de los 10 usuarios en la URL pública (NFR-HN-004) (después de T025)
 
-## Fase 9 · PBI-09 Correo de confirmación · objetivo extendido
+## Fase 9 · PBI-09 Correo de confirmación · objetivo extendido (no se inicia: decisión del Planning del 18/11)
 - [ ] T027 [P] [RES-13] Pruebas del envío y del fallo del correo (AC-022.1, 023.1)
 - [ ] T028 [RES-13] Envío del código por correo sin bloquear la reserva (REQ-HN-022, 023) (después de T027)
 

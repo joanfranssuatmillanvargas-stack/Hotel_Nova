@@ -1,7 +1,7 @@
-# Plan técnico: HotelNova con 10 roles · Versión 1.1 (Planning del R2-Sprint 2)
+# Plan técnico: HotelNova con 10 roles · Versión 1.2 (Planning del R2-Sprint 3)
 
-**PBI:** PBI-01 · **Tarjetas:** D11 (v1.0) y D14 (v1.1) · **Redacta:** Joan Franssuat Millán Vargas · **Revisa:** Jaider Javier Jaimes
-**Entra:** `spec.md` v1.0 · **Sale:** este plan, `docs/adr/ADR-001` a `ADR-007` y `api/openapi.yaml` (v1.1)
+**PBI:** PBI-01 · **Tarjetas:** D11 (v1.0), D14 (v1.1) y D17 (v1.2) · **Redacta:** Joan Franssuat Millán Vargas · **Revisa:** Jaider Javier Jaimes
+**Entra:** `spec.md` v1.0 · **Sale:** este plan, `docs/adr/ADR-001` a `ADR-009` y `api/openapi.yaml` (v1.2)
 
 ## 1. Lo que no cambia
 
@@ -29,9 +29,8 @@ El Release 2 se construye sobre la arquitectura del Release 1, sin cambiarla:
 | [ADR-005](../../docs/adr/ADR-005-asignacion-en-la-habitacion.md) | La asignación de limpieza es un campo de `Habitacion` (`asignadaA`) que se borra al salir de LIMPIEZA; el rol de la camarera lo valida `hotel-web` | Colección `asignaciones` aparte |
 | [ADR-006](../../docs/adr/ADR-006-pago-del-cajero-y-cierre-calculado.md) | El pago guarda el cajero y el cierre de caja se calcula al consultarlo, por día y cajero; recepción deja de cobrar | Guardar cada cierre en una colección |
 | [ADR-007](../../docs/adr/ADR-007-canal-y-quien-toma-la-reserva.md) | Toda reserva exige canal y `tomadaPor`; `hotel-web` los llena según quién reserva | Canal opcional con MOSTRADOR por defecto |
-
-Las decisiones del Sprint 3 (tablero gerencial, temporadas pendientes) se registran como ADR-008 en adelante en su
-Planning, cuando se crean sus tarjetas.
+| [ADR-008](../../docs/adr/ADR-008-temporadas-con-aprobacion-del-gerente.md) | Crear o editar una temporada la deja PENDIENTE; solo las APROBADAS (o las del Release 1, sin estado) cambian la tarifa | Dejar PENDIENTES también las temporadas viejas |
+| [ADR-009](../../docs/adr/ADR-009-tablero-gerencial-de-solo-lectura.md) | El tablero gerencial junta los reportes de los 4 microservicios sin guardar nada; la tarifa promedio la calcula `ms-reservas` | Un microservicio de reportes nuevo |
 
 ## 3. Páginas web y quién entra (hotel-web)
 
@@ -42,13 +41,13 @@ Planning, cuando se crean sus tarjetas.
 | `/huesped/**` | HUESPED | Release 1 |
 | `/servicios/**` | SERVICIOS, ADMINISTRADOR | Release 1 |
 | `/limpieza/**` | LIMPIEZA, ADMINISTRADOR | Release 1 |
-| `/gerencia/**` | GERENTE | REQ-HN-002 (S1, provisional); REQ-HN-018 a 021 (S3) |
+| `/gerencia/**` | GERENTE | REQ-HN-002 (S1, provisional); REQ-HN-018 a 021 (S3, `gerencia_web`) |
 | `/caja/**` | CAJERO | REQ-HN-002 (S1, provisional); REQ-HN-009 a 012 (S2, `caja_web`) |
 | `/mantenimiento/**` | MANTENIMIENTO | REQ-HN-006 a 008 (S1) |
 | `/supervision/**` | SUPERVISOR_LIMPIEZA | REQ-HN-002 (S1, provisional); REQ-HN-015 a 017 (S2, `supervision_web`) |
 | `/agente/**` | AGENTE_RESERVAS | REQ-HN-002 (S1, provisional); REQ-HN-013 y 014 (S2, `agente_web`) |
 
-La tabla no cambió en el Sprint 2: las rutas nuevas quedaron dentro de los prefijos que ya tenía cada rol.
+La tabla no cambió en los Sprints 2 y 3: las rutas nuevas quedaron dentro de los prefijos que ya tenía cada rol.
 
 Toda ruta que no sea `/login`, `/registro`, `/salir` o un archivo estático exige sesión (REQ-HN-005).
 
@@ -127,15 +126,44 @@ habitaciones en MANTENIMIENTO".
 | `controlador/roles_nuevos_web` | Solo queda el inicio provisional de la gerencia | ADR-004 |
 | Plantillas `caja/*`, `agente/*`, `supervision/inicio`, `fragmentos.html` (menús), `limpieza/inicio`, `recepcion/reservas` (columna Canal) | Pantallas del sprint | REQ-HN-009 a 017 |
 
-## 5b. Componentes planeados para el R2-Sprint 3
+## 5b. Componentes del R2-Sprint 3 (Planning, D17)
 
-Se detallan en su Planning; aquí queda el componente responsable de cada requisito.
+El correo de RES-13 (REQ-HN-022 y 023, PBI-09) no se compromete: es el objetivo extendido y en el Planning se decidió
+no iniciarlo (necesita una cuenta de correo y su contraseña como secreto nuevo). Sus requisitos quedan en la matriz
+como "fuera del release".
 
-| Requisito | Componente previsto |
-|-----------|---------------------|
-| REQ-HN-018 y 019 Tablero gerencial | `hotel-web`: `gerencia_web` que consulta los reportes que ya existen en los 4 microservicios |
-| REQ-HN-020 y 021 Temporadas | `ms-habitaciones`: campo `estado` en `Temporada` (PENDIENTE, APROBADA, RECHAZADA) y `POST /api/temporadas/{id}/aprobacion`; la tarifa solo usa las APROBADAS |
-| REQ-HN-022 y 023 Correo | `ms-reservas`: envío con reintento registrado; si falla, se guarda el error (objetivo extendido) |
+### ms-habitaciones · PBI-07 Gerente (HAB-20)
+
+| Componente | Cambio | Cubre |
+|------------|--------|-------|
+| `modelo/EstadoTemporada` | Enum nuevo: PENDIENTE, APROBADA, RECHAZADA | REQ-HN-020, 021 |
+| `modelo/Temporada` | Campos nuevos `estado`, `revisadaPor`, `revisadaEn` y `vigente()` (aprobada o sin estado) · ADR-008 | REQ-HN-020, 021 |
+| `repositorio/reglas_repositorio` | `guardarTemporada` deja PENDIENTE; `decidirTemporada(id, decision, gerente)` (400/409); `tarifaNoche` solo usa las vigentes; las RECHAZADAS no cuentan en el cruce de fechas | REQ-HN-020, 021 |
+| `controlador/temporada_apirest` | `GET /api/temporadas?estado=` y `POST /api/temporadas/{id}/aprobacion?decision=&gerente=` | REQ-HN-020, 021 |
+
+### ms-reservas · PBI-07 Gerente (PLA-10)
+
+| Componente | Cambio | Cubre |
+|------------|--------|-------|
+| `modelo/ReporteReservas` | Campos nuevos `noches` y `tarifaPromedio` | REQ-HN-018 |
+| `repositorio/reglas_repositorio` | `reporte` suma las noches de las reservas no canceladas y calcula la tarifa promedio · ADR-009 | REQ-HN-018 |
+
+### hotel-web
+
+| Componente | Cambio | Cubre |
+|------------|--------|-------|
+| `repositorio/tablero_repositorio` | Junta ocupación, reporte de reservas, reporte de facturas, huéspedes y temporadas pendientes; no guarda nada · ADR-009 | REQ-HN-018, 019 |
+| `controlador/gerencia_web` | Tablero (`/gerencia`) y aprobación de temporadas (`/gerencia/temporadas`); reemplaza el inicio provisional | REQ-HN-018 a 021 |
+| `controlador/roles_nuevos_web` y `rol-provisional.html` | Se retiran: los 10 roles tienen sus pantallas reales (ADR-004 cumplido) | REQ-HN-002 |
+| `controlador/admin_web` y `admin/habitaciones.html` | Columna Estado en las temporadas y aviso de que quedan PENDIENTES | REQ-HN-020 |
+| Plantillas `gerencia/inicio`, `gerencia/temporadas`, `fragmentos.html` (menú del gerente) y `hotel.css` (estados APROBADA y RECHAZADA) | Pantallas del sprint | REQ-HN-018 a 021 |
+
+### PBI-08 Calidad y despliegue (PLA-11)
+
+| Componente | Cambio | Cubre |
+|------------|--------|-------|
+| `specs/001-hotelnova/trazabilidad.md` | Matriz requisito → criterio → prueba (unitaria y manual) con su estado | NFR-HN-005 |
+| Render (`render.yaml`, sin cambios) | Despliegue de los 5 servicios y prueba de los 10 usuarios en la URL pública (P034) | NFR-HN-004 |
 
 ## 6. Matriz requisito → componente (Puerta 2)
 
@@ -150,13 +178,15 @@ Se detallan en su Planning; aquí queda el componente responsable de cada requis
 | REQ-HN-009 a 012 | `ms-servicios-facturacion` (`pagar`, `cierre`), `caja_web` · ADR-006 | 2 |
 | REQ-HN-013, 014 | `ms-reservas` (`Canal`, `tomadaPor`), `agente_web` · ADR-007 | 2 |
 | REQ-HN-015 a 017 | `ms-habitaciones` (`asignar`, `pendientesLimpieza`), `supervision_web`, `limpieza_web`, `cuentas_repositorio.camarera` · ADR-005 | 2 |
-| REQ-HN-018 a 023 | Sección 5b | 3 |
+| REQ-HN-018, 019 | `tablero_repositorio`, `gerencia_web`, `ms-reservas` (`noches`, `tarifaPromedio`) · ADR-009 | 3 |
+| REQ-HN-020, 021 | `ms-habitaciones` (`EstadoTemporada`, `decidirTemporada`, `tarifaNoche`), `gerencia_web`, `admin_web` · ADR-008 | 3 |
+| REQ-HN-022, 023 | Sin componente: RES-13 es objetivo extendido y no entró al R2-Sprint 3 | — |
 | NFR-HN-001 | `cuentas_repositorio` (PBKDF2, sin cambios) | 1 |
 | NFR-HN-002 | `FiltroSesion` + matriz de permisos | 1 |
 | NFR-HN-003 | `mantenimiento/inicio.html` con Bootstrap | 1 |
-| NFR-HN-004, 005 | Despliegue en Render y matriz de trazabilidad (PLA-11) | 3 |
+| NFR-HN-004, 005 | Despliegue en Render (P034) y `trazabilidad.md` (PLA-11) | 3 |
 
-Ningún requisito queda sin componente y ningún componente nuevo queda sin requisito.
+Ningún requisito comprometido queda sin componente y ningún componente nuevo queda sin requisito. REQ-HN-022 y 023 no tienen componente porque RES-13 no se comprometió.
 
 ## 7. Pruebas
 
@@ -165,7 +195,8 @@ Ningún requisito queda sin componente y ningún componente nuevo queda sin requ
 | Unitarias | Reglas de la reparación y de la lista de mantenimiento (`reglas_repositorio`) con los repositorios simulados | JUnit 5 + Mockito (`spring-boot-starter-test`) |
 | Unitarias | Permisos por ruta para los 10 roles (`FiltroSesion`) y usuarios de prueba (`cuentas_repositorio`) | JUnit 5 + Mockito |
 | Unitarias (S2) | Pago, bandeja y cierre (`CajaTest`), canal y quién toma la reserva (`AgenteReservasTest`), asignación (`AsignacionTest`), camareras (`CamarerasTest`) y rutas nuevas (`PermisosSprint2Test`) | JUnit 5 + Mockito; se agregó `spring-boot-starter-test` a ms-reservas y ms-servicios-facturacion |
-| Plan de pruebas | P021 a P024 (S1) y P025 a P031 (S2) del Excel, a mano sobre la aplicación | Hoja *8. Plan Pruebas* |
+| Unitarias (S3) | Temporadas con aprobación (`TemporadasTest`), tarifa promedio (`TarifaPromedioTest`), tablero (`TableroGerenciaTest`) y rutas del gerente (`PermisosSprint3Test`) | JUnit 5 + Mockito (sin dependencias nuevas) |
+| Plan de pruebas | P021 a P024 (S1), P025 a P031 (S2) y P032 a P034 (S3) del Excel, a mano sobre la aplicación | Hoja *8. Plan Pruebas* |
 
 Las pruebas se escriben antes que el código (constitución, principio 3) y quedan en `src/test/java` de cada proyecto.
 
@@ -191,3 +222,16 @@ Las pruebas se escriben antes que el código (constitución, principio 3) y qued
 
 **Resultado:** ☑ Aprobada ☐ Aprobada con observaciones ☐ Rechazada
 **Revisa:** Jaider Javier Jaimes · **Fecha:** 14/11/2026
+
+## Revisión del plan en el Planning del R2-Sprint 3 (v1.2)
+
+| Revisión | Cumple |
+|----------|:------:|
+| Cada requisito comprometido del Sprint 3 (REQ-HN-018 a 021, NFR-HN-004 y 005) tiene componente en la sección 5b y en la matriz | ☑ |
+| Cada decisión nueva tiene su ADR (ADR-008 y ADR-009) con alternativas descartadas y consecuencias | ☑ |
+| El OpenAPI v1.2 describe los endpoints del Sprint 3 como quedaron (rutas, parámetros y errores) y es válido | ☑ |
+| No se agregó ninguna dependencia ni servicio nuevo | ☑ |
+| RES-13 (REQ-HN-022 y 023) queda fuera con la razón escrita | ☑ |
+
+**Resultado:** ☑ Aprobada ☐ Aprobada con observaciones ☐ Rechazada
+**Revisa:** Jaider Javier Jaimes · **Fecha:** 18/11/2026

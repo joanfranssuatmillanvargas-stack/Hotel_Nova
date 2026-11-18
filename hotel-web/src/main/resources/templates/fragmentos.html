@@ -55,6 +55,7 @@
 				<!-- Release 2: un bloque por cada rol nuevo (PLA-08) -->
 				<th:block th:if="${rol == 'GERENTE'}">
 					<li class="nav-item"><a class="nav-link" href="/gerencia"><i class="bi bi-graph-up"></i> Gerencia</a></li>
+					<li class="nav-item"><a class="nav-link" href="/gerencia/temporadas"><i class="bi bi-calendar-check"></i> Temporadas</a></li>
 				</th:block>
 				<th:block th:if="${rol == 'CAJERO'}">
 					<li class="nav-item"><a class="nav-link" href="/caja"><i class="bi bi-cash-coin"></i> Por cobrar</a></li>
