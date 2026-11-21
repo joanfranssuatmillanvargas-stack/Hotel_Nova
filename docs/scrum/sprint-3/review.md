@@ -4,7 +4,7 @@
 **Duración:** 45 minutos · **Sprint Goal:** al terminar el sprint, el gerente ve el tablero gerencial y aprueba
 temporadas, los 10 roles están desplegados en Render con trazabilidad completa y el PO toma la decisión de release.
 
-> Preparado el 18/11. Lo que está entre corchetes se llena con las pruebas en Render (T026) y en la Review.
+> Preparado el 18/11 y actualizado el 21/11 con las pruebas en Render (P032 a P034 aprobadas). Lo que está entre corchetes se llena en la Review.
 
 ## 1. Guion de la demo (15 minutos)
 
@@ -22,16 +22,16 @@ Antes de empezar: la URL de Render despierta (los 5 servicios).
 | 8 | Swagger de ms-habitaciones | `POST /api/temporadas/{id}/aprobacion` sobre la misma temporada | 409: ya está APROBADA | REQ-HN-021 |
 | 9 | `admin` + `gerente` | Crear otra temporada y rechazarla | Queda RECHAZADA y la tarifa no cambia | AC-021.2 |
 | 10 | Los 10 usuarios | Iniciar sesión uno por uno | Cada uno entra a su inicio con su menú | NFR-HN-004 |
-| 11 | — | Mostrar `trazabilidad.md`, ADR-008 y 009, y las pruebas en verde (96 de 96) | Todo requisito tiene criterio y prueba | NFR-HN-005 |
+| 11 | — | Mostrar `trazabilidad.md`, ADR-008 a 010, las pruebas en verde (96 de 96) y las capturas de `evidencias/` | Todo requisito tiene criterio y prueba | NFR-HN-005 |
 
 ## 2. Qué se terminó y qué no
 
 | PBI | Puntos | ¿Terminado? | Comentario |
 |-----|:------:|:-----------:|------------|
-| PBI-07 Gerente (PLA-10, HAB-20) | 5 | [__] | T022 a T024 terminadas el 18/11; falta aprobar P032 y P033 en Render |
-| PBI-08 Calidad y despliegue (PLA-11) | 3 | [__] | T025 terminada el 18/11; falta T026 (P034) |
+| PBI-07 Gerente (PLA-10, HAB-20) | 5 | Sí | T022 a T024 el 18/11; P032 y P033 aprobadas en Render el 21/11 |
+| PBI-08 Calidad y despliegue (PLA-11) | 3 | Sí | T025 el 18/11; T026 (P034) y T029 (diseño, ADR-010) el 21/11 |
 | PBI-09 Correo (RES-13) | — | No | Objetivo extendido: no se inició (decisión del Planning) |
-| **Total** | **8** | **[__] de 8** | |
+| **Total** | **8** | **8 de 8** | |
 
 ## 3. Decisiones que se muestran al docente
 
@@ -41,6 +41,7 @@ Antes de empezar: la URL de Render despierta (los 5 servicios).
 | 2 | Editar una temporada aprobada la devuelve a PENDIENTE (mientras tanto se cobra la tarifa base) | ADR-008 | [__] |
 | 3 | La tarifa promedio = alojamiento vendido / noches vendidas de las reservas no canceladas del periodo | ADR-009 | [__] |
 | 4 | RES-13 (correo) no entra al release | planning.md | [__] |
+| 5 | Diseño nuevo de las pantallas (solo estilo, sin cambiar funciones) | ADR-010 | [__] |
 
 ## 4. Decisión de release (PO)
 

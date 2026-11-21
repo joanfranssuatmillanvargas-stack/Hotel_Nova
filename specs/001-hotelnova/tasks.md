@@ -68,7 +68,7 @@ con las de los Sprints 1 y 2 pasan 96 de 96. Falta desplegar en Render y aprobar
 
 ## Fase 8 · PBI-08 Calidad y despliegue (R2-Sprint 3)
 - [x] T025 [PLA-11] Matriz de trazabilidad completa: requisito → criterio → prueba (NFR-HN-005) → `trazabilidad.md`
-- [ ] T026 [PLA-11] Despliegue en Render y prueba de los 10 usuarios en la URL pública (NFR-HN-004) (después de T025)
+- [x] T026 [PLA-11] Despliegue en Render y prueba de los 10 usuarios en la URL pública (NFR-HN-004) (después de T025)
 
 - [x] T029 [PLA-11] Identidad visual de hotel-web: paleta, tipografía, menú con la página activa e inicio de sesión
   (ADR-010). Solo estilo: no cambia rutas, formularios ni reglas. Agregada el 21/11 con aprobación del PO.

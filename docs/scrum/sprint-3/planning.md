@@ -42,6 +42,10 @@ trazabilidad como "fuera del release".
 2. Las pruebas en Render se hacen a mitad del sprint (jueves 19 o viernes 20/11).
 3. Las tarjetas se mueven en Trello el mismo día que se trabajan, pasando por *En progreso*.
 
+## Estado al 21/11
+
+- T026 y T029 terminadas el sábado 21/11 (IMP-04): PR #5 y #6 en `main`, desplegados en Render, P032 a P034 aprobadas. Sprint 3: 8 de 8 puntos.
+
 ## Estado al cierre del día 1 (18/11)
 
 - D17 y T022 a T025 terminadas: código y documentos en la rama `r2-sprint3` (96 de 96 pruebas en verde).

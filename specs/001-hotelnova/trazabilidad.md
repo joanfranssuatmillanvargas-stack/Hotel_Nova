@@ -2,7 +2,7 @@
 
 **PBI:** PBI-08 · **Tarea:** T025 (PLA-11) · **Cubre:** NFR-HN-005 · **Redacta:** Jaider Javier Jaimes · **Revisa:** Joan Franssuat Millán Vargas
 **Entra:** `spec.md` (REQ-HN, NFR-HN y AC), `tasks.md`, las pruebas de `src/test/java` y la hoja *8. Plan Pruebas* del Excel
-**Estado al 18/11/2026** (día 1 del R2-Sprint 3) · Se vuelve a revisar en la Review del 24/11 (NFR-HN-005)
+**Estado al 21/11/2026** (P032 a P034 aprobadas en Render) · Se vuelve a revisar en la Review del 24/11 (NFR-HN-005)
 
 Cómo se lee: cada requisito tiene sus criterios de aceptación (AC), la prueba unitaria que los verifica (clase y método,
 en verde en `mvn test`) y la prueba manual del plan de pruebas (P0xx) que se hace sobre la aplicación desplegada.
@@ -14,8 +14,8 @@ en verde en `mvn test`) y la prueba manual del plan de pruebas (P0xx) que se hac
 | Requisitos de la spec | 23 funcionales (REQ-HN-001 a 023) + 5 no funcionales (NFR-HN-001 a 005) = 28 |
 | Comprometidos en el Release 2 | 26 (REQ-HN-022 y 023 son de RES-13, objetivo extendido que no entró) |
 | Con prueba unitaria | 23 de 26 (REQ-HN-001 a 021 y NFR-HN-001 y 002); NFR-HN-003 a 005 se verifican a mano o por revisión |
-| Con prueba manual aprobada | REQ-HN-001 a 017 (P021 a P031, en Render el 09/11 y el 16/11) |
-| Pendientes de prueba manual | REQ-HN-018 a 021 (P032, P033) y NFR-HN-003 y 004 (P034): se hacen en Render en el R2-Sprint 3 |
+| Con prueba manual aprobada | REQ-HN-001 a 021 y NFR-HN-002 a 004 (P021 a P034, en Render el 09/11, el 16/11 y el 21/11) |
+| Pendientes de prueba manual | Ninguno |
 | Pruebas unitarias | 96 de 96 en verde (hotel-web 61, ms-habitaciones 21, ms-reservas 7, ms-servicios-facturacion 7) |
 
 ## R2-Sprint 1 · PBI-02 y PBI-03 (roles, permisos y mantenimiento)
@@ -49,10 +49,10 @@ en verde en `mvn test`) y la prueba manual del plan de pruebas (P0xx) que se hac
 
 | Requisito | Historia | Criterios | Prueba unitaria | Prueba manual | Estado |
 |-----------|----------|-----------|-----------------|---------------|--------|
-| REQ-HN-018 · tablero gerencial | PLA-10 | AC-018.1 | `TableroGerenciaTest.ac018_1`, `consultaLosCuatroMicroserviciosConElPeriodoElegido`; `TarifaPromedioTest.ac018_1` | P032 | Unitaria en verde; P032 pendiente |
-| REQ-HN-019 · gerente sin crear, editar ni cobrar | PLA-10 | AC-019.1 | `PermisosSprint3Test.unaPaginaDeOtroRolDevuelveAlInicioPropio` (gerente → admin, recepción, caja, agente) | P032 | Unitaria en verde; P032 pendiente |
-| REQ-HN-020 · temporada nueva PENDIENTE | HAB-20 | AC-020.1 | `TemporadasTest.ac020_1`, `alEditarUnaTemporadaAprobadaVuelveAPendiente`, `laTemporadaDelRelease1SinEstadoSigueVigente` | P033 | Unitaria en verde; P033 pendiente |
-| REQ-HN-021 · aprobar o rechazar | HAB-20 | AC-021.1, 021.2 | `TemporadasTest.ac021_1`, `ac021_2`, `soloSeDecidenTemporadasPendientes`, `sinGerenteOConDecisionInvalidaResponde400` | P033 | Unitaria en verde; P033 pendiente |
+| REQ-HN-018 · tablero gerencial | PLA-10 | AC-018.1 | `TableroGerenciaTest.ac018_1`, `consultaLosCuatroMicroserviciosConElPeriodoElegido`; `TarifaPromedioTest.ac018_1` | P032 | Aprobado (21/11) |
+| REQ-HN-019 · gerente sin crear, editar ni cobrar | PLA-10 | AC-019.1 | `PermisosSprint3Test.unaPaginaDeOtroRolDevuelveAlInicioPropio` (gerente → admin, recepción, caja, agente) | P032 | Aprobado (21/11) |
+| REQ-HN-020 · temporada nueva PENDIENTE | HAB-20 | AC-020.1 | `TemporadasTest.ac020_1`, `alEditarUnaTemporadaAprobadaVuelveAPendiente`, `laTemporadaDelRelease1SinEstadoSigueVigente` | P033 | Aprobado (21/11) |
+| REQ-HN-021 · aprobar o rechazar | HAB-20 | AC-021.1, 021.2 | `TemporadasTest.ac021_1`, `ac021_2`, `soloSeDecidenTemporadasPendientes`, `sinGerenteOConDecisionInvalidaResponde400` | P033 | Aprobado (21/11) |
 | REQ-HN-022 · correo con el código | RES-13 | AC-022.1 | — | — | Fuera del release (objetivo extendido no iniciado) |
 | REQ-HN-023 · fallo del correo | RES-13 | AC-023.1 | — | P035 (no se ejecuta) | Fuera del release |
 
@@ -62,11 +62,11 @@ en verde en `mvn test`) y la prueba manual del plan de pruebas (P0xx) que se hac
 |-----------|------------------|--------|--------|
 | NFR-HN-001 · contraseñas cifradas | `UsuariosDePruebaTest.nfr001_laContrasenaDePruebaNoQuedaEnTextoPlano` | Unitaria | Aprobado |
 | NFR-HN-002 · cada rol ve solo lo suyo | `PermisosPorRolTest.nfr002_matrizCompletaDeLos10RolesContraLas10Secciones` y `PermisosSprint2Test`, `PermisosSprint3Test` | Unitaria + P022 | Aprobado |
-| NFR-HN-003 · técnico en un celular de 360 px | Abrir `/mantenimiento` con `mantenimiento` en el celular, sin desplazamiento horizontal | Dentro de P034 | Pendiente |
-| NFR-HN-004 · 10 roles en la URL pública | Iniciar sesión en Render con los 10 usuarios de prueba | P034 | Pendiente |
+| NFR-HN-003 · técnico en un celular de 360 px | Abrir `/mantenimiento` con `mantenimiento` en el celular, sin desplazamiento horizontal | Dentro de P034 | Aprobado (21/11) |
+| NFR-HN-004 · 10 roles en la URL pública | Iniciar sesión en Render con los 10 usuarios de prueba | P034 | Aprobado (21/11) |
 | NFR-HN-005 · todo requisito con prueba | Esta matriz | Revisión en la Review del 24/11 | En revisión |
 
-## Pruebas manuales que faltan (R2-Sprint 3)
+## Pruebas manuales del R2-Sprint 3 (aprobadas el sábado 21/11, evidencias en `docs/scrum/sprint-3/evidencias/`)
 
 | Prueba | Qué se hace en Render | Resultado esperado |
 |--------|-----------------------|--------------------|

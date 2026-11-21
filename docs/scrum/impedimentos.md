@@ -60,4 +60,4 @@ Lo lleva el Scrum Master (Joan Franssuat Millán Vargas). La misma información 
 | Escalado a | Equipo (se decide sin escalar al docente) |
 | Alternativa | El sábado 21/11 se hacen el merge, el despliegue y las pruebas. Ese mismo día se agrega T029 (identidad visual, ADR-010), así que se despliega y se prueba una sola vez. |
 | Fecha límite | 24/11/2026 (Review del R2-Sprint 3) |
-| Estado | **Abierto** |
+| Estado | **Cerrado** (21/11/2026): merge (PR #5 y #6), despliegue y P032 a P034 aprobadas el mismo sábado |
