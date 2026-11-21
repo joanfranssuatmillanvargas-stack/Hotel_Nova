@@ -17,3 +17,7 @@ y no se podría demostrar el aislamiento entre roles (REQ-HN-004) con los 10.
 ## Consecuencias
 - Cada pantalla provisional se reemplaza por la real en su sprint, sin cambiar la ruta ni los permisos.
 - La Review del Sprint 1 puede mostrar los 10 inicios de sesión.
+
+## Seguimiento
+- 14/11/2026 (R2-Sprint 2): caja, supervisión y agente reemplazaron su inicio provisional.
+- 18/11/2026 (R2-Sprint 3): la gerencia reemplazó el último (ADR-009). Se retiraron `roles_nuevos_web` y `rol-provisional.html`.

@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: HotelNova · Endpoints nuevos del Release 2
-  version: 1.1.0
+  version: 1.2.0
   description: >
     Contrato de los endpoints que agrega el Release 2 (PBI-01, tarjeta D11). Los endpoints del Release 1
     siguen documentados en el Swagger de cada microservicio (/swagger-ui.html). Los marcados con
@@ -10,6 +10,9 @@ info:
     Errores de negocio: 400 dato inválido, 404 no existe, 409 regla de negocio (mensaje en "message").
     Versión 1.1 (Planning del R2-Sprint 2, D14): los endpoints del Sprint 2 dejan de ser borradores y quedan como se
     construyeron (ADR-005 a ADR-007).
+    Versión 1.2 (Planning del R2-Sprint 3, D17): los endpoints del Sprint 3 quedan como se construyeron (ADR-008 y
+    ADR-009). La aprobación de temporadas recibe decision y gerente como parámetros de consulta, igual que el pago del
+    cajero, y no en el cuerpo como decía el borrador.
 servers:
   - url: https://hotelnova-habitaciones.onrender.com
     description: ms-habitaciones
@@ -28,6 +31,8 @@ tags:
     description: Supervisor de limpieza (HAB-18, HAB-19)
   - name: Temporadas
     description: Aprobación del gerente (HAB-20)
+  - name: Gerencia
+    description: Datos del tablero gerencial (PLA-10)
 paths:
   /api/habitaciones/mantenimiento:
     get:
@@ -305,39 +310,145 @@ paths:
               example:
                 status: 409
                 message: 'La habitación 101 está OCUPADA: solo se asignan habitaciones en LIMPIEZA'
+  /api/temporadas:
+    get:
+      tags: [Temporadas]
+      summary: Listar temporadas; con estado, solo las de ese estado (HAB-20)
+      operationId: listarTemporadas
+      x-sprint: 3
+      x-roles: [ADMINISTRADOR, GERENTE]
+      x-cubre: [REQ-HN-020]
+      parameters:
+        - name: estado
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [PENDIENTE, APROBADA, RECHAZADA]
+        - name: tipoId
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Temporadas ordenadas por fecha de inicio
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Temporada'
+    post:
+      tags: [Temporadas]
+      summary: Crear temporada (HAB-06); queda PENDIENTE y no cambia la tarifa hasta que el gerente la apruebe (HAB-20)
+      description: >
+        Editarla con PUT /api/temporadas/{id} también la devuelve a PENDIENTE (ADR-008). Una temporada RECHAZADA no
+        impide crear otra en las mismas fechas.
+      operationId: crearTemporada
+      x-sprint: 3
+      x-roles: [ADMINISTRADOR]
+      x-cubre: [REQ-HN-020, AC-020.1]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Temporada'
+      responses:
+        '201':
+          description: Temporada con estado PENDIENTE
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Temporada'
+        '400':
+          description: Falta un dato o las fechas o la tarifa no son válidas
+        '409':
+          description: Se cruza con otra temporada no rechazada del mismo tipo
   /api/temporadas/{id}/aprobacion:
     post:
       tags: [Temporadas]
-      summary: Aprobar o rechazar una temporada PENDIENTE (HAB-20) · borrador
+      summary: Aprobar o rechazar una temporada PENDIENTE (HAB-20)
+      description: >
+        Solo las APROBADAS cambian la tarifa de la noche (GET /api/habitaciones/{id}/valor). Las temporadas guardadas
+        antes del R2-Sprint 3 no tienen estado y siguen vigentes como aprobadas (ADR-008).
       operationId: decidirTemporada
       x-sprint: 3
       x-roles: [GERENTE]
-      x-cubre: [REQ-HN-020, REQ-HN-021]
+      x-cubre: [REQ-HN-021, AC-021.1, AC-021.2]
       parameters:
         - name: id
           in: path
           required: true
           schema:
             type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required: [decision, gerente]
-              properties:
-                decision:
-                  type: string
-                  enum: [APROBADA, RECHAZADA]
-                gerente:
-                  type: string
-                  example: gerente
+        - name: decision
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [APROBADA, RECHAZADA]
+        - name: gerente
+          in: query
+          required: true
+          schema:
+            type: string
+            example: gerente
       responses:
         '200':
-          description: Temporada con su nuevo estado
+          description: Temporada con su nuevo estado, revisadaPor y revisadaEn
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Temporada'
+        '400':
+          description: Falta el gerente o la decisión no es APROBADA ni RECHAZADA
+        '404':
+          description: No existe la temporada
         '409':
           description: La temporada ya no está PENDIENTE
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                status: 409
+                message: 'La temporada "Alta de diciembre" ya está APROBADA: solo se aprueban o rechazan temporadas PENDIENTES'
+  /api/reservas/reporte:
+    get:
+      tags: [Gerencia]
+      summary: Reporte de reservas del periodo con noches vendidas y tarifa promedio por noche (RES-10, PLA-10)
+      description: >
+        Endpoint del Release 1 al que el Sprint 3 agrega noches y tarifaPromedio (valor del alojamiento de las reservas
+        no canceladas / noches vendidas, ADR-009). El tablero gerencial lo combina con GET /api/habitaciones/ocupacion,
+        GET /api/facturas/reporte y GET /api/huespedes.
+      operationId: reporteReservas
+      x-sprint: 3
+      x-roles: [ADMINISTRADOR, GERENTE]
+      x-cubre: [REQ-HN-018, AC-018.1]
+      parameters:
+        - name: desde
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: hasta
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: Totales del periodo (por fecha de llegada)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReporteReservas'
+        '400':
+          description: Rango de fechas inválido
 components:
   parameters:
     HabitacionId:
@@ -484,6 +595,62 @@ components:
         tomadaPor:
           type: string
           example: agente
+    Temporada:
+      type: object
+      properties:
+        id:
+          type: string
+        nombre:
+          type: string
+          example: Alta de diciembre
+        tipoId:
+          type: string
+        inicio:
+          type: string
+          format: date
+          example: '2026-12-15'
+        fin:
+          type: string
+          format: date
+          example: '2027-01-15'
+        tarifa:
+          type: number
+          example: 300000
+        estado:
+          type: string
+          nullable: true
+          description: null en las temporadas guardadas antes del R2-Sprint 3 (vigentes, ADR-008)
+          enum: [PENDIENTE, APROBADA, RECHAZADA]
+        revisadaPor:
+          type: string
+          example: gerente
+        revisadaEn:
+          type: string
+          format: date-time
+    ReporteReservas:
+      type: object
+      properties:
+        desde:
+          type: string
+          format: date
+        hasta:
+          type: string
+          format: date
+        total:
+          type: integer
+        porEstado:
+          type: object
+          additionalProperties:
+            type: integer
+        valorAlojamiento:
+          type: number
+          example: 1100000
+        noches:
+          type: integer
+          example: 5
+        tarifaPromedio:
+          type: number
+          example: 220000
     Error:
       type: object
       properties:

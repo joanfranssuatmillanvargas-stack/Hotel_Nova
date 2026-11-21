@@ -12,6 +12,8 @@ public class ReporteReservas {
 	private long total;
 	private Map<String, Long> porEstado = new LinkedHashMap<>();
 	private double valorAlojamiento; // reservas no canceladas
+	private long noches; // PLA-10: noches vendidas (reservas no canceladas)
+	private double tarifaPromedio; // PLA-10 (REQ-HN-018): valorAlojamiento / noches (ADR-009)
 
 	public LocalDate getDesde() {
 		return desde;
@@ -47,5 +49,20 @@ public class ReporteReservas {
 
 	public void setValorAlojamiento(double valorAlojamiento) {
 		this.valorAlojamiento = valorAlojamiento;
+	}
+
+	public long getNoches() {
+		return noches;
+	}
+
+	public void setNoches(long noches) {
+		this.noches = noches;
+	}
+	public double getTarifaPromedio() {
+		return tarifaPromedio;
+	}
+
+	public void setTarifaPromedio(double tarifaPromedio) {
+		this.tarifaPromedio = tarifaPromedio;
 	}
 }

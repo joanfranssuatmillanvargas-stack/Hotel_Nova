@@ -1,6 +1,7 @@
 package com.hotelnova.habitaciones.modelo;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -17,6 +18,14 @@ public class Temporada {
 	private LocalDate fin;
 	private String tipoId; // referencia a TipoHabitacion
 	private double tarifa; // valor por noche en la temporada
+	private EstadoTemporada estado; // HAB-20; null = guardada antes del R2-Sprint 3 (vigente, ADR-008)
+	private String revisadaPor; // gerente que la aprobó o rechazó
+	private LocalDateTime revisadaEn;
+
+	/** ADR-008: cambia la tarifa solo si está aprobada (o si viene del Release 1, sin estado). */
+	public boolean vigente() {
+		return estado == null || estado == EstadoTemporada.APROBADA;
+	}
 
 	public String getId() {
 		return id;
@@ -59,5 +68,27 @@ public class Temporada {
 
 	public void setTarifa(double tarifa) {
 		this.tarifa = tarifa;
+	}
+
+	public EstadoTemporada getEstado() {
+		return estado;
+	}
+
+	public void setEstado(EstadoTemporada estado) {
+		this.estado = estado;
+	}
+	public String getRevisadaPor() {
+		return revisadaPor;
+	}
+
+	public void setRevisadaPor(String revisadaPor) {
+		this.revisadaPor = revisadaPor;
+	}
+	public LocalDateTime getRevisadaEn() {
+		return revisadaEn;
+	}
+
+	public void setRevisadaEn(LocalDateTime revisadaEn) {
+		this.revisadaEn = revisadaEn;
 	}
 }

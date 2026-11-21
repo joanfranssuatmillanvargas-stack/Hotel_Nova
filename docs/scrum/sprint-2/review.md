@@ -4,7 +4,9 @@
 **Duración:** 45 minutos · **Sprint Goal:** al terminar el sprint, un agente puede tomar reservas por teléfono, el cajero
 cobra y cierra la caja del día, y el supervisor reparte las habitaciones entre las camareras.
 
-> Preparado con el estado del tablero al lunes 16/11 (P025 a P031 aprobadas en Render). Lo que está entre corchetes se llena en la Review.
+> Preparado con el estado del tablero al lunes 16/11 (P025 a P031 aprobadas en Render) y completado con lo que pasó en la Review del 17/11.
+
+**Resultado:** el docente aprobó el incremento y dijo que el proyecto va bien como se lleva. No hubo solicitudes de cambio.
 
 ## 1. Guion de la demo (15 minutos)
 
@@ -41,13 +43,14 @@ Antes de empezar: la URL de Render despierta (los 5 servicios) y una segunda cam
 
 | # | Decisión | Dónde queda | Respuesta del docente |
 |---|----------|-------------|-----------------------|
-| 1 | Cada cajero cierra su propia caja; el cierre se calcula, no se guarda | ADR-006 | [__] |
-| 2 | Toda reserva exige canal; las del Release 1 quedan "Sin registrar" | ADR-007 | [__] |
-| 3 | Desde este sprint la camarera ve solo lo que le asignan (el usuario `limpieza` también) | ADR-005 | [__] |
+| 1 | Cada cajero cierra su propia caja; el cierre se calcula, no se guarda | ADR-006 | Aprobada |
+| 2 | Toda reserva exige canal; las del Release 1 quedan "Sin registrar" | ADR-007 | Aprobada |
+| 3 | Desde este sprint la camarera ve solo lo que le asignan (el usuario `limpieza` también) | ADR-005 | Aprobada |
 
 ## 4. Comentarios del stakeholder
 
-- [__]
+- Aprobó el funcionamiento de los 3 roles nuevos (agente, cajero y supervisor) y dijo que estaba bien así como se lleva el proyecto.
+- No pidió cambios: no se crea PBI-10 (CR-001).
 
 Si aparece una solicitud de cambio, entra al backlog como **PBI-10 (CR-001)** y la decide el PO.
 

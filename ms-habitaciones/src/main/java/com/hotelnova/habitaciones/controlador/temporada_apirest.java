@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.hotelnova.habitaciones.modelo.EstadoTemporada;
 import com.hotelnova.habitaciones.modelo.Temporada;
 import com.hotelnova.habitaciones.repositorio.reglas_repositorio;
 import com.hotelnova.habitaciones.repositorio.temporada_repositorio;
@@ -21,7 +22,7 @@ import com.hotelnova.habitaciones.repositorio.temporada_repositorio;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
-@Tag(name = "Temporadas", description = "Tarifas por temporada (alta, baja) de cada tipo de habitación")
+@Tag(name = "Temporadas", description = "Tarifas por temporada (alta, baja) de cada tipo de habitación y su aprobación por el gerente (HAB-20)")
 @RestController
 @RequestMapping("/api/temporadas")
 public class temporada_apirest {
@@ -34,9 +35,13 @@ public class temporada_apirest {
 		this.reglas = reglas;
 	}
 
-	@Operation(summary = "Listar temporadas (opcional: por tipo)")
+	@Operation(summary = "Listar temporadas (opcional: por tipo o por estado PENDIENTE, APROBADA o RECHAZADA, HAB-20)")
 	@GetMapping
-	public List<Temporada> listar(@RequestParam(name = "tipoId", required = false) String tipoId) {
+	public List<Temporada> listar(@RequestParam(name = "tipoId", required = false) String tipoId,
+			@RequestParam(name = "estado", required = false) EstadoTemporada estado) {
+		if (estado != null) {
+			return reglas.temporadasPorEstado(estado);
+		}
 		return tipoId == null || tipoId.isBlank() ? temporadas.findAllByOrderByInicioAsc() : temporadas.findByTipoId(tipoId);
 	}
 
@@ -46,17 +51,24 @@ public class temporada_apirest {
 		return reglas.temporada(id);
 	}
 
-	@Operation(summary = "Crear temporada (HAB-06): no se puede cruzar con otra del mismo tipo")
+	@Operation(summary = "Crear temporada (HAB-06): no se puede cruzar con otra del mismo tipo; queda PENDIENTE (HAB-20)")
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public Temporada crear(@RequestBody Temporada datos) {
 		return reglas.guardarTemporada(null, datos);
 	}
 
-	@Operation(summary = "Editar temporada (HAB-06)")
+	@Operation(summary = "Editar temporada (HAB-06): vuelve a quedar PENDIENTE hasta que el gerente la apruebe (HAB-20)")
 	@PutMapping("/{id}")
 	public Temporada actualizar(@PathVariable("id") String id, @RequestBody Temporada datos) {
 		return reglas.guardarTemporada(id, datos);
+	}
+
+	@Operation(summary = "Aprobar o rechazar una temporada PENDIENTE (HAB-20): decision=APROBADA o RECHAZADA; 409 si ya se decidió")
+	@PostMapping("/{id}/aprobacion")
+	public Temporada decidir(@PathVariable("id") String id, @RequestParam("decision") String decision,
+			@RequestParam("gerente") String gerente) {
+		return reglas.decidirTemporada(id, decision, gerente);
 	}
 
 	@Operation(summary = "Eliminar temporada")

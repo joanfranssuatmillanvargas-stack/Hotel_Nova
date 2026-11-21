@@ -24,7 +24,7 @@ ROLES DEL SISTEMA Y USUARIOS DE PRUEBA (se crean solos la primera vez que arranc
   Personal de limpieza   limpieza / limpieza123
   Huésped                cada huésped crea su cuenta en "Regístrate aquí" (pantalla de login)
   -- Release 2 (tercer corte): se crean solos al arrancar si no existen, sin tocar los que ya están --
-  Gerente                    gerente / gerente123              (sus funciones llegan en el R2-Sprint 3)
+  Gerente                    gerente / gerente123              (tablero y aprobación de temporadas)
   Cajero                     cajero / cajero123                (cobra facturas y hace el cierre de caja: R2-Sprint 2)
   Técnico de mantenimiento   mantenimiento / mantenimiento123  (repara habitaciones: R2-Sprint 1)
   Supervisor de limpieza     supervisor / supervisor123        (reparte habitaciones entre camareras: R2-Sprint 2)
@@ -61,12 +61,17 @@ FLUJO PARA LA SUSTENTACIÓN
   cajero:    "Por cobrar" > cobrar en efectivo > "Cierre de caja" del día (totales por medio de pago)
   supervisor: asignar la habitación por limpiar a una camarera > reasignarla a otra
   limpieza:  cada camarera ve solo las habitaciones que le asignaron
+  Release 2 (R2-Sprint 3):
+  admin:     Habitaciones > Nueva temporada (tipo Doble, fechas futuras) > queda PENDIENTE y la tarifa no cambia
+  gerente:   Temporadas > Aprobar (la tarifa ya se cobra) o Rechazar (sigue la tarifa base)
+  gerente:   Gerencia > ocupación de hoy, tarifa promedio por noche e ingresos del mes por categoría (solo consulta)
 
 ESPECIFICACIÓN (SDD, tercer corte)
   constitution.md y AGENTS.md            reglas del proyecto y de la IA (Puerta 0)
   specs/001-hotelnova/spec.md            qué hace el sistema con 10 roles (Puerta 1)
-  specs/001-hotelnova/plan.md            cómo se construye + docs/adr/ (ADR-001 a 007) + api/openapi.yaml (Puerta 2)
+  specs/001-hotelnova/plan.md            cómo se construye + docs/adr/ (ADR-001 a 009) + api/openapi.yaml (Puerta 2)
   specs/001-hotelnova/tasks.md           tareas T001 a T028 (Puerta 3)
+  specs/001-hotelnova/trazabilidad.md    matriz requisito > criterio > prueba (PLA-11)
   Pruebas unitarias: en cada proyecto, "mvn test" (o Run As > JUnit Test en STS)
 
 CONTRASEÑAS

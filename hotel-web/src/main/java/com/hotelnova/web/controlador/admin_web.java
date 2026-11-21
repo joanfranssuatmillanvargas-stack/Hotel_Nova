@@ -175,7 +175,7 @@ public class admin_web {
 			} else {
 				ms.put(HABITACIONES, "/api/temporadas/" + form.get("id"), datos);
 			}
-			return "Temporada " + form.get("nombre") + " guardada";
+			return "Temporada " + form.get("nombre") + " guardada: queda PENDIENTE hasta que el gerente la apruebe (HAB-20)";
 		});
 	}
 

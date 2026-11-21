@@ -18,6 +18,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.hotelnova.habitaciones.modelo.EstadoHabitacion;
+import com.hotelnova.habitaciones.modelo.EstadoTemporada;
 import com.hotelnova.habitaciones.modelo.FichaHabitacion;
 import com.hotelnova.habitaciones.modelo.Habitacion;
 import com.hotelnova.habitaciones.modelo.HabitacionMantenimiento;
@@ -207,6 +208,9 @@ public class reglas_repositorio {
 			throw invalido("La tarifa de la temporada debe ser mayor que 0");
 		}
 		for (Temporada otra : temporadas.findByTipoId(datos.getTipoId())) {
+			if (otra.getEstado() == EstadoTemporada.RECHAZADA) {
+				continue; // una rechazada no aplica, así que no impide crear otra en las mismas fechas (ADR-008)
+			}
 			boolean seCruzan = !datos.getInicio().isAfter(otra.getFin()) && !datos.getFin().isBefore(otra.getInicio());
 			if (seCruzan && !otra.getId().equals(id)) {
 				throw conflicto("La temporada se cruza con \"" + otra.getNombre() + "\" (" + otra.getInicio() + " a "
@@ -217,12 +221,48 @@ public class reglas_repositorio {
 			temporada(id);
 		}
 		datos.setId(id);
+		// HAB-20 (REQ-HN-020): nueva o editada, queda PENDIENTE y no cambia la tarifa hasta que el gerente la apruebe
+		datos.setEstado(EstadoTemporada.PENDIENTE);
+		datos.setRevisadaPor(null);
+		datos.setRevisadaEn(null);
 		return temporadas.save(datos);
 	}
 
-	/** Tarifa de una noche: la de la temporada que contiene la fecha, o la tarifa base. */
+	/** HAB-20 (REQ-HN-021): el gerente aprueba o rechaza una temporada PENDIENTE. */
+	public Temporada decidirTemporada(String id, String decision, String gerente) {
+		obligatorio(gerente, "el usuario del gerente que decide");
+		EstadoTemporada nuevo;
+		try {
+			nuevo = EstadoTemporada.valueOf(decision == null ? "" : decision.trim().toUpperCase());
+		} catch (IllegalArgumentException e) {
+			nuevo = null;
+		}
+		if (nuevo != EstadoTemporada.APROBADA && nuevo != EstadoTemporada.RECHAZADA) {
+			throw invalido("La decisión debe ser APROBADA o RECHAZADA");
+		}
+		Temporada t = temporada(id);
+		if (t.getEstado() != EstadoTemporada.PENDIENTE) {
+			throw conflicto("La temporada \"" + t.getNombre() + "\" ya está "
+					+ (t.getEstado() == null ? "APROBADA (viene del Release 1)" : t.getEstado().name())
+					+ ": solo se aprueban o rechazan temporadas PENDIENTES");
+		}
+		t.setEstado(nuevo);
+		t.setRevisadaPor(gerente.trim());
+		t.setRevisadaEn(LocalDateTime.now(zona));
+		return temporadas.save(t);
+	}
+
+	/** Temporadas por estado (el gerente ve las PENDIENTES). */
+	public List<Temporada> temporadasPorEstado(EstadoTemporada estado) {
+		return temporadas.findAllByOrderByInicioAsc().stream().filter(t -> t.getEstado() == estado).toList();
+	}
+
+	/** Tarifa de una noche: la de la temporada aprobada que contiene la fecha, o la tarifa base. */
 	public double tarifaNoche(TipoHabitacion tipo, List<Temporada> temporadasTipo, LocalDate noche) {
 		for (Temporada t : temporadasTipo) {
+			if (!t.vigente()) {
+				continue; // HAB-20: las PENDIENTES y RECHAZADAS no cambian la tarifa
+			}
 			if (!noche.isBefore(t.getInicio()) && !noche.isAfter(t.getFin())) {
 				return t.getTarifa();
 			}

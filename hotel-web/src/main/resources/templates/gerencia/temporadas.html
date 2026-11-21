@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragmentos :: cabeza('Temporadas')}"></head>
+<body>
+<nav th:replace="~{fragmentos :: menu}"></nav>
+<!-- HAB-20 (REQ-HN-020, 021 · ADR-008): el gerente solo aprueba o rechaza; crear y editar es del administrador -->
+<main class="container py-4">
+	<div th:replace="~{fragmentos :: alertas}"></div>
+	<div class="mb-3">
+		<h1 class="h3 titulo mb-0"><i class="bi bi-calendar-check"></i> Aprobación de temporadas</h1>
+		<p class="small text-secondary mb-0">Una temporada nueva o editada queda PENDIENTE y no cambia la tarifa hasta que la apruebes.</p>
+	</div>
+	<div class="card p-3">
+		<div class="table-responsive">
+		<table class="table table-sm align-middle mb-0">
+			<thead><tr><th>Temporada</th><th>Tipo</th><th>Desde</th><th>Hasta</th><th class="text-end">Tarifa/noche</th><th>Estado</th><th>Decisión</th></tr></thead>
+			<tbody>
+				<tr th:each="t : ${temporadas}">
+					<td class="fw-semibold" th:text="${t['nombre']}">Alta</td>
+					<td th:text="${nombresTipo[t['tipoId']]}">Doble</td>
+					<td th:text="${t['inicio']}">-</td><td th:text="${t['fin']}">-</td>
+					<td class="text-end" th:text="'$' + ${#numbers.formatDecimal(t['tarifa'], 1, 'POINT', 0, 'COMMA')}">0</td>
+					<td><span class="estado" th:classappend="'estado-' + ${t['estado'] ?: 'APROBADA'}" th:text="${t['estado'] ?: 'APROBADA'}">PENDIENTE</span></td>
+					<td>
+						<div class="d-flex gap-2" th:if="${t['estado'] == 'PENDIENTE'}">
+							<form method="post" th:action="@{/gerencia/temporadas/{id}/aprobacion(id=${t['id']})}">
+								<input type="hidden" name="decision" value="APROBADA">
+								<button class="btn btn-sm btn-success text-nowrap"><i class="bi bi-check2"></i> Aprobar</button></form>
+							<form method="post" th:action="@{/gerencia/temporadas/{id}/aprobacion(id=${t['id']})}">
+								<input type="hidden" name="decision" value="RECHAZADA">
+								<button class="btn btn-sm btn-outline-danger text-nowrap"><i class="bi bi-x-lg"></i> Rechazar</button></form>
+						</div>
+						<span class="small text-secondary" th:if="${t['estado'] != 'PENDIENTE'}"
+							th:text="${t['revisadaPor'] != null} ? 'Por ' + ${t['revisadaPor']} + ' el ' + ${#strings.substring(#strings.replace(t['revisadaEn'], 'T', ' '), 0, 16)} : 'Vigente desde el Release 1'">Por gerente</span>
+					</td>
+				</tr>
+				<tr th:if="${#lists.isEmpty(temporadas)}"><td colspan="7" class="text-secondary">No hay temporadas: se cobra la tarifa base de cada tipo.</td></tr>
+			</tbody>
+		</table>
+		</div>
+	</div>
+</main>
+<script th:replace="~{fragmentos :: scripts}"></script>
+</body>
+</html>
