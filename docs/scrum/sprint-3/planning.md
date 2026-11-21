@@ -30,6 +30,7 @@ trazabilidad como "fuera del release".
 | T024 | Tablero gerencial de solo consulta (`TableroGerenciaTest`, `TarifaPromedioTest`, `PermisosSprint3Test`) | Jaider | Joan | mié 18/11 |
 | T025 | Matriz de trazabilidad (`specs/001-hotelnova/trazabilidad.md`) | Jaider | Joan | mié 18/11 |
 | T026 | Despliegue en Render y P032 a P034 con los 10 usuarios | Jaider | Joan | jue 19 o vie 20/11 |
+| T029 | Identidad visual de hotel-web (ADR-010). Se agregó el sáb 21/11 con aprobación del PO; no cambia el compromiso de puntos | Joan | Jaider | sáb 21/11 |
 | D18 | Sprint Review S3 y decisión de release | Jaider | Joan (facilita) | mar 24/11 |
 | D19 | Sprint Retrospective S3 | Joan | Equipo | mar 24/11 |
 

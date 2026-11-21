@@ -19,7 +19,7 @@
 		<div class="col-6 col-md-4 col-lg-3" th:each="h : ${habitaciones}">
 			<div class="card p-3 h-100">
 				<div class="d-flex justify-content-between align-items-center mb-2">
-					<span class="fs-4 fw-bold titulo" th:text="${h['numero']}">101</span>
+					<span class="fs-3 titulo placa" th:text="${h['numero']}">101</span>
 					<span class="estado" th:classappend="'estado-' + ${h['estado']}" th:text="${h['estado']}">E</span>
 				</div>
 				<div class="small text-secondary mb-2" th:text="'Piso ' + ${h['piso']} + (${h['actualizadoPor'] != null} ? ' · cambió: ' + ${h['actualizadoPor']} : '')">Piso 1</div>

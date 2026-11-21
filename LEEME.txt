@@ -69,7 +69,7 @@ FLUJO PARA LA SUSTENTACIÓN
 ESPECIFICACIÓN (SDD, tercer corte)
   constitution.md y AGENTS.md            reglas del proyecto y de la IA (Puerta 0)
   specs/001-hotelnova/spec.md            qué hace el sistema con 10 roles (Puerta 1)
-  specs/001-hotelnova/plan.md            cómo se construye + docs/adr/ (ADR-001 a 009) + api/openapi.yaml (Puerta 2)
+  specs/001-hotelnova/plan.md            cómo se construye + docs/adr/ (ADR-001 a 010) + api/openapi.yaml (Puerta 2)
   specs/001-hotelnova/tasks.md           tareas T001 a T028 (Puerta 3)
   specs/001-hotelnova/trazabilidad.md    matriz requisito > criterio > prueba (PLA-11)
   Pruebas unitarias: en cada proyecto, "mvn test" (o Run As > JUnit Test en STS)

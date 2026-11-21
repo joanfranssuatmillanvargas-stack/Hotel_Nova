@@ -1,21 +1,175 @@
-body { background: #f4f6fa; }
-.barra { background: #1f3864; }
-.card { border: 0; box-shadow: 0 1px 3px rgba(31, 56, 100, .12); }
-.card-servicio { border-left: 4px solid; }
-.titulo { color: #1f3864; }
-.table > :not(caption) > * > * { vertical-align: middle; }
-.estado { font-size: .78rem; font-weight: 600; padding: .3em .6em; border-radius: .4rem; }
-.estado-DISPONIBLE, .estado-PAGADA, .estado-APROBADA { background: #d1f0dc; color: #14532d; }
-.estado-OCUPADA, .estado-EN_CURSO { background: #dbe7fb; color: #1e3a8a; }
-.estado-LIMPIEZA, .estado-CONFIRMADA, .estado-PENDIENTE { background: #fff1c7; color: #7a4d00; }
-.estado-MANTENIMIENTO, .estado-CANCELADA, .estado-RECHAZADA { background: #fbd9d9; color: #7f1d1d; }
-.estado-CERRADA { background: #e5e7eb; color: #374151; }
-.cifra { font-size: 1.9rem; font-weight: 700; color: #1f3864; line-height: 1; }
-.tarjeta-limpieza { border-left: 5px solid #f0ad4e; }
-.tarjeta-limpieza.prioridad { border-left-color: #dc3545; }
-.tarjeta-mantenimiento { border-left: 5px solid #dc3545; }
-.login-caja { max-width: 420px; }
-.form-label { font-weight: 500; font-size: .9rem; }
-.anulado { text-decoration: line-through; color: #9ca3af; }
+/*
+ * HotelNova · identidad visual (R2-Sprint 3, T029 · ADR-010)
+ * Tinta de noche para la estructura, verde lobby para las acciones y latón solo como acento (llaves y placas).
+ * Solo cambia el aspecto: las páginas, rutas y formularios siguen igual.
+ */
+:root {
+	--hn-tinta: #16323a;
+	--hn-tinta-2: #21454f;
+	--hn-lobby: #1f6f6b;
+	--hn-lobby-osc: #185854;
+	--hn-laton: #b88a3e;
+	--hn-laton-claro: #e9d8b4;
+	--hn-fondo: #eef2f1;
+	--hn-borde: #d9e1df;
+	--hn-texto: #1e2b2f;
+	--hn-suave: #5c6b70;
+
+	--bs-body-font-family: "Figtree", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+	--bs-body-bg: var(--hn-fondo);
+	--bs-body-color: var(--hn-texto);
+	--bs-secondary-color: var(--hn-suave);
+	--bs-border-color: var(--hn-borde);
+	--bs-primary: var(--hn-lobby);
+	--bs-primary-rgb: 31, 111, 107;
+	--bs-link-color: var(--hn-lobby);
+	--bs-link-color-rgb: 31, 111, 107;
+	--bs-link-hover-color: var(--hn-lobby-osc);
+	--bs-link-hover-color-rgb: 24, 88, 84;
+	--bs-border-radius: .55rem;
+	--bs-border-radius-sm: .4rem;
+	--bs-focus-ring-color: rgba(184, 138, 62, .35);
+}
+
+body { font-size: .95rem; -webkit-font-smoothing: antialiased; }
+.text-secondary { color: var(--hn-suave) !important; }
+a { text-underline-offset: .18em; }
+
+/* ---------- barra superior ---------- */
+.barra { background: var(--hn-tinta); border-bottom: 3px solid var(--hn-laton); padding-top: .55rem; padding-bottom: .55rem; }
+.marca { display: inline-flex; align-items: center; gap: .55rem; color: #fff; text-decoration: none; }
+.marca:hover { color: #fff; }
+.marca-llave {
+	display: inline-grid; place-items: center; width: 2rem; height: 2rem; border-radius: .5rem .5rem 1rem 1rem;
+	background: var(--hn-laton); color: var(--hn-tinta); font-size: 1rem; position: relative;
+}
+.marca-llave::after { /* el agujero del llavero */
+	content: ""; position: absolute; top: .22rem; width: .32rem; height: .32rem; border-radius: 50%; background: var(--hn-tinta);
+}
+.marca-llave i { margin-top: .35rem; }
+.marca-nombre { font-family: "Barlow Condensed", "Figtree", sans-serif; font-weight: 600; font-size: 1.45rem; letter-spacing: .01em; line-height: 1; }
+.barra .nav-link { color: rgba(255, 255, 255, .78); border-radius: .4rem; padding: .45rem .7rem !important; position: relative; }
+.barra .nav-link:hover, .barra .nav-link:focus-visible { color: #fff; background: var(--hn-tinta-2); }
+.barra .nav-link.active { color: #fff; }
+.barra .nav-link.active::after {
+	content: ""; position: absolute; left: .7rem; right: .7rem; bottom: -.62rem; height: 3px; background: #fff; border-radius: 2px;
+}
+.barra .dropdown-menu { border: 1px solid var(--hn-borde); box-shadow: 0 8px 24px rgba(22, 50, 58, .14); }
 .navbar .nav-link, .navbar-text { white-space: nowrap; }
 .navbar-nav .nav-link { font-size: .92rem; }
+
+/* el usuario y su rol, como la etiqueta de una llave */
+.chip-rol {
+	display: inline-flex; align-items: center; gap: .5rem; padding: .3rem .75rem .3rem .45rem; border-radius: 2rem;
+	background: var(--hn-tinta-2); color: #fff; font-size: .85rem; line-height: 1.15;
+}
+.chip-rol .avatar {
+	width: 1.7rem; height: 1.7rem; border-radius: 50%; display: inline-grid; place-items: center;
+	background: var(--hn-laton-claro); color: var(--hn-tinta); font-weight: 700; font-size: .8rem; text-transform: uppercase;
+}
+.chip-rol small { display: block; color: rgba(255, 255, 255, .65); font-size: .72rem; }
+.btn-salir { color: rgba(255, 255, 255, .8); border: 1px solid rgba(255, 255, 255, .28); }
+.btn-salir:hover { color: var(--hn-tinta); background: #fff; border-color: #fff; }
+
+/* ---------- títulos y cifras ---------- */
+.titulo { color: var(--hn-tinta); font-weight: 700; letter-spacing: -.01em; }
+h1.titulo { font-size: 1.6rem; }
+h2.titulo, h3.titulo { font-weight: 650; }
+main > div:has(> div > h1.titulo), main > .mb-3:has(> h1.titulo) { padding-bottom: .9rem; border-bottom: 1px solid var(--hn-borde); margin-bottom: 1.25rem !important; }
+.cifra {
+	font-family: "Barlow Condensed", "Figtree", sans-serif; font-weight: 600; font-size: 2.35rem; color: var(--hn-tinta);
+	line-height: 1; font-variant-numeric: tabular-nums; letter-spacing: .01em;
+}
+
+/* ---------- tarjetas y tablas ---------- */
+.card { border: 1px solid var(--hn-borde); border-radius: .7rem; box-shadow: none; background: #fff; }
+.card-servicio { border-left: 4px solid; }
+.tarjeta-limpieza { border-left: 5px solid var(--hn-laton); }
+.tarjeta-limpieza.prioridad { border-left-color: #c0392b; }
+.tarjeta-mantenimiento { border-left: 5px solid #c0392b; }
+.table { --bs-table-bg: transparent; --bs-table-hover-bg: #f4f7f6; margin-bottom: .25rem; }
+.table > :not(caption) > * > * { vertical-align: middle; padding-top: .55rem; padding-bottom: .55rem; border-color: #e6ecea; }
+.table > thead th {
+	color: var(--hn-suave); font-weight: 600; font-size: .8rem; background: #f5f8f7; border-bottom: 1px solid var(--hn-borde);
+	white-space: nowrap;
+}
+.table > tbody > tr:hover > * { background: #f7faf9; }
+.list-group-item { border-color: #e6ecea; }
+
+/* ---------- estados (habitaciones, reservas, facturas, temporadas) ---------- */
+.estado {
+	display: inline-flex; align-items: center; gap: .35em; font-size: .74rem; font-weight: 600; letter-spacing: .02em;
+	padding: .28em .65em; border-radius: 2rem; white-space: nowrap;
+}
+.estado::before { content: ""; width: .45em; height: .45em; border-radius: 50%; background: currentColor; opacity: .75; }
+.estado-DISPONIBLE, .estado-PAGADA, .estado-APROBADA { background: #dcefe6; color: #17583c; }
+.estado-OCUPADA, .estado-EN_CURSO { background: #dde9f2; color: #1d4466; }
+.estado-LIMPIEZA, .estado-CONFIRMADA, .estado-PENDIENTE { background: #f6ead0; color: #7a5214; }
+.estado-MANTENIMIENTO, .estado-CANCELADA, .estado-RECHAZADA { background: #f7dedb; color: #82261c; }
+.estado-CERRADA { background: #e6e9ea; color: #3f4b4f; }
+.anulado { text-decoration: line-through; color: #9aa6aa; }
+
+/* ---------- botones y formularios ---------- */
+.btn { font-weight: 600; border-radius: .5rem; }
+.btn-sm { border-radius: .4rem; }
+.btn-primary {
+	--bs-btn-bg: var(--hn-lobby); --bs-btn-border-color: var(--hn-lobby);
+	--bs-btn-hover-bg: var(--hn-lobby-osc); --bs-btn-hover-border-color: var(--hn-lobby-osc);
+	--bs-btn-active-bg: var(--hn-tinta); --bs-btn-active-border-color: var(--hn-tinta);
+	--bs-btn-disabled-bg: var(--hn-lobby); --bs-btn-disabled-border-color: var(--hn-lobby);
+}
+.btn-outline-primary {
+	--bs-btn-color: var(--hn-lobby); --bs-btn-border-color: #a9cbc8;
+	--bs-btn-hover-bg: var(--hn-lobby); --bs-btn-hover-border-color: var(--hn-lobby);
+	--bs-btn-active-bg: var(--hn-lobby-osc); --bs-btn-active-border-color: var(--hn-lobby-osc);
+}
+.btn-outline-secondary { --bs-btn-color: var(--hn-suave); --bs-btn-border-color: #c9d3d1; --bs-btn-hover-bg: #e6ecea; --bs-btn-hover-color: var(--hn-texto); --bs-btn-hover-border-color: #c9d3d1; }
+.btn-warning { --bs-btn-bg: var(--hn-laton); --bs-btn-border-color: var(--hn-laton); --bs-btn-color: #fff; --bs-btn-hover-bg: #9c7432; --bs-btn-hover-border-color: #9c7432; --bs-btn-hover-color: #fff; --bs-btn-active-bg: #8a6629; --bs-btn-active-color: #fff; }
+.text-bg-warning { background-color: var(--hn-laton-claro) !important; color: #6b4810 !important; }
+.btn-success { --bs-btn-bg: #23794f; --bs-btn-border-color: #23794f; --bs-btn-hover-bg: #1b603e; --bs-btn-hover-border-color: #1b603e; }
+.btn:focus-visible, .form-control:focus, .form-select:focus { box-shadow: 0 0 0 .22rem rgba(184, 138, 62, .35); }
+.form-control:focus, .form-select:focus { border-color: var(--hn-laton); }
+.form-label { font-weight: 600; font-size: .85rem; color: var(--hn-tinta); margin-bottom: .3rem; }
+.form-control, .form-select { border-color: #cfd8d6; background-color: #fff; }
+/* número de habitación, como la placa de la puerta */
+.placa { font-family: "Barlow Condensed", "Figtree", sans-serif !important; font-weight: 600 !important; letter-spacing: .01em; font-variant-numeric: tabular-nums; }
+.progress { background: #e3e9e7; }
+.progress-bar { background-color: var(--hn-lobby); }
+.progress-bar.bg-success { background-color: var(--hn-laton) !important; }
+.badge.text-bg-primary { background-color: var(--hn-lobby) !important; }
+
+/* ---------- avisos ---------- */
+.alert { border: 0; border-left: 4px solid; border-radius: .55rem; }
+.alert-success { background: #e2f2ea; color: #17583c; border-left-color: #23794f; }
+.alert-danger { background: #f9e4e1; color: #82261c; border-left-color: #c0392b; }
+.alert-warning { background: #f8eed8; color: #6b4810; border-left-color: var(--hn-laton); }
+
+/* ---------- inicio de sesión ---------- */
+.acceso { min-height: 100vh; display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); }
+.acceso-lado {
+	background: var(--hn-tinta); color: #fff; padding: 3rem clamp(2rem, 5vw, 4.5rem); display: flex; flex-direction: column;
+	justify-content: space-between; border-right: 4px solid var(--hn-laton);
+}
+.acceso-lado h1 { font-family: "Barlow Condensed", "Figtree", sans-serif; font-weight: 600; font-size: clamp(2.6rem, 5vw, 3.8rem); line-height: .98; margin: 0 0 1rem; max-width: 12ch; }
+.acceso-lado p { color: rgba(255, 255, 255, .74); max-width: 38ch; font-size: 1.02rem; }
+.acceso-roles { display: flex; flex-wrap: wrap; gap: .4rem; max-width: 34rem; }
+.acceso-roles span { font-size: .8rem; padding: .25rem .65rem; border-radius: 2rem; border: 1px solid rgba(255, 255, 255, .22); color: rgba(255, 255, 255, .82); }
+.acceso-form { display: flex; align-items: center; justify-content: center; padding: 3rem 1.5rem; }
+.login-caja { width: 100%; max-width: 400px; }
+.login-caja h2 { font-size: 1.45rem; font-weight: 700; color: var(--hn-tinta); }
+.login-caja details summary { cursor: pointer; color: var(--hn-lobby); font-weight: 600; }
+.login-caja details ul { padding-left: 1.1rem; }
+
+@media (max-width: 991.98px) {
+	.acceso { grid-template-columns: 1fr; min-height: 0; }
+	.acceso-lado { border-right: 0; border-bottom: 4px solid var(--hn-laton); padding: 1.6rem 1.5rem; gap: 1rem; }
+	.acceso-lado h1 { font-size: 2.3rem; margin-bottom: .5rem; }
+	.acceso-roles { display: none; }
+	.acceso-form { padding: 2rem 1.25rem; }
+	.barra .nav-link.active::after { display: none; }
+	.barra .nav-link.active { background: var(--hn-tinta-2); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+	* { transition: none !important; }
+}
