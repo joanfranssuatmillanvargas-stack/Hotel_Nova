@@ -16,7 +16,7 @@
 	<div class="card tarjeta-limpieza p-3 mb-2" th:each="p : ${pendientes}" th:classappend="${p['llegadaHoy']} ? 'prioridad'">
 		<div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
 			<div>
-				<div class="fs-3 fw-bold titulo lh-1" th:text="${p['numero']}">203</div>
+				<div class="fs-2 titulo lh-1 placa" th:text="${p['numero']}">203</div>
 				<div class="small text-secondary" th:text="'Piso ' + ${p['piso']}">Piso</div>
 				<span class="badge text-bg-danger mt-1" th:if="${p['llegadaHoy']}"><i class="bi bi-alarm"></i> Llegada hoy</span>
 				<div class="small mt-1">

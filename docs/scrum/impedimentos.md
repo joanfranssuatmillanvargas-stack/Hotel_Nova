@@ -47,3 +47,17 @@ Lo lleva el Scrum Master (Joan Franssuat Millán Vargas). La misma información 
 | Fecha límite | 17/11/2026 (Review del R2-Sprint 2) |
 | Estado | **Cerrado** (16/11/2026) |
 | Cierre | P025 a P031 se aprobaron en Render el lunes 16/11. La Retro del Sprint 1 acordó revisar y actualizar Trello entre semana desde el 18/11 (Joan); en la Retro del Sprint 2 se revisa si se cumplió. |
+
+## IMP-04 · Las pruebas en Render del R2-Sprint 3 pasaron del jueves o viernes al sábado
+
+| Campo | Valor |
+|-------|-------|
+| Fecha | 21/11/2026 (R2-Sprint 3, sábado después del día 3) |
+| Registra | Joan Franssuat Millán Vargas (SM) |
+| Qué pasó | La acción 2 de la Retro del R2-Sprint 2 era probar en Render el jueves 19 o el viernes 20/11. No se pudo: T026 (merge, despliegue y P032 a P034) empezó el sábado 21/11. El Planning y el código sí se hicieron el día 1 (18/11), así que la acción 1 se cumplió. Causa: la misma de IMP-02 e IMP-03, la disponibilidad de tiempo del equipo entre semana. |
+| Impacto | T023, T024 y T026 y las historias PLA-10, HAB-20 y PLA-11 (8 puntos). Riesgo para el Sprint Goal: **bajo**, porque quedan el lunes 23/11 y la Review es el martes 24/11. |
+| Dueño | Jaider Javier Jaimes (PO, responsable de T026) |
+| Escalado a | Equipo (se decide sin escalar al docente) |
+| Alternativa | El sábado 21/11 se hacen el merge, el despliegue y las pruebas. Ese mismo día se agrega T029 (identidad visual, ADR-010), así que se despliega y se prueba una sola vez. |
+| Fecha límite | 24/11/2026 (Review del R2-Sprint 3) |
+| Estado | **Abierto** |

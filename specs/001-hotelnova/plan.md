@@ -31,6 +31,7 @@ El Release 2 se construye sobre la arquitectura del Release 1, sin cambiarla:
 | [ADR-007](../../docs/adr/ADR-007-canal-y-quien-toma-la-reserva.md) | Toda reserva exige canal y `tomadaPor`; `hotel-web` los llena según quién reserva | Canal opcional con MOSTRADOR por defecto |
 | [ADR-008](../../docs/adr/ADR-008-temporadas-con-aprobacion-del-gerente.md) | Crear o editar una temporada la deja PENDIENTE; solo las APROBADAS (o las del Release 1, sin estado) cambian la tarifa | Dejar PENDIENTES también las temporadas viejas |
 | [ADR-009](../../docs/adr/ADR-009-tablero-gerencial-de-solo-lectura.md) | El tablero gerencial junta los reportes de los 4 microservicios sin guardar nada; la tarifa promedio la calcula `ms-reservas` | Un microservicio de reportes nuevo |
+| [ADR-010](../../docs/adr/ADR-010-identidad-visual.md) | La identidad visual vive en `hotel.css` y `fragmentos.html`: tinta, verde lobby y latón; Figtree y Barlow Condensed | Otra librería de componentes |
 
 ## 3. Páginas web y quién entra (hotel-web)
 
