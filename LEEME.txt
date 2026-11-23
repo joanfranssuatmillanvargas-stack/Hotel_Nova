@@ -72,6 +72,7 @@ ESPECIFICACIÓN (SDD, tercer corte)
   specs/001-hotelnova/plan.md            cómo se construye + docs/adr/ (ADR-001 a 010) + api/openapi.yaml (Puerta 2)
   specs/001-hotelnova/tasks.md           tareas T001 a T028 (Puerta 3)
   specs/001-hotelnova/trazabilidad.md    matriz requisito > criterio > prueba (PLA-11)
+  docs/scrum/graficas/                   documento con las 4 gráficas de seguimiento (Word y PDF)
   Pruebas unitarias: en cada proyecto, "mvn test" (o Run As > JUnit Test en STS)
 
 CONTRASEÑAS

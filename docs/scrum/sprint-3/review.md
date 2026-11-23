@@ -23,6 +23,7 @@ Antes de empezar: la URL de Render despierta (los 5 servicios).
 | 9 | `admin` + `gerente` | Crear otra temporada y rechazarla | Queda RECHAZADA y la tarifa no cambia | AC-021.2 |
 | 10 | Los 10 usuarios | Iniciar sesión uno por uno | Cada uno entra a su inicio con su menú | NFR-HN-004 |
 | 11 | — | Mostrar `trazabilidad.md`, ADR-008 a 010, las pruebas en verde (96 de 96) y las capturas de `evidencias/` | Todo requisito tiene criterio y prueba | NFR-HN-005 |
+| 12 | — | Mostrar las 4 gráficas de seguimiento (`docs/scrum/graficas/HotelNova_Graficas_Seguimiento.pdf`) | Burndown en 0, estado sobre la diagonal, flujo acumulado y 34 OK / 0 KO | Herramientas de proyectos, cap. 8 |
 
 ## 2. Qué se terminó y qué no
 
