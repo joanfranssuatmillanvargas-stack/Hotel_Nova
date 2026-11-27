@@ -17,6 +17,6 @@ public class ConfiguracionWeb implements WebMvcConfigurer {
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
 		registry.addInterceptor(filtro).addPathPatterns("/**")
-				.excludePathPatterns("/login", "/registro", "/salir", "/css/**", "/img/**", "/error", "/favicon.ico");
+				.excludePathPatterns("/", "/login", "/registro", "/salir", "/css/**", "/img/**", "/error", "/favicon.ico");
 	}
 }

@@ -61,6 +61,8 @@ FLUJO PARA LA SUSTENTACIÓN
   cajero:    "Por cobrar" > cobrar en efectivo > "Cierre de caja" del día (totales por medio de pago)
   supervisor: asignar la habitación por limpiar a una camarera > reasignarla a otra
   limpieza:  cada camarera ve solo las habitaciones que le asignaron
+  Página de inicio (pública): la URL de hotel-web sin iniciar sesión muestra la presentación del
+  sistema (huéspedes, los 10 roles y la arquitectura) con los botones Entrar y Crear cuenta.
   Release 2 (R2-Sprint 3):
   admin:     Habitaciones > Nueva temporada (tipo Doble, fechas futuras) > queda PENDIENTE y la tarifa no cambia
   gerente:   Temporadas > Aprobar (la tarifa ya se cobra) o Rechazar (sigue la tarifa base)
