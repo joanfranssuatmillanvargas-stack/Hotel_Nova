@@ -75,6 +75,7 @@ ESPECIFICACIÓN (SDD, tercer corte)
   specs/001-hotelnova/tasks.md           tareas T001 a T028 (Puerta 3)
   specs/001-hotelnova/trazabilidad.md    matriz requisito > criterio > prueba (PLA-11)
   docs/scrum/graficas/                   documento con las 4 gráficas de seguimiento (Word y PDF)
+  docs/presentacion/                     afiche de 90 x 120 cm (PowerPoint con la plantilla UTS y PDF para imprimir)
   Pruebas unitarias: en cada proyecto, "mvn test" (o Run As > JUnit Test en STS)
 
 CONTRASEÑAS
