@@ -12,17 +12,18 @@ Antes de empezar: la URL de Render despierta (los 5 servicios).
 
 | # | Quién | Qué se hace | Qué debe verse | Cubre |
 |---|-------|-------------|----------------|-------|
-| 1 | `admin` | Habitaciones → Nueva temporada para el tipo Doble, del 15/12 al 15/01, a una tarifa mayor que la base | Mensaje "queda PENDIENTE"; en la tabla aparece PENDIENTE | AC-020.1 |
-| 2 | `recepcion` | Nueva reserva de una Doble para el 20/12 | El valor de la noche sigue en la tarifa base | AC-020.1 |
+| 1 | `admin` | Habitaciones → Nueva temporada para el tipo Doble, del 01/03/2027 al 31/03/2027, a una tarifa mayor que la base (no usar 15/12 a 15/01: ya hay una Doble aprobada en esas fechas y se cruzaría) | Mensaje "queda PENDIENTE"; en la tabla aparece PENDIENTE | AC-020.1 |
+| 2 | `recepcion` | Nueva reserva de una Doble del 10/03/2027 al 11/03/2027 (sin guardarla) | El valor de la noche sigue en la tarifa base | AC-020.1 |
 | 3 | `gerente` | Abrir su inicio | Aviso de 1 temporada pendiente; ocupación de hoy, tarifa promedio e ingresos del mes por categoría | AC-018.1 |
 | 4 | `gerente` | Recorrer el tablero | No hay botones para crear, editar ni cobrar | AC-019.1 |
 | 5 | `gerente` | Escribir en la barra `/admin/habitaciones` y luego `/caja` | Vuelve a Gerencia las dos veces | AC-019.1 |
 | 6 | `gerente` | Temporadas → Aprobar | Queda APROBADA con quién y cuándo | AC-021.1 |
-| 7 | `recepcion` | Repetir la búsqueda del paso 2 | La noche del 20/12 ya cuesta la tarifa de la temporada | AC-021.1 |
+| 7 | `recepcion` | Repetir la búsqueda del paso 2 | La noche del 10/03/2027 ya cuesta la tarifa de la temporada | AC-021.1 |
 | 8 | Swagger de ms-habitaciones | `POST /api/temporadas/{id}/aprobacion` sobre la misma temporada | 409: ya está APROBADA | REQ-HN-021 |
-| 9 | `admin` + `gerente` | Crear otra temporada y rechazarla | Queda RECHAZADA y la tarifa no cambia | AC-021.2 |
+| 9 | `admin` + `gerente` | Crear otra temporada (por ejemplo Suite, del 01/04/2027 al 30/04/2027) y rechazarla | Queda RECHAZADA y la tarifa no cambia | AC-021.2 |
 | 10 | Los 10 usuarios | Iniciar sesión uno por uno | Cada uno entra a su inicio con su menú | NFR-HN-004 |
 | 11 | — | Mostrar `trazabilidad.md`, ADR-008 a 010, las pruebas en verde (96 de 96) y las capturas de `evidencias/` | Todo requisito tiene criterio y prueba | NFR-HN-005 |
+| 12 | — | Mostrar las 4 gráficas de seguimiento (`docs/scrum/graficas/HotelNova_Graficas_Seguimiento.pdf`) | Burndown en 0, estado sobre la diagonal, flujo acumulado y 34 OK / 0 KO | Herramientas de proyectos, cap. 8 |
 
 ## 2. Qué se terminó y qué no
 
