@@ -7,13 +7,16 @@ import com.hotelnova.web.modelo.UsuarioSesion;
 
 import jakarta.servlet.http.HttpSession;
 
-/** Página raíz: lleva a cada usuario al inicio de su rol. */
+/**
+ * Página raíz. Sin sesión muestra la página de aterrizaje (presentación del sistema, pública); con sesión lleva
+ * a cada usuario al inicio de su rol (REQ-HN-002).
+ */
 @Controller
 public class inicio_web {
 
 	@GetMapping("/")
 	public String inicio(HttpSession sesion) {
 		UsuarioSesion yo = (UsuarioSesion) sesion.getAttribute("yo");
-		return yo == null ? "redirect:/login" : "redirect:" + yo.getRol().getInicio();
+		return yo == null ? "aterrizaje" : "redirect:" + yo.getRol().getInicio();
 	}
 }

@@ -61,6 +61,8 @@ FLUJO PARA LA SUSTENTACIÓN
   cajero:    "Por cobrar" > cobrar en efectivo > "Cierre de caja" del día (totales por medio de pago)
   supervisor: asignar la habitación por limpiar a una camarera > reasignarla a otra
   limpieza:  cada camarera ve solo las habitaciones que le asignaron
+  Página de inicio (pública): la URL de hotel-web sin iniciar sesión muestra la presentación del
+  sistema (huéspedes, los 10 roles y la arquitectura) con los botones Entrar y Crear cuenta.
   Release 2 (R2-Sprint 3):
   admin:     Habitaciones > Nueva temporada (tipo Doble, fechas futuras) > queda PENDIENTE y la tarifa no cambia
   gerente:   Temporadas > Aprobar (la tarifa ya se cobra) o Rechazar (sigue la tarifa base)
@@ -72,6 +74,8 @@ ESPECIFICACIÓN (SDD, tercer corte)
   specs/001-hotelnova/plan.md            cómo se construye + docs/adr/ (ADR-001 a 010) + api/openapi.yaml (Puerta 2)
   specs/001-hotelnova/tasks.md           tareas T001 a T028 (Puerta 3)
   specs/001-hotelnova/trazabilidad.md    matriz requisito > criterio > prueba (PLA-11)
+  docs/scrum/graficas/                   documento con las 4 gráficas de seguimiento (Word y PDF)
+  docs/presentacion/                     afiche de 90 x 120 cm (PowerPoint con la plantilla UTS y PDF para imprimir)
   Pruebas unitarias: en cada proyecto, "mvn test" (o Run As > JUnit Test en STS)
 
 CONTRASEÑAS

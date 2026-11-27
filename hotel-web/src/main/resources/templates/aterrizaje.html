@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragmentos :: cabeza('Bienvenido')}"></head>
+<body class="aterrizaje">
+<!-- Página de aterrizaje (pública, sin sesión): qué es HotelNova, quién lo usa y cómo está hecho. -->
+<header class="at-barra">
+	<div class="container d-flex align-items-center justify-content-between gap-3">
+		<a class="marca" href="/"><span class="marca-llave"><i class="bi bi-key-fill"></i></span><span class="marca-nombre">HotelNova</span></a>
+		<nav class="at-enlaces d-none d-md-flex">
+			<a href="#huespedes">Huéspedes</a>
+			<a href="#equipo">Equipo del hotel</a>
+			<a href="#como-funciona">Cómo funciona</a>
+		</nav>
+		<a class="btn btn-sm btn-salir" href="/login"><i class="bi bi-box-arrow-in-right"></i> Entrar</a>
+	</div>
+</header>
+
+<section class="at-portada">
+	<div class="container">
+		<div class="row align-items-center gy-5 gx-lg-5">
+			<div class="col-lg-6">
+				<h1>El hotel entero, de la reserva a la factura.</h1>
+				<p class="at-entrada">HotelNova reúne en un solo sistema lo que pasa en el hotel cada día: reservas, check-in, habitaciones, limpieza, servicios, caja y gerencia. Cada persona entra con su usuario y ve solo lo que le toca.</p>
+				<div class="d-flex flex-wrap gap-2 mt-4">
+					<a class="btn btn-lg at-btn-laton" href="/login"><i class="bi bi-box-arrow-in-right"></i> Entrar al sistema</a>
+					<a class="btn btn-lg at-btn-claro" href="/registro"><i class="bi bi-person-plus"></i> Crear cuenta de huésped</a>
+				</div>
+			</div>
+			<div class="col-lg-6">
+				<!-- ilustración: así ve recepción el estado de las habitaciones -->
+				<figure class="at-tablero mb-0" aria-label="Ejemplo del tablero de habitaciones">
+					<div class="at-piso"><span>Piso 3</span>
+						<div class="at-hab estado-DISPONIBLE"><b class="placa">301</b><small>Suite</small></div>
+						<div class="at-hab estado-OCUPADA"><b class="placa">302</b><small>Suite</small></div>
+						<div class="at-hab estado-LIMPIEZA"><b class="placa">303</b><small>Suite</small></div>
+					</div>
+					<div class="at-piso"><span>Piso 2</span>
+						<div class="at-hab estado-OCUPADA"><b class="placa">201</b><small>Doble</small></div>
+						<div class="at-hab estado-DISPONIBLE"><b class="placa">202</b><small>Doble</small></div>
+						<div class="at-hab estado-MANTENIMIENTO"><b class="placa">203</b><small>Doble</small></div>
+					</div>
+					<div class="at-piso"><span>Piso 1</span>
+						<div class="at-hab estado-DISPONIBLE"><b class="placa">101</b><small>Sencilla</small></div>
+						<div class="at-hab estado-LIMPIEZA"><b class="placa">102</b><small>Sencilla</small></div>
+						<div class="at-hab estado-OCUPADA"><b class="placa">103</b><small>Sencilla</small></div>
+					</div>
+					<figcaption>
+						<span class="estado estado-DISPONIBLE">Disponible</span>
+						<span class="estado estado-OCUPADA">Ocupada</span>
+						<span class="estado estado-LIMPIEZA">Limpieza</span>
+						<span class="estado estado-MANTENIMIENTO">Mantenimiento</span>
+					</figcaption>
+				</figure>
+			</div>
+		</div>
+	</div>
+</section>
+
+<section class="at-seccion" id="huespedes">
+	<div class="container">
+		<h2>Para los huéspedes</h2>
+		<p class="at-intro">Con una cuenta de huésped se reserva desde la casa, sin llamar al hotel.</p>
+		<div class="row g-4">
+			<div class="col-md-4"><div class="at-item"><i class="bi bi-calendar2-check"></i><h3>Reservar en línea</h3><p>Elige fechas y tipo de habitación, ve el valor de las noches y confirma. Si cambian los planes, cancela desde su cuenta.</p></div></div>
+			<div class="col-md-4"><div class="at-item"><i class="bi bi-receipt"></i><h3>Ver su estadía</h3><p>Durante la estadía ve los servicios que ha pedido (restaurante, lavandería, spa, parqueadero) y el valor que lleva.</p></div></div>
+			<div class="col-md-4"><div class="at-item"><i class="bi bi-person-vcard"></i><h3>Mantener sus datos</h3><p>Actualiza su teléfono y correo para que recepción lo encuentre rápido al llegar.</p></div></div>
+		</div>
+	</div>
+</section>
+
+<section class="at-seccion at-seccion-alterna" id="equipo">
+	<div class="container">
+		<h2>Para el equipo del hotel</h2>
+		<p class="at-intro">Diez roles, cada uno con su propia pantalla. Nadie ve botones de otro cargo.</p>
+		<div class="at-roles">
+			<div class="at-rol"><i class="bi bi-gear"></i><h3>Administrador</h3><p>Habitaciones, tipos, temporadas, usuarios y reportes.</p></div>
+			<div class="at-rol"><i class="bi bi-bell"></i><h3>Recepcionista</h3><p>Reservas, check-in y check-out en el mostrador.</p></div>
+			<div class="at-rol"><i class="bi bi-telephone"></i><h3>Agente de reservas</h3><p>Reservas por teléfono, correo o WhatsApp, con el canal anotado.</p></div>
+			<div class="at-rol"><i class="bi bi-cash-coin"></i><h3>Cajero</h3><p>Cobra las facturas y cierra la caja del día.</p></div>
+			<div class="at-rol"><i class="bi bi-cup-hot"></i><h3>Personal de servicios</h3><p>Registra lo que consume cada estadía.</p></div>
+			<div class="at-rol"><i class="bi bi-stars"></i><h3>Personal de limpieza</h3><p>Ve solo las habitaciones que le asignaron y reporta daños.</p></div>
+			<div class="at-rol"><i class="bi bi-clipboard-check"></i><h3>Supervisor de limpieza</h3><p>Reparte las habitaciones entre las camareras.</p></div>
+			<div class="at-rol"><i class="bi bi-tools"></i><h3>Técnico de mantenimiento</h3><p>Repara los daños reportados, también desde el celular.</p></div>
+			<div class="at-rol"><i class="bi bi-graph-up"></i><h3>Gerente</h3><p>Tablero de ocupación e ingresos; aprueba las temporadas.</p></div>
+			<div class="at-rol"><i class="bi bi-person"></i><h3>Huésped</h3><p>Reserva y sigue su estadía desde su cuenta.</p></div>
+		</div>
+	</div>
+</section>
+
+<section class="at-seccion" id="como-funciona">
+	<div class="container">
+		<h2>Cómo funciona</h2>
+		<p class="at-intro">La página web le pide los datos a cuatro microservicios Spring Boot. Cada uno tiene su propia base de datos y se comunica con los demás por su API REST.</p>
+		<div class="at-arquitectura" aria-label="Diagrama de la arquitectura">
+			<div class="at-capa"><div class="at-caja at-caja-web"><i class="bi bi-window"></i><b>hotel-web</b><small>Thymeleaf · los 10 roles</small></div></div>
+			<div class="at-flechas" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+			<div class="at-capa at-servicios">
+				<div class="at-caja"><i class="bi bi-door-closed"></i><b>ms-habitaciones</b><small>habitaciones, temporadas, limpieza</small><span class="at-bd"><i class="bi bi-database"></i> MongoDB</span></div>
+				<div class="at-caja"><i class="bi bi-calendar-week"></i><b>ms-reservas</b><small>reservas, check-in, check-out</small><span class="at-bd"><i class="bi bi-database"></i> MongoDB</span></div>
+				<div class="at-caja"><i class="bi bi-people"></i><b>ms-huespedes</b><small>datos de los huéspedes</small><span class="at-bd"><i class="bi bi-database"></i> MongoDB</span></div>
+				<div class="at-caja"><i class="bi bi-receipt-cutoff"></i><b>ms-servicios-facturacion</b><small>servicios, facturas, caja</small><span class="at-bd"><i class="bi bi-database"></i> MongoDB</span></div>
+			</div>
+		</div>
+		<div class="row g-4 mt-2">
+			<div class="col-md-4"><div class="at-dato"><b>Java 21 y Spring Boot</b><span>Cada servicio documenta su API con Swagger (OpenAPI).</span></div></div>
+			<div class="col-md-4"><div class="at-dato"><b>MongoDB Atlas y Render</b><span>Los cinco servicios están publicados en la nube.</span></div></div>
+			<div class="col-md-4"><div class="at-dato"><b>Scrum + SDD</b><span>Dos releases, ocho sprints, especificación primero y pruebas antes del código.</span></div></div>
+		</div>
+		<div class="at-cierre">
+			<p>¿Ya tienes usuario?</p>
+			<a class="btn btn-lg btn-primary" href="/login"><i class="bi bi-box-arrow-in-right"></i> Entrar al sistema</a>
+		</div>
+	</div>
+</section>
+
+<footer class="at-pie">
+	<div class="container d-flex flex-wrap justify-content-between gap-3">
+		<div>
+			<span class="marca"><span class="marca-llave"><i class="bi bi-key-fill"></i></span><span class="marca-nombre">HotelNova</span></span>
+			<p class="mt-2 mb-0">Unidades Tecnológicas de Santander · Tecnología en Desarrollo de Sistemas Informáticos · Curso D-191 · 2026</p>
+		</div>
+		<div class="text-md-end">
+			<p class="mb-1">Joan Franssuat Millán Vargas · Jaider Javier Jaimes</p>
+			<p class="mb-0">Docente: Julián Barney Jaimes Rincón</p>
+		</div>
+	</div>
+</footer>
+<script th:replace="~{fragmentos :: scripts}"></script>
+</body>
+</html>
